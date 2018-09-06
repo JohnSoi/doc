@@ -1,3 +1,4 @@
+/* Тело сайта и все элементы */
 * {
   margin: 0;
   padding: 0;
@@ -5,15 +6,107 @@
 }
 body {
   background: url(../img/backgr.jpg) no-repeat;
-  -moz-background-size: 100%;
-  /* Firefox 3.6+ */
-  -webkit-background-size: 100%;
-  /* Safari 3.1+ и Chrome 4.0+ */
-  -o-background-size: 100%;
-  /* Opera 9.6+ */
-  background-size: 100%;
-  /* Современные браузеры */
 }
+/* Декорирование ссылок*/
+a {
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+  position: relative;
+}
+a::before {
+  content: '';
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #000;
+  transition: 0.2s;
+}
+a:hover:before {
+  width: 100%;
+  left: 0;
+}
+/* Декорация наведения */
+figure {
+  padding: 10px;
+  height: 30%;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+figure h2 {
+  transition: 0.3s;
+  transform: translateY(20px);
+}
+figure p {
+  transition: 0.3s;
+  transform: translateY(-20px);
+  opacity: 0;
+}
+figure:before {
+  content: '';
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  border-top: solid 2px;
+  border-bottom: solid 2px;
+  transition: 0.3s;
+  transform: scaleX(0);
+}
+figure:hover:before {
+  transform: scaleX(1);
+}
+figure:after {
+  content: '';
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  border-right: solid 2px;
+  border-left: solid 2px;
+  transition: 0.3s;
+  transform: scaleY(0);
+}
+figure:hover:after {
+  transform: scaleY(1);
+}
+figure:hover h2,
+figure:hover p {
+  transform: translateY(0);
+  opacity: 1;
+}
+/* Контейнер и блок авторизации */
+.containermlogin {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 15%;
+}
+#login {
+  width: 20%;
+  height: 30%;
+  padding: 10px;
+  background: rgba(70, 130, 180, 0.7);
+  border-radius: 10px;
+  text-align: center;
+  transition: 1s;
+}
+#login input:required {
+  border-bottom: 2px solid red;
+}
+/* Блоки ошибок и успешных сообщений */
 .error {
   width: 20%;
   background: rgba(178, 34, 34, 0.7);
@@ -39,68 +132,114 @@ body {
   padding: 10px;
   border-radius: 10px;
 }
-.containermlogin {
-  width: 100%;
-  height: 100%;
+/* Основной блок c меню*/
+section {
+  height: 100vh;
   display: flex;
   justify-content: center;
-  margin-top: 15%;
-}
-#login {
-  width: 20%;
-  height: 30%;
-  padding: 10px;
-  background: rgba(70, 130, 180, 0.7);
-  border-radius: 10px;
-  text-align: center;
-  transition: 1s;
-}
-#login input:required {
-  border-bottom: 2px solid red;
+  color: #fff;
+  margin: 0;
 }
 .main {
-  background: #000;
-  float: right;
+  background-color: #27ae60;
 }
-.nav {
-  float: left;
-  background: rgba(220, 20, 20, 0.6);
-  width: 15%;
+.wrapper {
+  position: relative;
+  overflow-x: hidden;
 }
-.nav ul {
-  font-family: sans-serif;
-  font-size: 22px;
-  list-style-type: none;
-  cursor: pointer;
+.menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99;
+  width: 30%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  transition: 0.5s;
+  transform: translateX(-100%);
 }
-.nav ul :hover {
-  font-size: 24px;
-  color: white;
+.menu_active {
+  transform: translateX(0%);
 }
-.nav li {
+.menu-list {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 30%;
+  width: 100%;
+}
+.menu-list a {
   text-decoration: none;
-  font-size: 14px;
-  font-family: sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
 }
-.nav #nav1,
-.nav #hid1 {
-  background: blue;
+.menu-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  position: absolute;
+  right: -35px;
+  top: 10px;
 }
-.nav #nav2,
-.nav #hid2 {
-  background: red;
+.menu-btn span {
+  position: absolute;
+  top: 50%;
+  margin-top: -1px;
+  left: 50%;
+  margin-left: -10px;
+  width: 20px;
+  height: 2px;
+  background-color: #222;
 }
-.nav #nav3,
-.nav #hid3 {
-  background: green;
+.menu-btn span::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  margin-top: 2px;
+  left: 50%;
+  margin-left: -10px;
+  width: 20px;
+  height: 2px;
+  background-color: #222;
 }
-.nav #nav4,
-.nav #hid4 {
-  background: yellow;
+.menu-btn span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  margin-top: -4px;
+  left: 50%;
+  margin-left: -10px;
+  width: 20px;
+  height: 2px;
+  background-color: #222;
 }
-.nav #hid1,
-.nav #hid2,
-.nav #hid3,
-.nav #hid4 {
-  display: none;
+.menu-btn_active span:before {
+  transform: rotate(-45deg);
+  margin-top: -1px;
+  width: 10px;
+  transform-origin: left bottom;
+}
+.menu-btn_active span:after {
+  transform: rotate(45deg);
+  width: 10px;
+  margin-top: -1px;
+  transform-origin: left top;
+}
+.content {
+  transition: 0.5s;
+  position: relative;
+  z-index: 0;
+}
+.content_active {
+  transform: translateX(30%);
+}
+.hid-gr1,
+.hid-gr2,
+.hid-gr3 {
+  display: flex;
+  flex-direction: column;
 }
