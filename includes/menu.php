@@ -21,7 +21,7 @@
 		      <figure id = "gr3"><span><a href="param.php">Настройки</a></span></figure>
 				<div id="hidgr3">
 					<a href="">Параметры</a>
-					<a href="input.php?flag=1">Персонал</a>
+					<a href="input.php?flaginput=1">Персонал</a>
 					<a href="">Услуги</a>
 				</div>
 		      <figure id = "gr4"><span><a href="#">Выход</a></span></figure>
