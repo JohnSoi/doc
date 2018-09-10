@@ -37,7 +37,7 @@
 							    echo '<td>'.$data['money'].'</td>';
 							    echo '<td>'.$data['money_nextMonth'].'</td>';
 							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=1"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
-							    echo '<td><a href="delete.php?id='.$data['id'].'&flagdel=1"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
+							    echo '<td><a href="del.php?id='.$data['id'].'&flagdel=1"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
 							    echo '</tr>';
 							    }
  					echo '</tbody>
