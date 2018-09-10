@@ -13,6 +13,7 @@
 <?php
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
+	include("includes/Input.php");
 
 	$access->checkNotAuth();
 ?>
@@ -37,7 +38,12 @@
       	switch ($typePage)
       	{
       		case 1:
-      			echo "<h2>Вывод пользователей</h2>";
+      			echo '<section>';
+			  				$input -> getPersonalTable($connection);
+			  			echo '</section>';	
+			  			echo '<section>';
+			  				echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
+			  			echo '</section>';
       			break;
       		case 2:
       			echo "<h2>Вывод пациентов в амбулатории</h2>";

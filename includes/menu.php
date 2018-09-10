@@ -4,7 +4,7 @@
 	
 	switch ($typeuser)
 	{
-		case SuperUser:
+		case su:
 			echo '
 			  <div class="menu">
 			    <a href="#" class="menu-btn"><span></span></a>

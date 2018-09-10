@@ -44,7 +44,7 @@
     		{
     			$dbusername=$row['username'];
     			$dbpassword=$row['password'];
-    			$_SESSION['typeUser']=$row['type'];
+    			$_SESSION['typeUser']=$row['dol'];
    			}
    			echo "<script>console.log('[LogIO.php] Перенаправление на роутинг');</script>";
    			$this->route($dbusername,$dbpassword, $username, $password);
