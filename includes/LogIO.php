@@ -116,7 +116,7 @@
 		public function getUserName()
 	    {
 	    	echo "<script>console.log('[LogIO.php] Функция получения имени пользователя');</script>";
-			return $username = $_SESSION["session_username"];
+			return $_SESSION["session_username"];
 		}
 
 
