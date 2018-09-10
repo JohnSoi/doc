@@ -44,6 +44,7 @@
     		{
     			$dbusername=$row['username'];
     			$dbpassword=$row['password'];
+    			$_SESSION['typeUser']=$row['type'];
    			}
    			echo "<script>console.log('[LogIO.php] Перенаправление на роутинг');</script>";
    			$this->route($dbusername,$dbpassword, $username, $password);
@@ -58,7 +59,7 @@
     				echo "<script>console.log('[LogIO.php] Присвоение сессии и переход');</script>";
 					$_SESSION['session_username']=$username;
 					$_SESSION['GOODMES'] = "Авторизация успешна";
-					echo "<script>setTimeout(function(){self.location=\"hello.php\";}, 2500);</script>";
+					echo "<script>setTimeout(function(){self.location=\"hello.php\";}, 500);</script>";
     			}
 	    }
 

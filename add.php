@@ -6,7 +6,7 @@
 <html lang="ru">
 <head>
 	<meta charset="UTF-8">
-	<title>Вывод</title>
+	<title>Добавление</title>
 	<link rel="stylesheet" href="css/style.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
@@ -22,31 +22,31 @@
 			include('includes/menu.php');
 		?>
   <div class="content">
-    <section class="input">
+    <section class="add">
       <?php
-      	if (isset($_GET['flaginput']))
+      	if (isset($_GET['flagadd']))
       	{
-      		$typePage = $_GET['flaginput'];
-      		$_SESSION['flaginput'] = $typePage;
+      		$typePage = $_GET['flagadd'];
+      		$_SESSION['flagadd'] = $typePage;
       	}
       	else
       	{
-      		$typePage = $_SESSION['flaginput'];
+      		$typePage = $_SESSION['flagadd'];
       	}
 
       	switch ($typePage)
       	{
       		case 1:
-      			echo "<h2>Вывод пользователей</h2>";
+      			echo "<h2>Добавление пользователя</h2>";
       			break;
       		case 2:
-      			echo "<h2>Вывод пациентов в амбулатории</h2>";
+      			echo "<h2>Добавление в амбулаторию</h2>";
       			break;
       		case 3:
-      			echo "<h2>Вывод пациентов в стационаре</h2>";
+      			echo "<h2>Добавление в стационар</h2>";
       			break;
       		case 4:
-      			echo "<h2>Вывод услуг</h2>";
+      			echo "<h2>Добавление услуги</h2>";
       			break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";

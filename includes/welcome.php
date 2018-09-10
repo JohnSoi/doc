@@ -3,11 +3,11 @@
 
 		protected $hour, $username;
 
-		function __construct($hour, $username){
-			$this -> $hour = $hour;
-			$this -> $username = $username;
+		function __construct($username){
 			date_default_timezone_set('Asia/Yekaterinburg');
-			$this -> printWelMessage($hour, $username);
+			$this->hour = date("G");
+			$this->username = $username;
+			$this->printWelMessage($this->hour, $this->username);
 		}
 
 		protected function printWelMessage($hour, $username){

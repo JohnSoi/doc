@@ -6,7 +6,7 @@
 <html lang="ru">
 <head>
 	<meta charset="UTF-8">
-	<title>Вывод</title>
+	<title>Статистика</title>
 	<link rel="stylesheet" href="css/style.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
@@ -24,33 +24,27 @@
   <div class="content">
     <section class="input">
       <?php
-      	if (isset($_GET['flaginput']))
+      	if (isset($_GET['flagstat']))
       	{
-      		$typePage = $_GET['flaginput'];
-      		$_SESSION['flaginput'] = $typePage;
+      		$typePage = $_GET['flagstat'];
+      		$_SESSION['flagstat'] = $typePage;
       	}
       	else
       	{
-      		$typePage = $_SESSION['flaginput'];
+      		$typePage = $_SESSION['flagstat'];
       	}
 
       	switch ($typePage)
       	{
       		case 1:
-      			echo "<h2>Вывод пользователей</h2>";
+      			echo "<h2>Вывод статистики амбулатории</h2>";
       			break;
       		case 2:
-      			echo "<h2>Вывод пациентов в амбулатории</h2>";
-      			break;
-      		case 3:
-      			echo "<h2>Вывод пациентов в стационаре</h2>";
-      			break;
-      		case 4:
-      			echo "<h2>Вывод услуг</h2>";
+      			echo "<h2>Вывод статистики стационара</h2>";
       			break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
-      			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
+      			//echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
       			break;
 
       	}

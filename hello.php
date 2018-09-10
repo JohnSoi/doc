@@ -18,10 +18,10 @@
 		$username = $access -> getUserName();
 	?>
 	<div class="containermlogin">
-		<h1><?php $wel = new Welcome(date("G"), $username);?></h1>
+		<h1><?php $wel = new Welcome($username);?></h1>
 	</div>
 	<?php
-		echo "<script>setTimeout(function(){self.location=\"main.php\";}, 2500);</script>";
+		echo "<script>setTimeout(function(){self.location=\"main.php\";}, 1500);</script>";
 	?>
 	
 </body>
