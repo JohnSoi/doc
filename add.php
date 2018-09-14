@@ -168,7 +168,7 @@
       			break;
       		case 4:
       			echo '
-                <form action="temp.php" method="GET">
+                <form action="add.php" method="GET">
                   <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
                   <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
                   <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
