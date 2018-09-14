@@ -64,7 +64,7 @@
     		}
     	}
 
-      elseif ($typePage == 2)
+      elseif ($typePage == 4)
       {
         if(isset($_GET['submit']))
         {
@@ -168,13 +168,18 @@
       			break;
       		case 4:
       			echo '
-                <form action="temp.php" method="GET">
-                  <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
-                  <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
-                  <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
-                  <p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
-                  <input type="submit" name="submit" value="Добавить">
-                </form>
+                <div class="container mregister">
+                  <div id="loginin">
+                    <h1>Регистрация нового пользователя</h1>
+                    <form action="add.php" method="GET">
+                      <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
+                      <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
+                      <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
+                      <p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
+                      <input class="button" type="submit" name="submit" value="Добавить">
+                    </form>
+                  </div>
+                </div>
             ';
       			break;
       		default:
