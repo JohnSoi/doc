@@ -44,7 +44,7 @@
       			break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
-      			//echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
+      			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
       			break;
 
       	}

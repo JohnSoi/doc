@@ -13,8 +13,7 @@
 	    		$id = $_GET['id'];
 	    		$query ="DELETE FROM usertbl WHERE id = '$id'";
 	    		$result = mysqli_query($connection, $query) or die("Ошибка " . mysqli_error($connection)); 
-				mysqli_close($connection);
-				header("Location: input.php?flaginput=1");
+				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 100);</script>";
 			}
 		}
 ?>
