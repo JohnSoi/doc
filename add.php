@@ -5,6 +5,7 @@
   
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
+  include("includes/Date.php");
 
 
 	if (isset($_GET['flagadd']))
@@ -16,6 +17,15 @@
       	{
       		$typePage = $_SESSION['flagadd'];
       	}
+  if (isset($_GET['stac']))
+        {
+          $typeStat = $_GET['stac'];
+          $_SESSION['stac'] = $typeStat;
+        }
+        else
+        {
+          $typeStat = $_SESSION['stac'];
+        }
 
     if ($typePage == 1)
     	{
@@ -100,6 +110,56 @@
             }         
         }
       }
+      elseif($typePage == 5)
+      {
+        if(isset($_GET['submit']))
+        {
+          if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']))
+          {
+            $name = $_GET['name'];
+            $dateBr =  $_GET['date'];
+            $dateIn = (string)$date->getDate();
+            $tel = $_GET['tel'];
+            if($typeStat == 1)
+              $mesto = $_GET['mesto'];
+            else
+              $mesto = "NULL";
+            $zal = $_GET['zal'];
+            if (!empty($_GET['typezal']))
+              $typeZal = $_GET['typezal'];
+            if($typeStat == 0)
+              $type = "Амбулатория";
+            elseif($typeStat == 1)
+              $type = 'Стационар';
+
+              $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."')");
+              if($typeStat == 1)
+                {
+                  $mest = mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = ".$mesto);
+                  if ($mest)
+                    $message = "Запись создана успешно";
+                  else
+                    $message = "Ошибка заполнения";
+                }
+              if ($zal != 0)
+                {
+                  $operation = mysqli_query($connection, "INSERT INTO operation(sum, client, date, type, typeSum) VALUES('".$zal."', '".$name."', '".$dateIn."', '".$type."', '".$typeZal."')");
+                  if ($operation)
+                    if ($message != "Ошибка заполнения")
+                      $message = "Запись создана успешно";
+                  else
+                    $message = "Ошибка заполнения";
+                }
+              if ($pacient)
+                if ($message != "Ошибка заполнения")
+                  $message = "Запись создана успешно";
+              else
+                $message = "Ошибка заполнения";
+          }
+          else
+            $message = "Заполните все поля";
+        }
+      }
 ?>
 
 <!DOCTYPE html>
@@ -162,22 +222,24 @@
 	    				';
       			break;
       		case 2:
-      			echo '
-              <div class="cont-client">
-                    <h1>Прием пациента в амбулаторию</h1>
-                    <div class="date">Дата записи: '.date(d).'/'.date(m).'/'.date(Y).' '.date(G).':'.date(i).'</div>
-                    <form action="add.php" method="GET">
-                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
-                      <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
-                      <p><label for="tel">Номер телефона<br><input name="tel" type="tel"></label></p>
-                      <input type="submit" class="button" name="submit" value="Добавить">
-                    </form>
-                    
-                </div>
-            ';
+          echo '     
+            <div class="cont-client">
+              <h1>Добавление в амбулаторию</h1>
+              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=0">Прием пациента</a></div>
+              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=0">Денежные операции</a></div>
+              <div class="block3"><h1>Статистика за сегодня</h1></div>
+            </div>
+          ';
       			break;
       		case 3:
-      			echo "<h2>Добавление в стационар</h2>";
+      			echo '
+            <div class="cont-client">
+              <h1>Добавление в стационар</h1>
+              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=1">Прием пациента</a></div>
+              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=1">Денежные операции</a></div>
+              <div class="block3"><h1>Статистика за сегодня</h1></div>
+            </div>
+          ';
       			break;
       		case 4:
       			echo '
@@ -195,6 +257,46 @@
                 </div>
             ';
       			break;
+          case 5:
+            echo '
+              <div class="cont-client">';
+                if ($typeStat == 0)
+                   echo '<h1>Прием пациента в амбулаторию</h1>';
+                 else
+                  echo '<h1>Прием пациента в стационар</h1>';
+                echo'
+                    <div class="date">Дата записи: '.$date->getDate().'</div>
+                    <form action="add.php" method="GET">
+                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
+                      <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
+                      <p><label for="tel">Номер телефона<br><input name="tel" type="tel"></label></p>';
+                      if ($typeStat == 1){
+                        echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
+                        $query = "SELECT * FROM mest WHERE status = 'free'";
+                        $sql = mysqli_query($connection, $query);
+                        if (mysqli_num_rows($sql) == 0)
+                        {
+                          echo "Нет свободных мест";
+                        }
+                        else
+                        {
+                          while($row=mysqli_fetch_assoc($sql))
+                          echo '<option value="'.$row[id].'">Койко-место №'.$row[id].'</option>';
+                        }
+                        echo'
+                        </select></label></p>';}
+                      echo '
+                      <p><label for="zal">Внесенная сумма<br><input id="zal" name="zal" value="0" type="text"></label></p>
+                      <p><label id="typeZal" for="typezal">Тип платежа<br><select  name="typezal">
+                        <option value="nal">Наличный</option>
+                        <option value="beznal">Безналичный</option>
+                      </select></label></p> 
+                      <input type="submit" class="button" name="submit" value="Добавить">
+                    </form>
+                </div>
+                <script src="js/zal.js"></script>
+            ';
+          break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
       			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";

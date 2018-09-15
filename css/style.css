@@ -269,6 +269,7 @@ caption {
 }
 .icon_big {
   width: 35%;
+  margin-bottom: 10px;
 }
 .button {
   display: block;
@@ -405,32 +406,35 @@ caption {
 .cont-client .block1 {
   margin: 10px;
   padding: 20px;
-  background: #aeae;
+  background: rgba(155, 20, 134, 0.7);
   color: white;
   position: absolute;
   left: 0;
   width: 47%;
-  height: 65%;
+  height: 63%;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 .cont-client .block2 {
   margin: 10px;
   padding: 20px;
-  background: #aeae;
+  background: rgba(55, 20, 134, 0.7);
   color: white;
   position: absolute;
   right: 0;
   width: 47%;
-  height: 65%;
+  height: 63%;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 .cont-client .block3 {
   margin: 10px auto;
   padding: 20px;
-  background: #aeae;
-  color: white;
+  background: rgba(255, 220, 34, 0.7);
+  color: black;
   position: absolute;
   bottom: 0;
   width: 98%;
   height: 25%;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 .cont-client .date {
   position: absolute;
@@ -489,4 +493,7 @@ caption {
 #bot-date {
   position: absolute;
   bottom: 0;
+}
+#typeZal {
+  display: none;
 }

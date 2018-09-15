@@ -13,7 +13,7 @@
 	        $this->User = $DB_USER;
 	        $this->Pass = $DB_PASS;
 	        $this->NameBase = $DB_NAME;
-	        date_default_timezone_set('Asia/Yekaterinburg');
+
 		}
 
 		/* --- Функция создания подключения к БД --- */
