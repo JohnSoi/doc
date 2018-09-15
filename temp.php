@@ -5,40 +5,6 @@
 
 	$access->checkNotAuth();
 
-
-	if(isset($_GET['submit']))
-	{
-		if(!empty($_GET['name']) & !empty($_GET['cost']) & !empty($_GET['bonus']))
-		{
-			$name = $_GET['name'];
-			$cost = $_GET['cost'];
-			$bonus = $_GET['bonus'];
-			$dist = $_GET['dist'];
-
-			$sql = "SELECT * FROM items WHERE name = ".$name."AND cost = ".$cost;
-			$query = mysqli_query($connection, $sql);
-
-			if(mysqli_num_rows($query) == 0){
-				$sql = "INSERT INTO items(name,cost,dist,bonus) VALUES('".$name."','".$cost."','".$dist."','".$bonus."')";
-				$query = mysqli_query($connection, $sql);
-				if($query)
-					{
-						$message = "Добавление успешно";
-						echo "<script>setTimeout(function(){self.location=\"input.php&flaginput=4\";}, 1500);</script>";
-					}
-				else
-					$message = "Данные не обработаны";
-			}
-			else
-			{
-				$message = "Такая услуга уже существует!";
-			}
-		}
-		else{
-				$message = "Все поля обязательны для заполнения!";
-			}
-		
-	}
 ?>
 
 <!DOCTYPE html>
@@ -55,15 +21,11 @@
 			include('includes/menu.php');
 		?>
   <div class="content">
-    <section class="main">
-    	<?php echo "<p class=\"error\">".$message."</p>" ?>
-      <form action="temp.php" method="GET">
-      	<p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
-      	<p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
-      	<p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
-      	<p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
-      	<input type="submit" name="submit" value="Добавить">
-      </form>
+    <div class="cont-client">
+    	<div class="block1"><a href="input.php?flaginput=2">Прием пациента</a></div>
+    	<div class="block2"><a href="input.php?flaginput=6">Денежные операции</a></div>
+    	<div class="block3"><h1>Статистика за сегодня</h1></div>
+    </div>
     </section>
   </div>
 </div>
