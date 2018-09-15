@@ -64,16 +64,16 @@
     		}
     	}
 
-      elseif ($typePage == 2)
+      elseif ($typePage == 4)
       {
         if(isset($_GET['submit']))
         {
           if(!empty($_GET['name']) & !empty($_GET['cost']) & !empty($_GET['bonus']))
           {
-            $name = $_GET['name'];
-            $cost = $_GET['cost'];
-            $bonus = $_GET['bonus'];
-            $dist = $_GET['dist'];
+            $name = htmlspecialchars($_GET['name']);
+            $cost = htmlspecialchars($_GET['cost']);
+            $bonus = htmlspecialchars($_GET['bonus']);
+            $dist = htmlspecialchars($_GET['dist']);
 
             $sql = "SELECT * FROM items WHERE name = ".$name."AND cost = ".$cost;
             $query = mysqli_query($connection, $sql);
@@ -84,7 +84,7 @@
               if($query)
                 {
                   $message = "Добавление успешно";
-                  echo "<script>setTimeout(function(){self.location=\"input.php&flaginput=4\";}, 1500);</script>";
+                  echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 1500);</script>";
                 }
               else
                 $message = "Данные не обработаны";
@@ -161,20 +161,37 @@
 	    				';
       			break;
       		case 2:
-      			echo "<h2>Добавление в амбулаторию</h2>";
+      			echo '
+              <div class="cont-client">
+                    <h1>Прием пациента в амбулаторию</h1>
+                    <div class="date">Дата записи: '.date(d).'/'.date(m).'/'.date(Y).' '.date(G).':'.date(i).'</div>
+                    <form action="add.php" method="GET">
+                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
+                      <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
+                      <p><label for="tel">Номер телефона<br><input name="tel" type="tel"></label></p>
+                      <input type="submit" class="button" name="submit" value="Добавить">
+                    </form>
+                    
+                </div>
+            ';
       			break;
       		case 3:
       			echo "<h2>Добавление в стационар</h2>";
       			break;
       		case 4:
       			echo '
-                <form action="add.php" method="GET">
-                  <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
-                  <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
-                  <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
-                  <p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
-                  <input type="submit" name="submit" value="Добавить">
-                </form>
+              <div class="container mregister">
+                  <div id="loginin">
+                    <h1>Регистрация новой услуги</h1>
+                    <form action="add.php" method="GET">
+                      <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
+                      <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
+                      <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
+                      <p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
+                      <input type="submit" class="button" name="submit" value="Добавить">
+                    </form>
+                  </div>
+                </div>
             ';
       			break;
       		default:

@@ -15,5 +15,12 @@
 	    		$result = mysqli_query($connection, $query) or die("Ошибка " . mysqli_error($connection)); 
 				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 100);</script>";
 			}
+		elseif($_GET['flagdel'] == 2)
+			{
+	    		$id = $_GET['id'];
+	    		$query ="DELETE FROM items WHERE id = '$id'";
+	    		$result = mysqli_query($connection, $query) or die("Ошибка " . mysqli_error($connection)); 
+				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 100);</script>";
+			}
 		}
 ?>

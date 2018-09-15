@@ -3,6 +3,10 @@
  		function getPersonalTable($connection)
 		{
 			$result = mysqli_query($connection, "SELECT * FROM usertbl");
+
+			if (mysqli_num_rows($result) == 0)
+				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
+			else{
 			echo'
 				<table>
 					<caption>Список Персонала</caption>
@@ -41,15 +45,19 @@
 							    echo '</tr>';
 							    }
  					echo '</tbody>
-				</table>';		
+				</table>';	}	
 		}
 
 		function getItemsTable($connection)
 		{
 			$result = mysqli_query($connection, "SELECT * FROM items");
+
+			if (mysqli_num_rows($result) == 0)
+				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
+			else{
 			echo'
 				<table>
-					<caption>Список Услуги</caption>
+					<caption>Список Услуг</caption>
 					<thead>
 					<tr>
 					    <th rowspan="2" class="first">#</th>
@@ -69,12 +77,12 @@
 							    echo '<td>'.$data['cost'].'</td>'; 
 							    echo '<td>'.$data['dist'].'</td>'; 
 							    echo '<td>'.$data['bonus'].'</td>'; 
-							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=2"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
+							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=2"><img class = "icon" src="img/editit.png" alt="Изменить"></a></td>';
 							    echo '<td><a href="del.php?id='.$data['id'].'&flagdel=2"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
 							    echo '</tr>';
 							    }
  					echo '</tbody>
-				</table>';		
+				</table>';	}	
 		}
 	} 
 	$input = new Input;

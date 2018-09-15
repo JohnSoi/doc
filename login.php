@@ -25,7 +25,7 @@
 	    		$access -> Authorization($username, $password, $connection);
 		}
 	?>
-	<div class="containermlogin">
+	<div class="container mregister">
 		<div id="login">
 	    	<h1>Вход</h1>
 			<form name="loginform" id="loginform" action="" method="POST">

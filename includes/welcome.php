@@ -4,7 +4,6 @@
 		protected $hour, $username;
 
 		function __construct($username){
-			date_default_timezone_set('Asia/Yekaterinburg');
 			$this->hour = date("G");
 			$this->username = $username;
 			$this->printWelMessage($this->hour, $this->username);
