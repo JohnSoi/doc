@@ -1,5 +1,8 @@
 <?php
 	session_start();
+  if(!$_SESSION['session_username'])
+    header("Location:login.php");
+
 ?>
 
 <!DOCTYPE html>
@@ -13,8 +16,6 @@
 <?php
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
-
-	$access->checkNotAuth();
 ?>
 <body>
 	<div class="wrapper">

@@ -1,10 +1,10 @@
 <?php
-	//Запуск сессий и подключение сторонних файлов
 	session_start();
+	if(!$_SESSION['session_username'])
+		header("Location:login.php");
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
 	//Проверка на авторизацию
-	$access->checkNotAuth();
  	if(isset($_GET['id']))
 		{
 		//Удаление пользователя

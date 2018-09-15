@@ -1,10 +1,11 @@
 <?php
 	session_start();
-
+  if(!$_SESSION['session_username'])
+    header("Location:login.php");
+  
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
 
-	$access->checkNotAuth();
 
 	if (isset($_GET['flagadd']))
       	{

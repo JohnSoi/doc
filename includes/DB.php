@@ -89,7 +89,7 @@
 		protected function setTypeChar($connect)
 		{
 			mysqli_query($connect, "SET NAMES `UTF8`");
-			mysqli_query ("set character_set_results='utf8'");
+			mysqli_query ($connect,"set character_set_results='utf8'");
 		}
 	}
 

@@ -1,5 +1,7 @@
 <?php
 	session_start();
+	if(!$_SESSION['session_username'])
+		header("Location:login.php");
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +16,6 @@
 		include("includes/LogIO.php");
 		include("includes/welcome.php");
 
-		$access -> checkNotAuth();
 		$username = $access -> getUserName();
 	?>
 	<div class="cont-center">

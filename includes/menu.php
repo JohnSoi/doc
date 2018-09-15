@@ -4,7 +4,7 @@
 	
 	switch ($typeuser)
 	{
-		case su:
+		case 'su':
 			echo '
 			  <div class="menu">
 			    <a href="#" class="menu-btn"><span></span></a>
@@ -41,7 +41,7 @@
 			  </div>';
 		break;
 
-		case doc:
+		case 'doc':
 			echo '
 				<div class="menu">
 			    <a href="#" class="menu-btn"><span></span></a>
@@ -68,7 +68,7 @@
 			  </div>';
 		break;
 
-		case view:
+		case 'view':
 			echo '
 			<div class="menu">
 			    <a href="#" class="menu-btn"><span></span></a>
@@ -95,7 +95,7 @@
 			  </div>';
 		break;
 
-		case admin:
+		case 'admin':
 			echo ' 
 			<div class="menu">
 			    <a href="#" class="menu-btn"><span></span></a>

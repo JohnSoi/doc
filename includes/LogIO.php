@@ -72,26 +72,10 @@
 			}
 		}
 
-		/* --- Функция проверки на неавторизованность --- */
-	    public function checkNotAuth()
-	    {
-	    	if(!$_SESSION['session_username'])
-				echo "<script>setTimeout(function(){self.location=\"login.php\";}, 100);</script>";
-		}
-
-		/* --- Функция проверки авторизованности --- */
-		public function checkAuth()
-	    {
-			if(isset($_SESSION["session_username"]))
-				echo "<script>setTimeout(function(){self.location=\"main.php\";}, 1500);</script>";		}
-
 		public function getUserName()
 	    {
 			return $_SESSION["session_username"];
 		}
-
-
-
 	}
 
 	$access = new LogIO();

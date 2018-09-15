@@ -1,5 +1,7 @@
 <?php
 	session_start();
+	if(isset($_SESSION["session_username"]))
+		header("Location:main.php");
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +16,6 @@
 	<?php
 		include("includes/DB.php");
 		include("includes/LogIO.php");
-
-		$access -> checkAuth();
 
 		if(isset($_POST["login"]))
 		{
