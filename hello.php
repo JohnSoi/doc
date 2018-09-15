@@ -17,7 +17,7 @@
 		$access -> checkNotAuth();
 		$username = $access -> getUserName();
 	?>
-	<div class="containermlogin">
+	<div class="cont-center">
 		<h1><?php $wel = new Welcome($username);?></h1>
 	</div>
 	<?php
