@@ -24,7 +24,8 @@
         }
         else
         {
-          $typeStat = $_SESSION['stac'];
+          if(isset($_SESSION['stac']))
+            $typeStat = $_SESSION['stac'];
         }
 
     if ($typePage == 1)
@@ -86,7 +87,7 @@
             $bonus = htmlspecialchars($_GET['bonus']);
             $dist = htmlspecialchars($_GET['dist']);
 
-            $sql = "SELECT * FROM items WHERE name = ".$name."AND cost = ".$cost;
+            $sql = "SELECT * FROM items WHERE name = ".$name;
             $query = mysqli_query($connection, $sql);
 
             if(mysqli_num_rows($query) == 0){
@@ -114,11 +115,11 @@
       {
         if(isset($_GET['submit']))
         {
-          if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']))
+          if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']) & !empty($_GET['doctor']))
           {
             $name = $_GET['name'];
-            $dateBr =  $_GET['date'];
-            $dateIn = (string)$date->getDate();
+            $dateBr =  $date->normalizeDate($_GET['date']);
+            $dateIn = $date->getDate();
             $tel = $_GET['tel'];
             if($typeStat == 1)
               $mesto = $_GET['mesto'];
@@ -127,12 +128,19 @@
             $zal = $_GET['zal'];
             if (!empty($_GET['typezal']))
               $typeZal = $_GET['typezal'];
+            $ldoc = $_GET['ldoc'];
+            $doctor = $_GET['doctor'];
+            $message = 'a';
             if($typeStat == 0)
               $type = "Амбулатория";
             elseif($typeStat == 1)
               $type = 'Стационар';
-
-              $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."')");
+              if ($doctor == $ldoc)
+                  $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$ldoc."')");
+              else{
+                $doc = "Был принят доктором ".$doctor;
+                $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, dist) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$doc."')"); 
+              }
               if($typeStat == 1)
                 {
                   $mest = mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = ".$mesto);
@@ -195,7 +203,8 @@
 	    									<input class="input" id="full_name" name="full_name"size="32"  type="text" value=""></label>
 	    								</p>
  	    								<p><label for="radio">Выберите тип учетной записи<br>
-	    									<input name="dol" type="radio" value="doc">Доктор<br>
+	    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
+                        <input name="dol" type="radio" value="doc">Доктор<br>
 	    									<input name="dol" type="radio" value="view">Наблюдатель<br>
 	    									<input name="dol" type="radio" value="admin">Администратор<br>
 	    									<input name="dol" type="radio" value="su">Суперпользователь<br>
@@ -285,6 +294,35 @@
                         }
                         echo'
                         </select></label></p>';}
+                        echo '<p><label for="doctor">Принимающий врач<br><select name="doctor">';
+                        $query = "SELECT * FROM usertbl WHERE dol = 'doc' OR dol = 'ddoc'";
+                        $sql = mysqli_query($connection, $query);
+                        if (mysqli_num_rows($sql) == 0)
+                        {
+                          echo "Не заполнены врачи";
+                        }
+                        else
+                        {
+                          while($row=mysqli_fetch_assoc($sql))
+                          echo '<option value="'.$row[fio].'">'.$row[fio].'</option>';
+                        }
+                        echo'
+                        </select></label></p>';
+                        echo '<p><label for="ldoc">Лечащий врач<br><select name="ldoc">';
+                        $query = "SELECT * FROM usertbl WHERE dol = 'doc'";
+                        $sql = mysqli_query($connection, $query);
+                        echo '<option value="no">Нет врача</option>';
+                        if (mysqli_num_rows($sql) == 0)
+                        {
+                          echo "Не заполнены врачи";
+                        }
+                        else
+                        {
+                          while($row=mysqli_fetch_assoc($sql))
+                          echo '<option value="'.$row[fio].'">'.$row[fio].'</option>';
+                        }
+                        echo'
+                        </select></label></p>';
                       echo '
                       <p><label for="zal">Внесенная сумма<br><input id="zal" name="zal" value="0" type="text"></label></p>
                       <p><label id="typeZal" for="typezal">Тип платежа<br><select  name="typezal">

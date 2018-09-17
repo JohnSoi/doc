@@ -10,6 +10,7 @@
 		}
 
 		protected function printWelMessage($hour, $username){
+				date_default_timezone_set('Asia/Yekaterinburg');
 				if (($hour>=1) and ($hour < 6))
 					echo "Доброй ночи, ".$username."!";
 				elseif (($hour>=6) and ($hour < 12))

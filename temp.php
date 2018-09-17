@@ -5,6 +5,7 @@
 	
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
+	include("includes/Date.php");
 ?>
 
 <!DOCTYPE html>
@@ -21,11 +22,9 @@
 			include('includes/menu.php');
 		?>
   <div class="content">
-    <div class="cont-client">
-    	<div class="block1"><a href="input.php?flaginput=2">Прием пациента</a></div>
-    	<div class="block2"><a href="input.php?flaginput=6">Денежные операции</a></div>
-    	<div class="block3"><h1>Статистика за сегодня</h1></div>
-    </div>
+			<?php
+				echo $dateIn = $date->normalizeDate($date->getDate());
+			?>
     </section>
   </div>
 </div>

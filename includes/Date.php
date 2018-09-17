@@ -11,6 +11,14 @@
 			$minute = date("i");
 			return $day.'/'.$month.'/'.$year.' '.$hour.':'.$minute;
 		}
+		function normalizeDate($date){
+			$dateInp = explode('-', $date);
+			$year = $dateInp[0];
+			$month = $dateInp[1];
+			$day = $dateInp[2];
+			$dateOutp = $day.'/'.$month.'/'.$year;
+			return $dateOutp;
+		}
 	}
 	$date = new Date;
 ?>
