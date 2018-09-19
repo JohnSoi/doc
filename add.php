@@ -236,7 +236,10 @@
               <h1>Добавление в амбулаторию</h1>
               <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=0">Прием пациента</a></div>
               <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=0">Денежные операции</a></div>
-              <div class="block3"><h1>Статистика за сегодня</h1></div>
+              <div class="block3"><h1>Статистика за сегодня</h1>';
+                  $sum = ($connection, "SELECT sum FROM operation WHERE date = ".)
+              echo '
+              </div>
             </div>
           ';
       			break;
