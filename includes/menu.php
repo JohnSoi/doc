@@ -11,18 +11,19 @@
 			    <nav class="menu-list">
 			      <figure id = "gr1"><span>Амбулатория</span></figure>
 						<div id="hidgr1">
-							<a href="add.php?flagadd=2">Прием</a>
+							<a href="add.php?flagadd=2&stac=0">Прием</a>
 							<a href="input.php?flaginput=2">Отчет</a>
 							<a href="stat.php?flagstat=1">Статистика</a>
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 					<div id="hidgr2">
-						<a href="add.php?flagadd=3">Прием</a>
+						<a href="add.php?flagadd=2&stac=1">Прием</a>
 						<a href="input.php?flaginput=3">Отчет</a>
 						<a href="stat.php?flagstat=2">Статистика</a>
 					</div>
 			      <figure id = "gr3"><span>Настройки</span></figure>
 					<div id="hidgr3">
+						<a href="input.php?flaginput=5">Список операций</a>
 						<a href="param.php">Параметры</a>
 						<a href="input.php?flaginput=1">Персонал</a>
 						<a href="input.php?flaginput=4">Услуги</a>

@@ -84,6 +84,47 @@
  					echo '</tbody>
 				</table>';	}	
 		}
+
+		function getOperationTable($connection)
+		{
+			$result = mysqli_query($connection, "SELECT * FROM operation");
+
+			if (mysqli_num_rows($result) == 0)
+				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
+			else{
+			echo'
+				<table>
+					<caption>Список денежных операций</caption>
+					<thead>
+					<tr>
+					    <th rowspan="2" class="first">#</th>
+					    <th rowspan="2">Клиент</th>
+					    <th rowspan="2">Сумма</th>
+					    <th rowspan="2">Тип платежа</th>
+					    <th rowspan="2">Тип лечения</th>
+					    <th rowspan="2">Дата</th>
+					  </tr>
+					</thead>
+					<tbody>';
+							while($data = mysqli_fetch_assoc($result)) {
+								echo '<tr>';
+							    echo '<td>'.$data['id'].'</td>';
+							    echo '<td>'.$data['client'].'</td>';
+							    if ($data['sum'] < 0)
+							    	echo '<td style = "background: red;">'.$data['sum'].'</td>';
+							    else
+							    	echo '<td style = "background: green;">'.$data['sum'].'</td>';
+							    if ($data['typeSum']=='nal')
+							    	echo '<td>Наличный</td>'; 
+							    else
+							    	echo '<td>Безналичный</td>';
+							    echo '<td>'.$data['type'].'</td>'; 
+							    echo '<td>'.$data['date'].'</td>'; 
+							    echo '</tr>';
+							    }
+ 					echo '</tbody>
+				</table>';	}	
+		}
 	} 
 	$input = new Input;
 ?>

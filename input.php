@@ -52,14 +52,19 @@
       			echo "<h2>Вывод пациентов в стационаре</h2>";
       			break;
       		case 4:
-				echo '<section>';
-					$input -> getItemsTable($connection);
-	  			echo '</section>';	
-		  		echo '<section>';
-	  				echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";
-	 			echo '</section>';      			
-	 			break;
-      		default:
+    				echo '<section>';
+    					$input -> getItemsTable($connection);
+    	  			echo '</section>';	
+    		  		echo '<section>';
+    	  				echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";
+    	 			echo '</section>';      			
+    	 			break;
+      		case 5:
+            echo '<section>';
+            $input -> getOperationTable($connection);
+            echo '</section>';             
+            break;
+          default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
       			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
       			break;

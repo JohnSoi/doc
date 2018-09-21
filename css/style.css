@@ -454,6 +454,15 @@ caption {
   padding: 20px;
   background: rgba(233, 200, 170, 0.9);
 }
+.good {
+  margin: 40px auto 0;
+  border: 1px solid #777;
+  padding: 3px;
+  color: #fff;
+  text-align: center;
+  width: 650px;
+  background: #ae2;
+}
 /* Настройка стилей классов Меню */
 #hidgr1 a,
 #hidgr2 a,
@@ -467,7 +476,7 @@ caption {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 40%;
+  height: 60%;
 }
 #hidgr1 {
   background: rgba(2, 190, 2, 0.5);

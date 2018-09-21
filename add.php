@@ -27,9 +27,8 @@
           if(isset($_SESSION['stac']))
             $typeStat = $_SESSION['stac'];
         }
-
-    if ($typePage == 1)
-    	{
+    //Обработка добавления персонала
+    if ($typePage == 1){
     		//Проверка на нажатие кнопки
     		if(isset($_GET["register"]))
     		{	
@@ -74,10 +73,9 @@
     				$message = "Все поля обязательны для заполнения!";
     			}
     		}
-    	}
-
-      elseif ($typePage == 4)
-      {
+    }
+    //Обработка услуг
+    elseif ($typePage == 4){
         if(isset($_GET['submit']))
         {
           if(!empty($_GET['name']) & !empty($_GET['cost']) & !empty($_GET['bonus']))
@@ -110,16 +108,16 @@
               $message = "Все поля обязательны для заполнения!";
             }         
         }
-      }
-      elseif($typePage == 5)
-      {
+    }
+    //Обработка пациентов
+    elseif($typePage == 5){
         if(isset($_GET['submit']))
         {
           if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']) & !empty($_GET['doctor']))
           {
             $name = $_GET['name'];
             $dateBr =  $date->normalizeDate($_GET['date']);
-            $dateIn = $date->getDate();
+            $dateIn = $date->getDateTime();
             $tel = $_GET['tel'];
             if($typeStat == 1)
               $mesto = $_GET['mesto'];
@@ -167,6 +165,32 @@
           else
             $message = "Заполните все поля";
         }
+    }
+    //Обработка операций
+    elseif($typePage == 6){
+        if(isset($_GET['submit']))
+        {
+          if (!empty($_GET['name']) & !empty($_GET['zal']))
+          {
+            $name = $_GET['name'];
+            $dateIn = $date->getDateTime();
+            $zal = $_GET['zal'];
+            $typeZal = $_GET['typezal'];
+            $message = 'a';
+            if($typeStat == 0)
+              $type = "Амбулатория";
+            elseif($typeStat == 1)
+              $type = 'Стационар';
+              
+            $operation = mysqli_query($connection, "INSERT INTO operation(sum, client, date, type, typeSum) VALUES('".$zal."', '".$name."', '".$dateIn."', '".$type."', '".$typeZal."')");
+            if ($operation)
+                $message = "Запись создана успешно";
+            else
+              $message = "Ошибка заполнения";
+          }
+          else
+            $message = "Заполните все поля";
+        }
       }
 ?>
 
@@ -192,6 +216,7 @@
 
       	switch ($typePage)
       	{
+          //Регистрация нового пользователя
       		case 1:
       			echo'
 	    					<div class="container mregister">
@@ -230,29 +255,52 @@
 	    					</div>
 	    				';
       			break;
+          //Оснавная панель администратора
       		case 2:
-          echo '     
-            <div class="cont-client">
-              <h1>Добавление в амбулаторию</h1>
+            echo '     
+            <div class="cont-client">';
+              if($typeStat == 0)
+                echo'<h1>Добавление в амбулаторию</h1>
               <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=0">Прием пациента</a></div>
-              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=0">Денежные операции</a></div>
+              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=0">Денежные операции</a></div>';
+              else
+                echo '<h1>Добавление в стационар</h1>
+              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=1">Прием пациента</a></div>
+              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=1">Денежные операции</a></div>';
+              echo'
               <div class="block3"><h1>Статистика за сегодня</h1>';
-                  $sum = ($connection, "SELECT sum FROM operation WHERE date = ".)
+              $dateNow = (string)$date->getDate();
+              $sumAll =  $sumNal = $sumBN = $sumA = $sumS = 0;
+              $sum = mysqli_query($connection, 'SELECT * FROM operation WHERE date LIKE "'.$dateNow.'%"');
+                  if(mysqli_num_rows($sum) == 0)
+                    echo "<p align='center'>Нет операций за текущий период</p>";
+                  else 
+                  {
+                    while($data = mysqli_fetch_assoc($sum))
+                    {
+                      $sumAll = $sumAll + (integer)$data['sum'];
+                      if ($data['typeSum'] == 'nal')
+                       $sumNal = $sumNal + (integer)$data['sum'];
+                      elseif ($data['typeSum'] == 'beznal')
+                        $sumBN = $sumBN + (integer)$data['sum'];
+                      if ($data['type'] == 'Амбулатория')
+                       $sumA = $sumA + (integer)$data['sum'];
+                      elseif ($data['type'] == 'Стационар')
+                        $sumS = $sumS + (integer)$data['sum'];
+                    }
+                    
+                    echo "<p align='center'>Общая сумма операций: ".$sumAll." </p>";
+                    echo "<p style='float:left;'>Наличными: ".$sumNal." </p>";
+                    echo "<p style='float:right;'>Безналичными: ".$sumBN." </p><br>";
+                    echo "<p style='float:left;'>Амбулатория: ".$sumA." </p>";
+                    echo "<p style='float:right;'>Стационар: ".$sumS." </p>";
+                  }
               echo '
               </div>
             </div>
-          ';
+            ';
       			break;
-      		case 3:
-      			echo '
-            <div class="cont-client">
-              <h1>Добавление в стационар</h1>
-              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=1">Прием пациента</a></div>
-              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=1">Денежные операции</a></div>
-              <div class="block3"><h1>Статистика за сегодня</h1></div>
-            </div>
-          ';
-      			break;
+          //Регистрация новой услуги
       		case 4:
       			echo '
               <div class="container mregister">
@@ -269,6 +317,7 @@
                 </div>
             ';
       			break;
+          //Добавление пациента
           case 5:
             echo '
               <div class="cont-client">';
@@ -277,7 +326,7 @@
                  else
                   echo '<h1>Прием пациента в стационар</h1>';
                 echo'
-                    <div class="date">Дата записи: '.$date->getDate().'</div>
+                    <div class="date">Дата записи: '.$date->getDateTime().'</div>
                     <form action="add.php" method="GET">
                       <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
                       <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
@@ -337,6 +386,26 @@
                 </div>
                 <script src="js/zal.js"></script>
             ';
+          case 6:
+          echo '
+            <div class="cont-client">';
+                if ($typeStat == 0)
+                   echo '<h1>Добавление денежной операции в амбулаторию</h1>';
+                 else
+                  echo '<h1>Добавление денежной операции в стационар</h1>';
+                echo'
+                    <div class="date">Дата операции: '.$date->getDateTime().'</div>
+                    <form action="add.php" method="GET">
+                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
+                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="0" type="text"></label></p>
+                      <p><label for="typezal">Тип платежа<br><select  name="typezal">
+                        <option value="nal">Наличный</option>
+                        <option value="beznal">Безналичный</option>
+                      </select></label></p> 
+                      <input type="submit" class="button" name="submit" value="Добавить">
+                    </form>
+                </div>';
+            break;
           break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
