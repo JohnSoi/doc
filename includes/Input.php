@@ -85,6 +85,89 @@
 				</table>';	}	
 		}
 
+		function getPacientTable($connection, $type)
+		{
+			if ($type == 0)
+				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1");
+			else 
+				$result = mysqli_query($connection, "SELECT * FROM pacient WHERE type = 'Стационар' AND  status = 1");
+
+
+			if (mysqli_num_rows($result) == 0)
+				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
+			else{
+			echo'
+				<table>';
+				if ($type == 0) 
+					echo '<caption>Пациенты в амбулатории</caption>';
+				else
+					echo '<caption>Пациенты в стационаре</caption>';
+				echo '
+					<thead>
+					<tr>
+					    <th rowspan="2" class="first">#</th>
+					    <th rowspan="2">ФИО</th>
+					    <th rowspan="2">Дата рождения</th>
+					    <th rowspan="2">Телефон</th>
+					    <th rowspan="2">Услуги</th>
+					    <th rowspan="2">Стоимость</th>
+					    <th rowspan="2">Лечащий доктор</th>
+					    <th rowspan="2">Внесенная сумма</th>
+					    <th rowspan="2">Заметки</th>
+					    <th rowspan="2">Дата поступления</th>';
+					    if ($type == 1)
+					    	echo'<th rowspan="2">Койко место</th>';
+					   	echo'<th rowspan="2">Парметр</th>
+					  </tr>
+					</thead>
+					<tbody>';
+							while($data = mysqli_fetch_assoc($result)) {
+								echo '<tr>';
+							    echo '<td>'.$data['id'].'</td>';
+							    echo '<td>'.$data['fio'].'</td>'; 
+							    echo '<td>'.$data['datebirthday'].'</td>'; 
+							    echo '<td>'.$data['tel'].'</td>'; 
+							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=3"><img class = "icon" src="img/list.png" alt="Посмотреть"></a></td>';
+							    echo '<td>'.$data['all_sum'].'</td>';
+							    if  (empty($data['doctor']))
+							    	echo '<td style = "background: red;">Доктор не назначен</td>';
+							    else
+							    	echo '<td style = "background: green;">'.$data['doctor'].'</td>';
+							    if  (empty($data['sum']))
+							    	echo '<td style = "background: red;">Сумма не внесена</td>';
+							    else
+							    	echo '<td style = "background: green;">'.$data['sum'].'</td>';
+							    if  (empty($data['dist']))
+							    	echo '<td style = "background: red;">Заметок нет</td>';
+							    else
+							   		echo '<td>'.$data['dist'].'</td>';
+							    echo '<td>'.$data['dateIn'].'</td>';
+							    if ($type == 1)
+							    	echo '<td>'.$data['mest'].'</td>'; 
+							    echo '<td>';
+							    if ($_SESSION['typeUser'] == 'doc')
+							    	if (empty($data['doctor']))
+							    		echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=4">Стать лечащим врачем</a>';
+							    	else
+							    		echo '<p>Параметров нет</p>';
+							    elseif ($_SESSION['typeUser'] == 'admin')
+							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=5">Закрыть карту</a>';
+							    elseif ($_SESSION['typeUser'] == 'su')
+							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=5">Редактировать</a>';
+							    echo '</td>';
+							    echo '</tr>';
+							    }
+ 					echo '</tbody>
+				</table>';
+				if (mysqli_num_rows($result) == 1)
+					echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечится '.mysqli_num_rows($result).' пациент</p>'; 
+				elseif ((mysqli_num_rows($result) == 2) or (mysqli_num_rows($result) == 3) or (mysqli_num_rows($result) == 4))	
+					echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациента</p>';
+				else
+					echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациентов</p>';
+		}
+	}
+
 		function getOperationTable($connection)
 		{
 			$result = mysqli_query($connection, "SELECT * FROM operation");

@@ -134,10 +134,10 @@
             elseif($typeStat == 1)
               $type = 'Стационар';
               if ($doctor == $ldoc)
-                  $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$ldoc."')");
+                  $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor, status) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$ldoc."', '1')");
               else{
-                $doc = "Был принят доктором ".$doctor;
-                $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, dist) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$doc."')"); 
+                $doc = "Был принят доктором:".$doctor;
+                $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, dist, status) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','".$mesto."','".$zal."','".$type."','".$doc."', '1')"); 
               }
               if($typeStat == 1)
                 {
@@ -386,6 +386,7 @@
                 </div>
                 <script src="js/zal.js"></script>
             ';
+            break;
           case 6:
           echo '
             <div class="cont-client">';

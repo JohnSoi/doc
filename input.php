@@ -46,11 +46,15 @@
 			  			echo '</section>';
       			break;
       		case 2:
-      			echo "<h2>Вывод пациентов в амбулатории</h2>";
+      			echo '<section>';
+                $input -> getPacientTable($connection, 0);
+              echo '</section>';
       			break;
       		case 3:
-      			echo "<h2>Вывод пациентов в стационаре</h2>";
-      			break;
+              echo '<section>';
+                $input -> getPacientTable($connection, 1);
+              echo '</section>';     			
+              break;
       		case 4:
     				echo '<section>';
     					$input -> getItemsTable($connection);
