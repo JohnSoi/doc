@@ -85,11 +85,11 @@
             $bonus = htmlspecialchars($_GET['bonus']);
             $dist = htmlspecialchars($_GET['dist']);
 
-            $sql = "SELECT * FROM items WHERE name = ".$name;
+            $sql = 'SELECT * FROM `items` WHERE name = "'.$name.'"';
             $query = mysqli_query($connection, $sql);
 
             if(mysqli_num_rows($query) == 0){
-              $sql = "INSERT INTO items(name,cost,dist,bonus) VALUES('".$name."','".$cost."','".$dist."','".$bonus."')";
+              echo $sql = "INSERT INTO items(name,cost,dist,bonus) VALUES('".$name."','".$cost."','".$dist."','".$bonus."')";
               $query = mysqli_query($connection, $sql);
               if($query)
                 {
@@ -141,7 +141,7 @@
               }
               if($typeStat == 1)
                 {
-                  $mest = mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = ".$mesto);
+                  $mest = mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = '".$mesto."'");
                   if ($mest)
                     $message = "Запись создана успешно";
                   else
@@ -157,8 +157,22 @@
                     $message = "Ошибка заполнения";
                 }
               if ($pacient)
+              {
+                $cost = 'SELECT * FROM param WHERE name = "Прием"';
+                $setting = mysqli_query($connection, $cost);
+                while ($data = mysqli_fetch_assoc($setting))
+                {
+                  $value = $data['value'];
+                  $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE username ='".$_SESSION['session_username']."'");
+                  while ($data = mysqli_fetch_assoc($query))
+                  {
+                    $money = $data['money'] + $value;
+                    $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE username ='".$_SESSION['session_username']."'");
+                  }
+                }
                 if ($message != "Ошибка заполнения")
                   $message = "Запись создана успешно";
+              }
               else
                 $message = "Ошибка заполнения";
           }
@@ -300,6 +314,10 @@
             </div>
             ';
       			break;
+          //Назначение услуги
+          case 3:
+            echo 'Назначение услуги';
+            break;
           //Регистрация новой услуги
       		case 4:
       			echo '
@@ -387,8 +405,9 @@
                 <script src="js/zal.js"></script>
             ';
             break;
+          //Добавление денежной операции
           case 6:
-          echo '
+           echo '
             <div class="cont-client">';
                 if ($typeStat == 0)
                    echo '<h1>Добавление денежной операции в амбулаторию</h1>';
@@ -407,7 +426,6 @@
                     </form>
                 </div>';
             break;
-          break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
       			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";

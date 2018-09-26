@@ -13,6 +13,7 @@
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <?php
+  include("includes/Date.php");
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
 	include("includes/Input.php");
@@ -52,7 +53,8 @@
       			break;
       		case 3:
               echo '<section>';
-                $input -> getPacientTable($connection, 1);
+                $id = $_GET['id'];
+                $input -> getPacientPersonalTable($connection, $id);
               echo '</section>';     			
               break;
       		case 4:

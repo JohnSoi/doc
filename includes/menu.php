@@ -17,8 +17,18 @@
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 					<div id="hidgr2">
-						<a href="add.php?flagadd=2&stac=1">Прием</a>
-						<a href="input.php?flaginput=3">Отчет</a>
+						<a href="add.php?flagadd=2&stac=1">Прием</a>';
+					$query = "SELECT * FROM patient WHERE type = 'Стационар' AND status = '1'";
+					$result = mysqli_query($connection, $query);
+					if (mysqli_num_rows($result) == 0)
+						echo 'Пациентов нет';
+					else
+						echo '<ol>';
+							while ($data = mysqli_fetch_assoc($result)) {
+								echo "<li><a href=\"input.php?flaginput=3&id=".$data['id']."\">".$data['fio']."</a></li>";
+							}
+						echo '</ol>';
+					echo '
 						<a href="stat.php?flagstat=2">Статистика</a>
 					</div>
 			      <figure id = "gr3"><span>Настройки</span></figure>
@@ -52,8 +62,18 @@
 							<a href="input.php?flaginput=2">Отчет</a>
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
-					<div id="hidgr2">
-						<a href="input.php?flaginput=3">Отчет</a>
+					<div id="hidgr2">';
+					$query = "SELECT * FROM patient WHERE type = 'Стационар' AND status = '1'";
+					$result = mysqli_query($connection, $query);
+					if (mysqli_num_rows($result) == 0)
+						echo 'Пациентов нет';
+					else
+						echo '<ol>';
+							while ($data = mysqli_fetch_assoc($result)) {
+								echo "<li><a href=\"input.php?flaginput=3&id=".$data['id']."\">".$data['fio']."</a></li>";
+							}
+						echo '</ol>';
+					echo '
 					</div>
 			      <a href="logout.php">Выход</a>
 			      <figure id = "bot-date">
@@ -107,7 +127,18 @@
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 					<div id="hidgr2">
-						<a href="add.php?flagadd=3">Прием</a>
+						<a href="add.php?flagadd=3">Прием</a>';
+					$query = "SELECT * FROM patient WHERE type = 'Стационар' AND status = '1'";
+					$result = mysqli_query($connection, $query);
+					if (mysqli_num_rows($result) == 0)
+						echo 'Пациентов нет';
+					else
+						echo '<ol>';
+							while ($data = mysqli_fetch_assoc($result)) {
+								echo "<li><a href=\"input.php?flaginput=3&id=".$data['id']."\">".$data['fio']."</a></li>";
+							}
+						echo '</ol>';
+					echo '
 					</div>
 			      <a href="logout.php">Выход</a>
 			      <figure id = "bot-date">

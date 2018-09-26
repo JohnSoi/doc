@@ -18,12 +18,15 @@
 </head>
 <body>
 	<div class="wrapper">
-		<?php
-			include('includes/menu.php');
-		?>
   <div class="content">
 			<?php
-				echo $dateIn = $date->normalizeDate($date->getDate());
+				echo $date->getPeriod('23/09/2018');
+				echo '<br>';
+				echo $date->getPeriod('21/07/2018');
+				echo '<br>';
+				echo $date->getPeriod('23/10/2018');
+				echo '<br>';
+
 			?>
     </section>
   </div>

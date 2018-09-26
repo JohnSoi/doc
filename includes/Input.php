@@ -18,14 +18,16 @@
 					    <th rowspan="2">Логин</th>
 					    <th rowspan="2">Пароль</th>
 					    <th rowspan="2">Процентная ставка</th>
-					    <th colspan="3">Зарплата в месяц</th>
+					    <th colspan="2">Зарплата в месяц</th>
+					    <th colspan="2">Услуг в месяц</th>
 					    <th rowspan="2">Изменить</th>
 					    <th rowspan="2">Удалить</th>
 					  </tr>
 					  <tr>
 					    <td class="first">Прошлый</td>
 					    <td class="first">Текущий</td>
-					    <td class="first">Грядущий</td>
+					    <td class="first">Прошлый</td>
+					    <td class="first">Текущий</td>
 					  </tr>
 					</thead>
 					<tbody>';
@@ -39,7 +41,8 @@
 							    echo '<td>'.$data['value'].'</td>'; 
 							    echo '<td>'.$data['money_prevMonth'].'</td>';
 							    echo '<td>'.$data['money'].'</td>';
-							    echo '<td>'.$data['money_nextMonth'].'</td>';
+							    echo '<td>'.$data['uslugi_prevMonth'].'</td>';
+							    echo '<td>'.$data['uslugi'].'</td>';
 							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=1"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
 							    echo '<td><a href="del.php?id='.$data['id'].'&flagdel=1"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
 							    echo '</tr>';
@@ -90,7 +93,7 @@
 			if ($type == 0)
 				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1");
 			else 
-				$result = mysqli_query($connection, "SELECT * FROM pacient WHERE type = 'Стационар' AND  status = 1");
+				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Стационар' AND  status = 1");
 
 
 			if (mysqli_num_rows($result) == 0)
@@ -207,6 +210,46 @@
 							    }
  					echo '</tbody>
 				</table>';	}	
+		}
+
+		function getPacientPersonalTable($connection, $id)
+		{
+			$result = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+
+			if (mysqli_num_rows($result) == 0)
+				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
+			else{
+				while ($data = mysqli_fetch_assoc($result))
+				{
+					echo "<h1 align='center'>".$data['fio']."</h1>";
+					echo '<p><strong style = "color:black;">Дата рождения: </strong>'.$data["datebirthday"].'</p>';
+					echo '<p><strong style = "color:black;">Номер телефона: </strong>'.$data["tel"].'</p><hr>';
+					echo '<p><strong style = "color:black;">Список услуг: </strong></p>';
+					echo '<ol>';
+						$uslugi = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+						while ($usl = mysqli_fetch_assoc($uslugi))
+						{;
+							if (!empty($usl['sp_uslug']))
+								echo '<li>'.$usl['sp_uslug'].'</li>';
+							else
+								echo '<p style = "background: red;">Нет услуг</p>';
+						}
+					echo '</ol>';
+					if ($_SESSION['typeUser'] == 'doc')
+						echo '<a href="add.php?flagadd=3">Назначить</a><hr>';
+					echo '<p><strong style = "color:black;">Вся сумма: </strong>'.$data["all_sum"].'</p>';
+					echo '<p><strong style = "color:black;">Услуг оказано на: </strong>'.$data["sumNow"].'</p>';
+					echo '<p><strong style = "color:black;">Внесенная сумма: </strong>'.$data["sum"].'</p><hr>';
+					if  (empty($data['doctor']))
+						echo '<p style = "background: red;"><strong style = "color:black;">Лечащий доктор: </strong>Доктор не назначен</p>';
+					else
+						echo '<p><strong style = "color:black;">Лечащий доктор: </strong>'.$data["doctor"].'</p>';
+					echo '<p><strong style = "color:black;">Описание: </strong>'.$data["dist"].'</p><hr>';
+					echo '<p><strong style = "color:black;">Дата поступления: </strong>'.$data["dateIn"].'</p>';
+					$counDay = $date->getPeriod('23/09/2018');
+					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.'</p>';
+				}
+			}
 		}
 	} 
 	$input = new Input;
