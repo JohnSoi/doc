@@ -21,7 +21,7 @@
 			$diff = strtotime($date2) - strtotime($date1);
 			$diff = $diff/60/60/24;
 			if ($diff < 0)
-				$diff = 'Не правильный диапозон';
+				$diff = 'Неправильный диапозон';
 			return $diff;
 		}
 

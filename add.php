@@ -3,7 +3,6 @@
   if(!$_SESSION['session_username'])
     header("Location:login.php");
   
-	include ('includes/LogIO.php');
 	include("includes/DB.php");
   include("includes/Date.php");
 
@@ -27,8 +26,10 @@
           if(isset($_SESSION['stac']))
             $typeStat = $_SESSION['stac'];
         }
-    //Обработка добавления персонала
-    if ($typePage == 1){
+  
+  //Обработка добавления персонала
+  if ($typePage == 1)
+    {
     		//Проверка на нажатие кнопки
     		if(isset($_GET["register"]))
     		{	
@@ -74,8 +75,9 @@
     			}
     		}
     }
-    //Обработка услуг
-    elseif ($typePage == 4){
+  //Обработка услуг
+  elseif ($typePage == 4)
+    {
         if(isset($_GET['submit']))
         {
           if(!empty($_GET['name']) & !empty($_GET['cost']) & !empty($_GET['bonus']))
@@ -108,9 +110,10 @@
               $message = "Все поля обязательны для заполнения!";
             }         
         }
-    }
-    //Обработка пациентов
-    elseif($typePage == 5){
+   }
+  //Обработка пациентов
+  elseif($typePage == 5)
+    {
         if(isset($_GET['submit']))
         {
           if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']) & !empty($_GET['doctor']))
@@ -180,8 +183,9 @@
             $message = "Заполните все поля";
         }
     }
-    //Обработка операций
-    elseif($typePage == 6){
+  //Обработка операций
+  elseif($typePage == 6)
+    {
         if(isset($_GET['submit']))
         {
           if (!empty($_GET['name']) & !empty($_GET['zal']))
@@ -205,7 +209,7 @@
           else
             $message = "Заполните все поля";
         }
-      }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -224,9 +228,8 @@
   <div class="content">
     <section class="add">
       <?php
-      if (!empty($message)) 
-	    				echo "<p class=\"error\">" . "Сообщение: ". $message . "</p>";
-      	
+        if (!empty($message)) 
+	    		echo "<p class=\"error\">" . "Сообщение: ". $message . "</p>";	
 
       	switch ($typePage)
       	{
@@ -401,9 +404,9 @@
                       </select></label></p> 
                       <input type="submit" class="button" name="submit" value="Добавить">
                     </form>
-                </div>
-                <script src="js/zal.js"></script>
-            ';
+                  </div>
+                  <script src="js/zal.js"></script>
+              ';
             break;
           //Добавление денежной операции
           case 6:

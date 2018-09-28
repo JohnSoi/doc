@@ -1,4 +1,6 @@
 <?php
+	require_once 'LogIO.php';
+
 	$username = $access->getUserName();
 	$typeuser = $_SESSION['typeUser'];
 	
@@ -63,7 +65,9 @@
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 					<div id="hidgr2">';
-					$query = "SELECT * FROM patient WHERE type = 'Стационар' AND status = '1'";
+					$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+					$data = mysqli_fetch_assoc($doctor);
+					$query = "SELECT * FROM patient WHERE type = 'Стационар' AND status = '1' AND (doctor = '".$data['fio']."' OR doctor = '')";
 					$result = mysqli_query($connection, $query);
 					if (mysqli_num_rows($result) == 0)
 						echo 'Пациентов нет';

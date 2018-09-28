@@ -91,7 +91,17 @@
 		function getPacientTable($connection, $type)
 		{
 			if ($type == 0)
-				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1");
+			{
+
+				if ($_SESSION['typeUser'] == 'doc')
+				{
+					$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+					$data = mysqli_fetch_assoc($doctor);
+					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '')");
+				}
+				else
+					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1");
+			}
 			else 
 				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Стационар' AND  status = 1");
 
@@ -168,8 +178,8 @@
 					echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациента</p>';
 				else
 					echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациентов</p>';
+			}
 		}
-	}
 
 		function getOperationTable($connection)
 		{
@@ -241,12 +251,21 @@
 					echo '<p><strong style = "color:black;">Услуг оказано на: </strong>'.$data["sumNow"].'</p>';
 					echo '<p><strong style = "color:black;">Внесенная сумма: </strong>'.$data["sum"].'</p><hr>';
 					if  (empty($data['doctor']))
+					{
 						echo '<p style = "background: red;"><strong style = "color:black;">Лечащий доктор: </strong>Доктор не назначен</p>';
-					else
+						if ($_SESSION['typeUser'] == 'doc')
+							echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=4$stat=1">Стать лечащим врачем</a>';
+					}
+					else{
 						echo '<p><strong style = "color:black;">Лечащий доктор: </strong>'.$data["doctor"].'</p>';
+					}
+					if (empty($data["dist"]))
+						echo '<p style = "background: red;"><strong style = "color:black;">Описание: </strong> Описание отсутствует </p>';
+					else
 					echo '<p><strong style = "color:black;">Описание: </strong>'.$data["dist"].'</p><hr>';
 					echo '<p><strong style = "color:black;">Дата поступления: </strong>'.$data["dateIn"].'</p>';
-					$counDay = $date->getPeriod('23/09/2018');
+					require_once 'Date.php';
+					$counDay = $date->getPeriod($data["dateIn"]) + 1;
 					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.'</p>';
 				}
 			}

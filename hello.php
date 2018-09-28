@@ -13,6 +13,8 @@
 </head>
 <body>
 	<?php
+		date_default_timezone_set('Asia/Yekaterinburg');
+		
 		include("includes/LogIO.php");
 		include("includes/welcome.php");
 

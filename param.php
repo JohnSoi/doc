@@ -13,7 +13,6 @@
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <?php
-	include ('includes/LogIO.php');
 	include("includes/DB.php");
 ?>
 <body>
