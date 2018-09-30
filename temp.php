@@ -1,37 +1,58 @@
-<?php
-	session_start();
-	if(!$_SESSION['session_username'])
-		header("Location:login.php");
-	
-	include ('includes/LogIO.php');
-	include("includes/DB.php");
-	include("includes/Date.php");
-?>
-
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-	<meta charset="UTF-8">
-	<title>Тестовый сайт</title>
-	<link rel="stylesheet" href="css/style.css">
-	<meta http-equiv="Cache-Control" content="private">
-</head>
-<body>
-	<div class="wrapper">
-  <div class="content">
-			<?php
-				echo $date->getPeriod('23/09/2018');
-				echo '<br>';
-				echo $date->getPeriod('21/07/2018');
-				echo '<br>';
-				echo $date->getPeriod('23/10/2018');
-				echo '<br>';
+<meta charset="utf-8">
+<style>
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 960px;
+  height: 500px;
+  position: relative;
+}
+path.slice{
+	stroke-width:2px;
+}
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+} 
+svg text.percent{
+	fill:white;
+	text-anchor:middle;
+	font-size:12px;
+}
 
-			?>
-    </section>
-  </div>
-</div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="js/script.js"></script>
+</style>
+<body>
+<button onClick="changeData()">Change Data</button>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js/Donut3D.js"></script>
+<script>
+
+var salesData=[
+	{label:"Basic", color:"#3366CC"},
+	{label:"Plus", color:"#DC3912"},
+	{label:"Lite", color:"#FF9900"},
+	{label:"Elite", color:"#109618"},
+	{label:"Delux", color:"#990099"}
+];
+
+var svg = d3.select("body").append("svg").attr("width",700).attr("height",300);
+
+svg.append("g").attr("id","salesDonut");
+svg.append("g").attr("id","quotesDonut");
+
+Donut3D.draw("salesDonut", randomData(), 150, 150, 130, 100, 30, 0.4);
+Donut3D.draw("quotesDonut", randomData(), 450, 150, 130, 100, 30, 0);
+	
+function changeData(){
+	Donut3D.transition("salesDonut", randomData(), 130, 100, 30, 0.4);
+	Donut3D.transition("quotesDonut", randomData(), 130, 100, 30, 0);
+}
+
+function randomData(){
+	return salesData.map(function(d){ 
+		return {label:d.label, value:1000*Math.random(), color:d.color};});
+}
+</script>
 </body>
-</html>

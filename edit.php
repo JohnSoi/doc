@@ -10,6 +10,7 @@
 		
 	switch($typePage)
 	{
+		//Стать лечащим врачем
 		case 4:
 			$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
 			$data = mysqli_fetch_assoc($doctor);

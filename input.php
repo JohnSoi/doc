@@ -38,7 +38,7 @@
       	{
       		case 1:
       			echo '<section>';
-			  				$input -> getPersonalTable($connection);
+			  				$input -> getPersonalTable($connection, 1);
 			  			echo '</section>';	
 			  			echo '<section>';
 			  				echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
@@ -46,7 +46,7 @@
       			break;
       		case 2:
       			echo '<section>';
-                $input -> getPacientTable($connection, 0);
+                $input -> getPacientTable($connection, 0, 1);
               echo '</section>';
       			break;
       		case 3:
@@ -57,7 +57,7 @@
               break;
       		case 4:
     				echo '<section>';
-    					$input -> getItemsTable($connection);
+    					$input -> getItemsTable($connection, 1);
     	  			echo '</section>';	
     		  		echo '<section>';
     	  				echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";
@@ -65,7 +65,7 @@
     	 			break;
       		case 5:
             echo '<section>';
-            $input -> getOperationTable($connection);
+            $input -> getOperationTable($connection, 1);
             echo '</section>';             
             break;
           default:

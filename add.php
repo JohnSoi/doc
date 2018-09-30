@@ -5,6 +5,7 @@
   
 	include("includes/DB.php");
   include("includes/Date.php");
+  include('includes/DBOper.php');
 
 
 	if (isset($_GET['flagadd']))
@@ -131,6 +132,7 @@
               $typeZal = $_GET['typezal'];
             $ldoc = $_GET['ldoc'];
             $doctor = $_GET['doctor'];
+            $costdoc = 
             $message = 'a';
             if($typeStat == 0)
               $type = "Амбулатория";
@@ -166,11 +168,11 @@
                 while ($data = mysqli_fetch_assoc($setting))
                 {
                   $value = $data['value'];
-                  $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE username ='".$_SESSION['session_username']."'");
+                  $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio ='".$doctor."'");
                   while ($data = mysqli_fetch_assoc($query))
                   {
                     $money = $data['money'] + $value;
-                    $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE username ='".$_SESSION['session_username']."'");
+                    $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$doctor."'");
                   }
                 }
                 if ($message != "Ошибка заполнения")
@@ -274,6 +276,8 @@
       			break;
           //Оснавная панель администратора
       		case 2:
+            $dateNow = $date->getDateTime();
+            $DBO -> checkDate($connection, $dateNow);
             echo '     
             <div class="cont-client">';
               if($typeStat == 0)

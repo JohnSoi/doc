@@ -19,7 +19,6 @@
 		/* --- Функция создания подключения к БД --- */
 		function createConnect()
 		{
-			ini_set('display_errors','On');
 			$con = mysqli_connect($this->Server, $this->User, $this->Pass);
 			if ($con->connect_error) {
 				echo "<div class=\"error\"><h1>Внимание! Ошибка установки соединения с сервером MySQL!</h1><h2>Ошибка

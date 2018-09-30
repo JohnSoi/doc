@@ -97,13 +97,13 @@
 				{
 					$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
 					$data = mysqli_fetch_assoc($doctor);
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '')");
+					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '') ORDER BY id DESC");
 				}
 				else
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1");
+					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
 			}
 			else 
-				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Стационар' AND  status = 1");
+				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Стационар' AND  status = 1 ORDER BY id DESC");
 
 
 			if (mysqli_num_rows($result) == 0)
@@ -118,7 +118,6 @@
 				echo '
 					<thead>
 					<tr>
-					    <th rowspan="2" class="first">#</th>
 					    <th rowspan="2">ФИО</th>
 					    <th rowspan="2">Дата рождения</th>
 					    <th rowspan="2">Телефон</th>
@@ -136,7 +135,6 @@
 					<tbody>';
 							while($data = mysqli_fetch_assoc($result)) {
 								echo '<tr>';
-							    echo '<td>'.$data['id'].'</td>';
 							    echo '<td>'.$data['fio'].'</td>'; 
 							    echo '<td>'.$data['datebirthday'].'</td>'; 
 							    echo '<td>'.$data['tel'].'</td>'; 
@@ -183,7 +181,8 @@
 
 		function getOperationTable($connection)
 		{
-			$result = mysqli_query($connection, "SELECT * FROM operation");
+
+			$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC LIMIT 50");
 
 			if (mysqli_num_rows($result) == 0)
 				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";

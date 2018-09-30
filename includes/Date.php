@@ -50,6 +50,15 @@
 			return $dateOutp;
 		}
 
+		function fileDateTime($date)
+		{
+			$dateInp = explode(' ', $date);
+			$date = $dateInp[0];
+			$exdate = explode('/', $date);
+			$datefile = $exdate[0].'-'.$exdate[1].'-'.$exdate[2];
+			return $datefile;
+		}
+
 	}
 	$date = new Date;
 ?>
