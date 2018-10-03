@@ -1,58 +1,46 @@
+<?php
+	session_start();
+  if(!$_SESSION['session_username'])
+    header("Location:login.php");
+  
+	include("includes/DB.php");
+  include("includes/Date.php");
+  include('includes/DBOper.php');
+
+  $serv = $_POST['services'];
+  var_dump($serv);
+?>
+
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  width: 960px;
-  height: 500px;
-  position: relative;
-}
-path.slice{
-	stroke-width:2px;
-}
-polyline{
-	opacity: .3;
-	stroke: black;
-	stroke-width: 2px;
-	fill: none;
-} 
-svg text.percent{
-	fill:white;
-	text-anchor:middle;
-	font-size:12px;
-}
-
-</style>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Добавление</title>
+	<link rel="stylesheet" href="css/style.css">
+	<meta http-equiv="Cache-Control" content="private">
+</head>
 <body>
-<button onClick="changeData()">Change Data</button>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="js/Donut3D.js"></script>
-<script>
-
-var salesData=[
-	{label:"Basic", color:"#3366CC"},
-	{label:"Plus", color:"#DC3912"},
-	{label:"Lite", color:"#FF9900"},
-	{label:"Elite", color:"#109618"},
-	{label:"Delux", color:"#990099"}
-];
-
-var svg = d3.select("body").append("svg").attr("width",700).attr("height",300);
-
-svg.append("g").attr("id","salesDonut");
-svg.append("g").attr("id","quotesDonut");
-
-Donut3D.draw("salesDonut", randomData(), 150, 150, 130, 100, 30, 0.4);
-Donut3D.draw("quotesDonut", randomData(), 450, 150, 130, 100, 30, 0);
-	
-function changeData(){
-	Donut3D.transition("salesDonut", randomData(), 130, 100, 30, 0.4);
-	Donut3D.transition("quotesDonut", randomData(), 130, 100, 30, 0);
-}
-
-function randomData(){
-	return salesData.map(function(d){ 
-		return {label:d.label, value:1000*Math.random(), color:d.color};});
-}
-</script>
+	<div class="wrapper">
+		<?php
+			include('includes/menu.php');
+		?>
+  <div class="content">
+    <section class="add">
+    <form action="temp.php" method="POST">
+      <input type="checkbox" name="services" value="<?php echo 1;  ?>">
+        1<br>
+      <input type="checkbox" name="services" value="<?php echo 2;  ?>">
+        2<br>
+      <input type="checkbox" name="services" value="<?php echo 3;  ?>">
+        3<br>
+      <input type="checkbox" name="services" value="<?php echo 4;  ?>">
+        4<br>
+      <input type="submit" value="Execute">
+    </form>
+    </section>
+  </div>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/script.js"></script>
 </body>
+</html>

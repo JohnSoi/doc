@@ -93,13 +93,13 @@
 			if ($type == 0)
 			{
 
-				if ($_SESSION['typeUser'] == 'doc')
-				{
-					$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
-					$data = mysqli_fetch_assoc($doctor);
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '') ORDER BY id DESC");
-				}
-				else
+				// if ($_SESSION['typeUser'] == 'doc')
+				// {
+				// 	$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+				// 	$data = mysqli_fetch_assoc($doctor);
+				// 	$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '') ORDER BY id DESC");
+				// }
+				// else
 					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
 			}
 			else 
@@ -233,19 +233,11 @@
 					echo "<h1 align='center'>".$data['fio']."</h1>";
 					echo '<p><strong style = "color:black;">Дата рождения: </strong>'.$data["datebirthday"].'</p>';
 					echo '<p><strong style = "color:black;">Номер телефона: </strong>'.$data["tel"].'</p><hr>';
-					echo '<p><strong style = "color:black;">Список услуг: </strong></p>';
-					echo '<ol>';
-						$uslugi = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
-						while ($usl = mysqli_fetch_assoc($uslugi))
-						{;
-							if (!empty($usl['sp_uslug']))
-								echo '<li>'.$usl['sp_uslug'].'</li>';
-							else
-								echo '<p style = "background: red;">Нет услуг</p>';
-						}
-					echo '</ol>';
-					if ($_SESSION['typeUser'] == 'doc')
-						echo '<a href="add.php?flagadd=3">Назначить</a><hr>';
+					if  (!empty($data['doctor']))
+					{ 
+						echo '<p><strong style = "color:black;">Список услуг: </strong></p>';
+						echo '<a href="edit.php?id='.$id.'&flagedit=3">Просмотреть список</a>';
+					}
 					echo '<p><strong style = "color:black;">Вся сумма: </strong>'.$data["all_sum"].'</p>';
 					echo '<p><strong style = "color:black;">Услуг оказано на: </strong>'.$data["sumNow"].'</p>';
 					echo '<p><strong style = "color:black;">Внесенная сумма: </strong>'.$data["sum"].'</p><hr>';
@@ -264,8 +256,18 @@
 					echo '<p><strong style = "color:black;">Описание: </strong>'.$data["dist"].'</p><hr>';
 					echo '<p><strong style = "color:black;">Дата поступления: </strong>'.$data["dateIn"].'</p>';
 					require_once 'Date.php';
-					$counDay = $date->getPeriod($data["dateIn"]) + 1;
+					$dateNow = $date->getDate();
+					$dateIn = explode(' ', $data["dateIn"]);
+					$counDay = $date->getPeriod($dateIn[0]) + 1;
 					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.'</p>';
+					$transferSum = $data["sumNow"] - $data["sum"];
+					if($data["sum"] < $data["sumNow"])
+						echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."'>Внести сумму</a>";
+					if($data["sum"] > $data["sumNow"])
+						echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."'>Вернуть деньги</a>";
+					if($data["sum"] == $data["sumNow"])
+						echo "<a id='inBtn' class='button' href='edit.php?flagedit=6&id=".$data['id']."'>Выписать</a>";
+
 				}
 			}
 		}

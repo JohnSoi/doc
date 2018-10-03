@@ -46,11 +46,15 @@
       			break;
       		case 2:
       			echo '<section>';
+              if(isset($_SESSION['sum']))
+                unset($_SESSION['sum']);
                 $input -> getPacientTable($connection, 0, 1);
               echo '</section>';
       			break;
       		case 3:
               echo '<section>';
+                if(isset($_SESSION['sum']))
+                  unset($_SESSION['sum']);
                 $id = $_GET['id'];
                 $input -> getPacientPersonalTable($connection, $id);
               echo '</section>';     			
@@ -78,7 +82,7 @@
     </section>
   </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

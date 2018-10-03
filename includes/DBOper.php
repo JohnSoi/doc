@@ -111,12 +111,8 @@
 			else
 				if ($dayBU != $dayNow) 
 					{
-						$countHour = $hourNow - $hourBU;
-						if (abs($countHour) >= 6)
-							{
 								require_once 'constants.php';
 								$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
-							}
 					}
 				else
 				{
@@ -137,7 +133,7 @@
 			$count = mysqli_num_rows($query);
 
 			//Количество строк, после которого удаляться первые строки
-			$param = 100;
+			$param = 1000;
 
 			if ($count > $param)
 			{
@@ -145,7 +141,7 @@
 				$this -> delStrDB($con, $count, $query, 1);
 			}
 
-			$param = 5000;
+			$param = 10000;
 
 			$query = mysqli_query($con, 'SELECT * FROM operation');
 			$count = mysqli_num_rows($query);

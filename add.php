@@ -27,6 +27,28 @@
           if(isset($_SESSION['stac']))
             $typeStat = $_SESSION['stac'];
         }
+  if (isset($_GET['sum']))
+        {
+          $sumOper = $_GET['sum'];
+          $_SESSION['sum'] = $sumOper;
+        }
+        else
+        {
+          if(isset($_SESSION['sum']))
+            $sumOper = $_SESSION['sum'];
+          else
+            $sumOper = 0;
+        }
+  if (isset($_GET['id']))
+        {
+          $idPacient = $_GET['id'];
+          $_SESSION['id'] = $idPacient;
+        }
+        else
+        {
+          if(isset($_SESSION['id']))
+            $idPacient = $_SESSION['id'];
+        }
   
   //Обработка добавления персонала
   if ($typePage == 1)
@@ -192,6 +214,7 @@
         {
           if (!empty($_GET['name']) & !empty($_GET['zal']))
           {
+            //Получение введенных значений
             $name = $_GET['name'];
             $dateIn = $date->getDateTime();
             $zal = $_GET['zal'];
@@ -202,9 +225,34 @@
             elseif($typeStat == 1)
               $type = 'Стационар';
               
+            //Добавление записи в историю операций
             $operation = mysqli_query($connection, "INSERT INTO operation(sum, client, date, type, typeSum) VALUES('".$zal."', '".$name."', '".$dateIn."', '".$type."', '".$typeZal."')");
-            if ($operation)
+
+            //Получение текущей внесенной суммы пациентом
+            $pacientQuery= mysqli_query($connection, "SELECT * FROM patient WHERE fio = '".$name."'");
+            $patData = mysqli_fetch_assoc($pacientQuery);
+            //Сложение текущей суммы с сумой-изменением
+            $sumIn = $patData['sum'] + $zal;
+            //Изменеие записи в БД
+            $updPatient = mysqli_query($connection, "UPDATE patient SET sum = '".$sumIn."' WHERE fio = '".$name."'");
+
+            //Проверка на успешность запроса
+            if ($operation && $updPatient)
+            {
                 $message = "Запись создана успешно";
+                if (isset($sumOper))
+                {
+                  if($patData['type'] == 'Амбулатория')
+                    echo "<script>setTimeout(function(){self.location = 'input.php?flaginput=2';}, 500);</script>";
+                  elseif($patData['type'] == 'Стационар')
+                    echo "<script>setTimeout(function(){self.location = 'input.php?flaginput=3&id=".$patData['id']."';}, 500);</script>";
+                }
+                else
+                    if($patData['type'] == 'Амбулатория')
+                      echo "<script>setTimeout(function(){self.location = 'add.php?flagadd=2&stac=0';}, 500);</script>";
+                    else
+                      echo "<script>setTimeout(function(){self.location = 'add.php?flagadd=2&stac=1';}, 500);</script>";
+            }
             else
               $message = "Ошибка заполнения";
           }
@@ -323,7 +371,7 @@
       			break;
           //Назначение услуги
           case 3:
-            echo 'Назначение услуги';
+            
             break;
           //Регистрация новой услуги
       		case 4:
@@ -420,11 +468,19 @@
                    echo '<h1>Добавление денежной операции в амбулаторию</h1>';
                  else
                   echo '<h1>Добавление денежной операции в стационар</h1>';
+                if(isset($_GET['id']))
+                {
+                  $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE id = '".$idPacient."'");
+                  $fioPacient = mysqli_fetch_assoc($patientQuery);
+                  $fioPacient = $fioPacient['fio'];
+                }
+                else
+                  $fioPacient = '';
                 echo'
                     <div class="date">Дата операции: '.$date->getDateTime().'</div>
                     <form action="add.php" method="GET">
-                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
-                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="0" type="text"></label></p>
+                      <p><label for="name">ФИО пациента<br><input name="name" type="text" value = "'.$fioPacient.'"></label></p>
+                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text"></label></p>
                       <p><label for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>
                         <option value="beznal">Безналичный</option>
@@ -443,7 +499,7 @@
     </section>
   </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>
