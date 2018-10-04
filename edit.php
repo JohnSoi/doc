@@ -44,11 +44,12 @@
 					$idDoctor = $dataDOC['id'];
 					$dataDB = mysqli_fetch_assoc($query);
 					$nameCl = $dataDB['fio'];
+					echo '<h1 align = "center"><strong>'.$nameCl.'</strong></h1>';
 					if(empty($dataDB['sp_uslug']))
 						echo '<h1>Нет назначенных процедур</h1>';
 					else
 					{
-						echo '<h1>Список услуг пациента <strong>'.$nameCl.'</strong>:</h1>';
+						echo '<h2>Список услуг пациента:</h2>';
 						echo '<ul>';
 						$services = $dataDB['sp_uslug'];
 						$listServ = explode(',', $services);
@@ -96,7 +97,7 @@
 					$query = mysqli_query($connection, "UPDATE patient SET doctor = '".$data['fio']."' WHERE id = '".$id."'");
 					echo "<script>setTimeout(function(){history.back();}, 50);</script>";
 					break;
-					case 5:
+				case 5:
 						//Получение данных из запроса
 						$idPatient = $_GET['idPac'];
 						$idDoctor = $_GET['idDoc'];
@@ -174,5 +175,5 @@
 </div>
 <script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
-</body>5
+</body>
 </html>

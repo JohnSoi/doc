@@ -259,15 +259,21 @@
 					$dateNow = $date->getDate();
 					$dateIn = explode(' ', $data["dateIn"]);
 					$counDay = $date->getPeriod($dateIn[0]) + 1;
-					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.'</p>';
+					$costMestQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Стоимость койко - места'");
+					$costMestArr = mysqli_fetch_assoc($costMestQuery);
+					$costMest = $costMestArr['value'];
+					$costDay = $counDay * $costMest;
+					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
 					$transferSum = $data["sumNow"] - $data["sum"];
-					if($data["sum"] < $data["sumNow"])
-						echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."'>Внести сумму</a>";
-					if($data["sum"] > $data["sumNow"])
-						echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."'>Вернуть деньги</a>";
-					if($data["sum"] == $data["sumNow"])
-						echo "<a id='inBtn' class='button' href='edit.php?flagedit=6&id=".$data['id']."'>Выписать</a>";
-
+					if($_SESSION['typeUser'] == 'admin')
+					{
+						if($data["sum"] < $data["sumNow"])
+							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму</a>";
+						if($data["sum"] > $data["sumNow"])
+							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги</a>";
+						if($data["sum"] == $data["sumNow"])
+							echo "<a id='inBtn' class='button' href='edit.php?flagedit=6&id=".$data['id']."'>Выписать</a>";
+					}
 				}
 			}
 		}

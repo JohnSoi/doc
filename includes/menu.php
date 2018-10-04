@@ -128,6 +128,7 @@
 			      <figure id = "gr1"><span>Амбулатория</span></figure>
 						<div id="hidgr1">
 							<a href="add.php?flagadd=2">Прием</a>
+							<a href="input.php?flaginput=2">Отчет</a>
 						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 					<div id="hidgr2">

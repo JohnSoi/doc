@@ -53,6 +53,8 @@
       			break;
       		case 3:
               echo '<section>';
+                if(isset($_SESSION['flagop']))
+                  unset($_SESSION['flagop']);
                 if(isset($_SESSION['sum']))
                   unset($_SESSION['sum']);
                 $id = $_GET['id'];

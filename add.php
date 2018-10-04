@@ -49,6 +49,16 @@
           if(isset($_SESSION['id']))
             $idPacient = $_SESSION['id'];
         }
+  if (isset($_GET['flagop']))
+        {
+          $operPacient = $_GET['flagop'];
+          $_SESSION['flagop'] = $operPacient;
+        }
+        else
+        {
+          if(isset($_SESSION['flagop']))
+            $operPacient = $_SESSION['flagop'];
+        }
   
   //Обработка добавления персонала
   if ($typePage == 1)
@@ -97,6 +107,40 @@
     				$message = "Все поля обязательны для заполнения!";
     			}
     		}
+    }
+  //Обработка назначения услуг
+  if($typePage == 3)
+    {
+      if(isset($_GET['submit']))
+      {
+        if(isset($_GET['serv']))
+        {
+            $coutnServPatientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+            $coutnServPatient = mysqli_fetch_assoc($coutnServPatientQuery);
+            if($coutnServPatient['sp_uslug'] == '')
+              $coutnServPatient = 0;
+            $arrayServ = $_GET['serv'];
+            $listServ = '';
+            $sumServ = 0;
+            for($i=0; $i<count($arrayServ);$i++)
+            {
+              $sumServQuery = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$arrayServ[$i]."'");
+              $sumServArr = mysqli_fetch_assoc($sumServQuery);
+              $sumServ += $sumServArr['cost'];
+              if(($i == 0) && ($coutnServPatient == 0))
+                $listServ = $arrayServ[$i].'-0-0';
+              else
+                $listServ .= ','.$arrayServ[$i].'-0-0';
+            }
+            $servNow = $coutnServPatient['sp_uslug'];
+            $servNow .= $listServ;
+            $sumIn = $coutnServPatient['all_sum'] + $sumServ;
+            $updateServPat = mysqli_query($connection, "UPDATE patient SET `sp_uslug` = '".$servNow."' WHERE id = '".$idPacient."'");
+            $updateSumServPat = mysqli_query($connection, "UPDATE patient SET all_sum = '".$sumIn."' WHERE id = '".$idPacient."'");
+            if($updateServPat && $updateSumServPat)
+              $message = "Процедура добавлена";
+        }
+      }
     }
   //Обработка услуг
   elseif ($typePage == 4)
@@ -240,7 +284,7 @@
             if ($operation && $updPatient)
             {
                 $message = "Запись создана успешно";
-                if (isset($sumOper))
+                if (isset($operPacient))
                 {
                   if($patData['type'] == 'Амбулатория')
                     echo "<script>setTimeout(function(){self.location = 'input.php?flaginput=2';}, 500);</script>";
@@ -371,7 +415,22 @@
       			break;
           //Назначение услуги
           case 3:
-            
+            $servQuery = mysqli_query($connection, "SELECT * FROM items");
+            echo '
+              <div class="content">
+                <section class="add">
+                <form action="add.php" method="get">
+            ';
+            while($dataServ = mysqli_fetch_assoc($servQuery))
+                 {
+                   echo '<p style="float: left;">'.$dataServ['name'].'</p>';
+                   echo '<input style="float: right;"  type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><br>';
+                 }     
+            echo '<input type="submit" name="submit" value="Execute">
+            </form>
+            </sectio>
+            </div>
+            ';
             break;
           //Регистрация новой услуги
       		case 4:
@@ -408,9 +467,10 @@
                         echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
                         $query = "SELECT * FROM mest WHERE status = 'free'";
                         $sql = mysqli_query($connection, $query);
+                        $freeBath = mysqli_num_rows($sql);
                         if (mysqli_num_rows($sql) == 0)
                         {
-                          echo "Нет свободных мест";
+                          echo '<option value="no">Нет койко-мест</option>';
                         }
                         else
                         {
@@ -444,7 +504,7 @@
                         else
                         {
                           while($row=mysqli_fetch_assoc($sql))
-                          echo '<option value="'.$row[fio].'">'.$row[fio].'</option>';
+                            echo '<option value="'.$row[fio].'">'.$row[fio].'</option>';
                         }
                         echo'
                         </select></label></p>';
@@ -453,8 +513,15 @@
                       <p><label id="typeZal" for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>
                         <option value="beznal">Безналичный</option>
-                      </select></label></p> 
-                      <input type="submit" class="button" name="submit" value="Добавить">
+                      </select></label></p>';
+                      if ($typeStat == 1)
+                        if ($freeBath == 0)
+                          echo '<p>Нет койко-мест</p>';
+                        else
+                          echo '<input type="submit" class="button" name="submit" value="Добавить">';
+                      else
+                        echo '<input type="submit" class="button" name="submit" value="Добавить">';    
+                      echo '
                     </form>
                   </div>
                   <script src="js/zal.js"></script>
@@ -475,11 +542,25 @@
                   $fioPacient = $fioPacient['fio'];
                 }
                 else
-                  $fioPacient = '';
+                  if ($typeStat == 0)
+                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Амбулатория'");
+                  else
+                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Стационар'");
+
                 echo'
                     <div class="date">Дата операции: '.$date->getDateTime().'</div>
                     <form action="add.php" method="GET">
-                      <p><label for="name">ФИО пациента<br><input name="name" type="text" value = "'.$fioPacient.'"></label></p>
+
+                    <p><label for="name">Пациент<br><select  name="name">';
+                        if(isset($_GET['id']))
+                          echo '<option value="'.$fioPacient.'">'.$fioPacient.'</option>';
+                        else
+                          while($dataDB = mysqli_fetch_assoc($patientQuery))
+                          {
+                            echo '<option value="'.$dataDB['fio'].'">'.$dataDB['fio'].'</option>';
+                          }
+                        echo '
+                      </select></label></p>
                       <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text"></label></p>
                       <p><label for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>

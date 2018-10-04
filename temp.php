@@ -7,8 +7,9 @@
   include("includes/Date.php");
   include('includes/DBOper.php');
 
-  $serv = $_POST['services'];
-  var_dump($serv);
+  if(isset($_POST['yap']))
+    echo count($_POST['yap']);
+
 ?>
 
 <!DOCTYPE html>
@@ -26,15 +27,13 @@
 		?>
   <div class="content">
     <section class="add">
-    <form action="temp.php" method="POST">
-      <input type="checkbox" name="services" value="<?php echo 1;  ?>">
-        1<br>
-      <input type="checkbox" name="services" value="<?php echo 2;  ?>">
-        2<br>
-      <input type="checkbox" name="services" value="<?php echo 3;  ?>">
-        3<br>
-      <input type="checkbox" name="services" value="<?php echo 4;  ?>">
-        4<br>
+    <form action="temp.php" method="post">
+      12
+      <input type="checkbox" name="yap[]" value="12"><br>
+      8
+      <input type="checkbox" name="yap[]" value="8"><br>
+      44
+      <input type="checkbox" name="yap[]" value="44"><br>
       <input type="submit" value="Execute">
     </form>
     </section>
