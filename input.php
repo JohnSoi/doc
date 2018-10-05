@@ -36,6 +36,7 @@
 
       	switch ($typePage)
       	{
+          //Вывод персонала
       		case 1:
       			echo '<section>';
 			  				$input -> getPersonalTable($connection, 1);
@@ -44,14 +45,16 @@
 			  				echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
 			  			echo '</section>';
       			break;
-      		case 2:
+      		//Вывод пациентов
+          case 2:
       			echo '<section>';
               if(isset($_SESSION['sum']))
                 unset($_SESSION['sum']);
                 $input -> getPacientTable($connection, 0, 1);
               echo '</section>';
       			break;
-      		case 3:
+      		//Вывод персональной таблицы
+          case 3:
               echo '<section>';
                 if(isset($_SESSION['flagop']))
                   unset($_SESSION['flagop']);
@@ -61,7 +64,8 @@
                 $input -> getPacientPersonalTable($connection, $id);
               echo '</section>';     			
               break;
-      		case 4:
+      		//Вывод услуг
+          case 4:
     				echo '<section>';
     					$input -> getItemsTable($connection, 1);
     	  			echo '</section>';	
@@ -69,11 +73,17 @@
     	  				echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";
     	 			echo '</section>';      			
     	 			break;
-      		case 5:
+      		//Вывод операций
+          case 5:
             echo '<section>';
             $input -> getOperationTable($connection, 1);
             echo '</section>';             
             break;
+          //Вывод койко-мест
+          case 6:
+            $input->getTablesMest($connection);
+            break;
+          //Если случайный переход
           default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
       			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";

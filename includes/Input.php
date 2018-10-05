@@ -259,23 +259,54 @@
 					$dateNow = $date->getDate();
 					$dateIn = explode(' ', $data["dateIn"]);
 					$counDay = $date->getPeriod($dateIn[0]) + 1;
-					$costMestQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Стоимость койко - места'");
+					$costMestQuery = mysqli_query($connection, "SELECT * FROM mest WHERE id = '".$data['mest']."'");
 					$costMestArr = mysqli_fetch_assoc($costMestQuery);
 					$costMest = $costMestArr['value'];
 					$costDay = $counDay * $costMest;
 					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
-					$transferSum = $data["sumNow"] - $data["sum"];
+					$compSum = $data["sumNow"] + $costDay;
+					$transferSum = $compSum - $data["sum"];
 					if($_SESSION['typeUser'] == 'admin')
 					{
-						if($data["sum"] < $data["sumNow"])
+						if($data["sum"] < $compSum)
 							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму</a>";
-						if($data["sum"] > $data["sumNow"])
+						if($data["sum"] > $compSum)
 							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги</a>";
-						if($data["sum"] == $data["sumNow"])
+						if($data["sum"] == $compSum)
 							echo "<a id='inBtn' class='button' href='edit.php?flagedit=6&id=".$data['id']."'>Выписать</a>";
 					}
 				}
 			}
+		}
+
+		public function getTablesMest($connection)
+		{
+			//Query
+			$mestQuery = mysqli_query($connection, "SELECT * FROM mest");
+			$countMest = mysqli_num_rows($mestQuery);
+
+			if ($countMest == 0)
+				echo "<p>Добавьте койко - место</p>";
+			else
+			{
+				echo '<h1>Список койко мест</h1>';
+				echo'<table>';
+				$i =1;
+				echo '<tr>';
+				while($dataDB = mysqli_fetch_assoc($mestQuery))
+				{
+					if($dataDB['status'] == 'free')
+						echo '<td style = "background: green; text-align: center; margin: 3px;">'.$dataDB['id'].'<br>'.$dataDB['value'].'<br><a style = "color: white; font-size: 14px;"href="edit.php?flagedit=6&id='.$dataDB['id'].'"><img class="icon" src="img/editit.png" alt="Edit"></a></td>';
+					else
+						echo '<td style = "background: red; text-align: center; margin: 3px;">'.$dataDB['id'].'<br>'.$dataDB['value'].'<br><a  style = "color: white; font-size: 14px;" href="edit.php?flagedit=6&id='.$dataDB['id'].'"><img class="icon" src="img/editit.png" alt="Edit"></a></td>';
+					if ($i % 7 == 0)
+						echo '</tr><tr>';
+					$i++;
+				}
+				echo '</tr>';
+				echo '</table>';
+			}
+			echo '<a href="add.php?flagadd=7" class = "button">Добавить койко - место</a>';
 		}
 	} 
 	$input = new Input;

@@ -74,55 +74,6 @@
     		<p> Записей о пациентах: <?php  echo $countPacient?> из них <span style = "color:green;"><?php  echo $countPacientOpen?> открытых</span> и <span style = "color:red;"> <?php  echo $countPacientClose?> закрытых </span></p>
     		<input type="submit" class="button" name="submit" value="Сохранить">
     	</form>
-        <div class="graph">
-        <script type="text/javascript" src="js/loader.js"></script>
-            <script type="text/javascript">
-              google.charts.load('current', {'packages':['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-
-              function drawChart() {
-
-                var data = google.visualization.arrayToDataTable([
-                  ['Карточки Клиентов', 'Количество'],
-                  ['Открытые',     <?php echo $countPacientOpen ?>],
-                  ['Закрытые',      <?php echo $countPacientClose ?>],
-                ]);
-
-                var options = {
-                  title: 'Карточки пациентов',
-                  is3D: true,
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
-
-                chart.draw(data, options);
-              }
-            </script>
-            <script type="text/javascript">
-              google.charts.load('current', {'packages':['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-
-              function drawChart() {
-
-                var data = google.visualization.arrayToDataTable([
-                  ['Карточки Клиентов', 'Количество'],
-                  ['Амбулатория',     <?php echo $sumA ?>],
-                  ['Стационар',      <?php echo $sumS ?>],
-                ]);
-
-                var options = {
-                  title: 'Прибыль по отделениям',
-                  is3D: true,
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
-
-                chart.draw(data, options);
-              }
-            </script>
-        <div id="piechart1" style="width: 50%; float: left; height: 60%;"></div>
-        <div id="piechart2" style="width: 50%; float: right; height: 60%;"></div>
-        </div>
     </section>
   </div>
 </div>

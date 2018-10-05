@@ -35,6 +35,7 @@
 					</div>
 			      <figure id = "gr3"><span>Настройки</span></figure>
 					<div id="hidgr3">
+						<a href="input.php?flaginput=6">Настройка койко мест</a>
 						<a href="input.php?flaginput=5">Список операций</a>
 						<a href="param.php">Параметры</a>
 						<a href="input.php?flaginput=1">Персонал</a>

@@ -304,6 +304,24 @@
             $message = "Заполните все поля";
         }
     }
+  //Обработка добавления койко места
+  elseif($typePage == 7)
+  {
+      if(isset($_GET['register']))
+      {
+        if(!empty($_GET['value']))
+        {
+          $costMest = $_GET['value'];
+          $createMest = mysqli_query($connection, "INSERT INTO mest(status, value) VALUES('free', '".$costMest."')");
+          if($createMest)
+            $message = 'Место добавлено';
+          else
+            $message = 'Ошибка ввода';
+        }
+        else
+          $message = 'Заполните поле Стоимость';
+      }
+  }
 ?>
 
 <!DOCTYPE html>
@@ -479,6 +497,7 @@
                         }
                         echo'
                         </select></label></p>';}
+                      if ($typeStat == 0){
                         echo '<p><label for="doctor">Принимающий врач<br><select name="doctor">';
                         $query = "SELECT * FROM usertbl WHERE dol = 'doc' OR dol = 'ddoc'";
                         $sql = mysqli_query($connection, $query);
@@ -493,6 +512,7 @@
                         }
                         echo'
                         </select></label></p>';
+                      }
                         echo '<p><label for="ldoc">Лечащий врач<br><select name="ldoc">';
                         $query = "SELECT * FROM usertbl WHERE dol = 'doc'";
                         $sql = mysqli_query($connection, $query);
@@ -508,6 +528,7 @@
                         }
                         echo'
                         </select></label></p>';
+                      
                       echo '
                       <p><label for="zal">Внесенная сумма<br><input id="zal" name="zal" value="0" type="text"></label></p>
                       <p><label id="typeZal" for="typezal">Тип платежа<br><select  name="typezal">
@@ -569,6 +590,25 @@
                       <input type="submit" class="button" name="submit" value="Добавить">
                     </form>
                 </div>';
+            break;
+          //Добавление койко - места
+          case 7:
+            echo '
+              <div class="container mregister">
+                  <div id="loginin">
+                    <h1>Добавление нового койко - места</h1>
+                    <form action="add.php" id="registerform" method="get" name="registerform">
+                      <p>
+                        <label for="value">Стоимость одного одня проживания<br>
+                        <input class="input" id="value" name="value" size="32"  type="text" value=""></label>
+                      </p>
+                      <p class="submit">
+                        <input class="button" id="register" name= "register" type="submit" value="Добавить">
+                      </p>
+                    </form>
+                  </div>
+                </div>
+            ';
             break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";

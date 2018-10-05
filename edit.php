@@ -6,7 +6,12 @@
    	require_once('includes/DB.php'); 
 
    	if(isset($_GET['id']))
+   	{
 		$id = $_GET['id'];
+		$_SESSION['id'] = $id;
+   	}
+   	else 
+   		$id = $_SESSION['id'];
 	if (isset($_GET['flagedit']))
       	{
       		$typePage = $_GET['flagedit'];
@@ -16,6 +21,26 @@
       	{
       		$typePage = $_SESSION['flagedit'];
       	}
+    if($typePage = 6)
+    {
+    	if(isset($_GET['register']))
+    	{
+    	  if(!empty($_GET['value']))
+    	  {
+    	    $costMest = $_GET['value'];
+    	    $createMest = mysqli_query($connection, "UPDATE mest SET value = '".$costMest."' WHERE id = '".$id."'");
+    	    if($createMest)
+    	    {
+    	      $message = 'Место изменено';
+    	      echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=6\";}, 100);</script>";
+    	    }
+    	    else
+    	      $message = 'Ошибка ввода';
+    	  }
+    	  else
+    	    $message = 'Заполните поле Стоимость';
+    	}
+    }
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +59,8 @@
   <div class="content">
     <section class="add">
 		<?php	
+		if (!empty($message)) 
+	    		echo "<p class=\"error\">" . "Сообщение: ". $message . "</p>";
 			switch($typePage)
 			{
 				//Вывод списка услуг
@@ -97,6 +124,7 @@
 					$query = mysqli_query($connection, "UPDATE patient SET doctor = '".$data['fio']."' WHERE id = '".$id."'");
 					echo "<script>setTimeout(function(){history.back();}, 50);</script>";
 					break;
+				//Установка статуса Выполнено услуги и начисление з/п
 				case 5:
 						//Получение данных из запроса
 						$idPatient = $_GET['idPac'];
@@ -168,6 +196,28 @@
 						$insertPatQuery = mysqli_query($connection, "UPDATE patient SET sp_uslug = '".$listServIn."' WHERE id = '".$idPatient."'");		
 						echo "<script>setTimeout(function(){history.back();}, 50);</script>";
 						break;
+				//Редактирование койко - места
+				case 6:
+					$costMestQuery = mysqli_query($connection, "SELECT value FROM mest WHERE id = '".$id."'");
+					$costMest = mysqli_fetch_assoc($costMestQuery);
+					$costMest = $costMest['value'];
+					echo '
+					  <div class="container mregister">
+					      <div id="loginin">
+					        <h1>Добавление нового койко - места</h1>
+					        <form action="edit.php" id="registerform" method="get" name="registerform">
+					          <p>
+					            <label for="value">Стоимость одного одня проживания<br>
+					            <input class="input" id="value" name="value" size="32"  type="text" value="'.$costMest.'"></label>
+					          </p>
+					          <p class="submit">
+					            <input class="button" id="register" name= "register" type="submit" value="Изменить">
+					          </p>
+					        </form>
+					      </div>
+					    </div>
+					';	
+					break;
 			}
 		 ?>
      </section>
