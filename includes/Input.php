@@ -34,8 +34,28 @@
 							while($data = mysqli_fetch_assoc($result)) {
 								echo '<tr>';
 							    echo '<td>'.$data['id'].'</td>';
-							    echo '<td>'.$data['fio'].'</td>'; 
-							    echo '<td>'.$data['dol'].'</td>'; 
+							    echo '<td>'.$data['fio'].'</td>';
+							    switch ($data['dol'])
+							    {
+							    	case 'doc':
+							    		echo '<td>Доктор</td>'; 
+							    		break;
+							    	case 'ddoc':
+							    		echo '<td>Дежурный доктор</td>';
+							    		break;
+							    	case 'admin':
+							    		echo '<td>Администратор</td>'; 
+							    		break;
+							    	case 'view':
+							    		echo '<td>Наблюдатель</td>'; 
+							    		break;
+							    	case 'su':
+							    		echo '<td>Супер Пользователь</td>'; 
+							    		break;
+							    	default:
+							    		echo '<td>Тип не указан</td>'; 
+							    		break;
+							    } 
 							    echo '<td>'.$data['username'].'</td>'; 
 							    echo '<td>'.$data['password'].'</td>'; 
 							    echo '<td>'.$data['value'].'</td>'; 
@@ -43,7 +63,7 @@
 							    echo '<td>'.$data['money'].'</td>';
 							    echo '<td>'.$data['uslugi_prevMonth'].'</td>';
 							    echo '<td>'.$data['uslugi'].'</td>';
-							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=1"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
+							    echo '<td><a href="edit.php?flagedit=1&id='.$data['id'].'"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
 							    echo '<td><a href="del.php?id='.$data['id'].'&flagdel=1"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
 							    echo '</tr>';
 							    }
@@ -164,7 +184,7 @@
 							    elseif ($_SESSION['typeUser'] == 'admin')
 							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=5">Закрыть карту</a>';
 							    elseif ($_SESSION['typeUser'] == 'su')
-							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=5">Редактировать</a>';
+							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7">Редактировать</a>';
 							    echo '</td>';
 							    echo '</tr>';
 							    }

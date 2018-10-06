@@ -147,7 +147,7 @@
     {
         if(isset($_GET['submit']))
         {
-          if(!empty($_GET['name']) & !empty($_GET['cost']) & !empty($_GET['bonus']))
+          if(!empty($_GET['name']) & !empty($_GET['cost']))
           {
             $name = htmlspecialchars($_GET['name']);
             $cost = htmlspecialchars($_GET['cost']);
@@ -158,7 +158,7 @@
             $query = mysqli_query($connection, $sql);
 
             if(mysqli_num_rows($query) == 0){
-              echo $sql = "INSERT INTO items(name,cost,dist,bonus) VALUES('".$name."','".$cost."','".$dist."','".$bonus."')";
+              $sql = "INSERT INTO items(name,cost,dist,bonus) VALUES('".$name."','".$cost."','".$dist."','".$bonus."')";
               $query = mysqli_query($connection, $sql);
               if($query)
                 {
