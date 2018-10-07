@@ -39,7 +39,8 @@
           //Вывод персонала
       		case 1:
       			echo '<section>';
-			  				$input -> getPersonalTable($connection, 1);
+                $_SESSION['link'] = 'input.php?flaginput=1';
+			  				$input -> getPersonalTable($connection);
 			  			echo '</section>';	
 			  			echo '<section>';
 			  				echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
@@ -50,8 +51,9 @@
       			echo '<section>';
               if(isset($_SESSION['sum']))
                 unset($_SESSION['sum']);
-                $input -> getPacientTable($connection, 0, 1);
-              echo '</section>';
+              $_SESSION['link'] = 'input.php?flaginput=2';
+              $input -> getPacientTable($connection, 0);
+            echo '</section>';
       			break;
       		//Вывод персональной таблицы
           case 3:
@@ -61,12 +63,14 @@
                 if(isset($_SESSION['sum']))
                   unset($_SESSION['sum']);
                 $id = $_GET['id'];
+                $_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
                 $input -> getPacientPersonalTable($connection, $id);
               echo '</section>';     			
               break;
       		//Вывод услуг
           case 4:
     				echo '<section>';
+            $_SESSION['link'] = 'input.php?flaginput=4';
     					$input -> getItemsTable($connection, 1);
     	  			echo '</section>';	
     		  		echo '<section>';
@@ -76,11 +80,13 @@
       		//Вывод операций
           case 5:
             echo '<section>';
+            $_SESSION['link'] = 'input.php?flaginput=5';
             $input -> getOperationTable($connection, 1);
             echo '</section>';             
             break;
           //Вывод койко-мест
           case 6:
+            $_SESSION['link'] = 'input.php?flaginput=6';
             $input->getTablesMest($connection);
             break;
           //Если случайный переход

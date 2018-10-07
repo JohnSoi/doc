@@ -90,6 +90,14 @@
 			mysqli_query($connect, "SET NAMES `UTF8`");
 			mysqli_query ($connect,"set character_set_results='utf8'");
 		}
+
+		function route()
+		{
+			if (isset($_SESSION['link']))
+				header("Location:".$_SESSION['link']);
+			else
+				header("Location: main.php");
+		}
 	}
 
 	$DataBase = new DataBase(DB_SERVER, DB_USER, DB_PASS, DB_NAME);

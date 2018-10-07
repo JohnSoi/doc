@@ -58,11 +58,21 @@
 							    } 
 							    echo '<td>'.$data['username'].'</td>'; 
 							    echo '<td>'.$data['password'].'</td>'; 
-							    echo '<td>'.$data['value'].'</td>'; 
-							    echo '<td>'.$data['money_prevMonth'].'</td>';
-							    echo '<td>'.$data['money'].'</td>';
-							    echo '<td>'.$data['uslugi_prevMonth'].'</td>';
-							    echo '<td>'.$data['uslugi'].'</td>';
+							    echo '<td>'.$data['value'].'</td>';
+							    if(($data['dol'] == 'doc') || ($data['dol'] == 'ddoc')) 
+							    {
+								    echo '<td>'.$data['money_prevMonth'].'</td>';
+								    echo '<td>'.$data['money'].'</td>';
+								    echo '<td>'.$data['uslugi_prevMonth'].'</td>';
+								    echo '<td>'.$data['uslugi'].'</td>';
+								}
+								else
+								{
+									echo '<td>----</td>';
+								    echo '<td>----</td>';
+								    echo '<td>----</td>';
+								    echo '<td>----</td>';
+								}
 							    echo '<td><a href="edit.php?flagedit=1&id='.$data['id'].'"><img class = "icon" src="img/edit.png" alt="Изменить"></a></td>';
 							    echo '<td><a href="del.php?id='.$data['id'].'&flagdel=1"><img class = "icon_big" src="img/del.png" alt="Удалить"></a></td>';
 							    echo '</tr>';
@@ -110,20 +120,15 @@
 
 		function getPacientTable($connection, $type)
 		{
-			if ($type == 0)
+			if ($_SESSION['typeUser'] == 'doc')
 			{
-
-				// if ($_SESSION['typeUser'] == 'doc')
-				// {
-				// 	$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
-				// 	$data = mysqli_fetch_assoc($doctor);
-				// 	$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 AND (doctor = '".$data['fio']."' OR doctor = '') ORDER BY id DESC");
-				// }
-				// else
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
+				$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+				$data = mysqli_fetch_assoc($doctor);
+				$result = mysqli_query($connection,"SELECT * FROM patient WHERE type = 'Амбулатория' AND status = '1' AND (doctor = '".$data['fio']."' OR doctor = 'no')");
 			}
-			else 
-				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Стационар' AND  status = 1 ORDER BY id DESC");
+			else
+				$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
+
 
 
 			if (mysqli_num_rows($result) == 0)
@@ -160,7 +165,7 @@
 							    echo '<td>'.$data['tel'].'</td>'; 
 							    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=3"><img class = "icon" src="img/list.png" alt="Посмотреть"></a></td>';
 							    echo '<td>'.$data['all_sum'].'</td>';
-							    if  (empty($data['doctor']))
+							    if  ($data['doctor'] == 'no')
 							    	echo '<td style = "background: red;">Доктор не назначен</td>';
 							    else
 							    	echo '<td style = "background: green;">'.$data['doctor'].'</td>';
@@ -177,14 +182,22 @@
 							    	echo '<td>'.$data['mest'].'</td>'; 
 							    echo '<td>';
 							    if ($_SESSION['typeUser'] == 'doc')
-							    	if (empty($data['doctor']))
+							    	if ($data['doctor']=='no')
 							    		echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=4">Стать лечащим врачем</a>';
 							    	else
 							    		echo '<p>Параметров нет</p>';
 							    elseif ($_SESSION['typeUser'] == 'admin')
-							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=5">Закрыть карту</a>';
+							    {
+							    	$transferSum = $data["sumNow"] - $data["sum"];
+							    	if($data["sum"] < $data["sumNow"])
+							    		echo "<a href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму (".$transferSum." руб.)</a>";
+							    	if($data["sum"] > $data["sumNow"])
+							    		echo "<a href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги (".abs($transferSum)." руб.)</a>";
+							    	if($data["sum"] == $data["sumNow"])
+							    		echo "<a href='edit.php?flagedit=8&id=".$data['id']."'>Выписать</a>";
+							    }
 							    elseif ($_SESSION['typeUser'] == 'su')
-							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7">Редактировать</a>';
+							    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7&stat=0">Редактировать</a>';
 							    echo '</td>';
 							    echo '</tr>';
 							    }
@@ -251,6 +264,8 @@
 				while ($data = mysqli_fetch_assoc($result))
 				{
 					echo "<h1 align='center'>".$data['fio']."</h1>";
+					if ($data['status'] == '0')
+						echo "<h1 align='center' style = 'color:red;'>Выписан</h1>";
 					echo '<p><strong style = "color:black;">Дата рождения: </strong>'.$data["datebirthday"].'</p>';
 					echo '<p><strong style = "color:black;">Номер телефона: </strong>'.$data["tel"].'</p><hr>';
 					if  (!empty($data['doctor']))
@@ -261,7 +276,7 @@
 					echo '<p><strong style = "color:black;">Вся сумма: </strong>'.$data["all_sum"].'</p>';
 					echo '<p><strong style = "color:black;">Услуг оказано на: </strong>'.$data["sumNow"].'</p>';
 					echo '<p><strong style = "color:black;">Внесенная сумма: </strong>'.$data["sum"].'</p><hr>';
-					if  (empty($data['doctor']))
+					if  ($data['doctor']=='no')
 					{
 						echo '<p style = "background: red;"><strong style = "color:black;">Лечащий доктор: </strong>Доктор не назначен</p>';
 						if ($_SESSION['typeUser'] == 'doc')
@@ -286,15 +301,22 @@
 					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
 					$compSum = $data["sumNow"] + $costDay;
 					$transferSum = $compSum - $data["sum"];
-					if($_SESSION['typeUser'] == 'admin')
+					if ($data['status'] == '1')
 					{
-						if($data["sum"] < $compSum)
-							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму</a>";
-						if($data["sum"] > $compSum)
-							echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги</a>";
-						if($data["sum"] == $compSum)
-							echo "<a id='inBtn' class='button' href='edit.php?flagedit=6&id=".$data['id']."'>Выписать</a>";
+						if($_SESSION['typeUser'] == 'admin')
+						{
+							if($data["sum"] < $compSum)
+								echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму (".$transferSum." руб.)</a>";
+							if($data["sum"] > $compSum)
+								echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги (".abs($transferSum)." руб.)</a>";
+							if($data["sum"] == $compSum)
+								echo "<a id='inBtn' class='button' href='edit.php?flagedit=8&id=".$data['id']."'>Выписать</a>";
+						}
+						if($_SESSION['typeUser'] == 'su')
+							echo '<a class=\'button\' style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7&stat=1">Редактировать</a>';
 					}
+					else
+						echo "<script>setTimeout(function(){self.location=\"add.php?flagadd=2&stac=1\";}, 1500);</script>";
 				}
 			}
 		}
