@@ -35,6 +35,50 @@
       		$typePage = $_SESSION['flagstat'];
       	}
 
+            $query = mysqli_query($connection, "SELECT * FROM patient");
+            $queryOpen = mysqli_query($connection, "SELECT * FROM patient WHERE status = '1'");
+            $queryClose = mysqli_query($connection, "SELECT * FROM patient WHERE status = '0'");
+            $countPacient = mysqli_num_rows($query);
+            $countPacientOpen = mysqli_num_rows($queryOpen);
+            $countPacientClose = mysqli_num_rows($queryClose);
+                $queryA = mysqli_query($connection, "SELECT * FROM operation WHERE type = 'Амбулатория'");
+                $queryS = mysqli_query($connection, "SELECT *  FROM operation WHERE type = 'Стационар'");
+                $sumA = $sumS = 0;
+                while ($row = mysqli_fetch_assoc($queryA)){
+                    $sumA += $row['sum'];
+                }
+                while ($row = mysqli_fetch_assoc($queryS)){
+                    $sumS += $row['sum'];
+        ?>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['Task', 'Hours per Day'],
+                  ['Work',     11],
+                  ['Eat',      2],
+                  ['Commute',  2],
+                  ['Watch TV', 2],
+                  ['Sleep',    7]
+                ]);
+
+                var options = {
+                  title: 'My Daily Activities'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                chart.draw(data, options);
+              }
+            </script>
+          </head>
+          <body>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+        <?php
       	switch ($typePage)
       	{
       		case 1:
