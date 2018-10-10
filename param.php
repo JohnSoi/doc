@@ -71,7 +71,7 @@
     		<p> Дата последнего изменения: <?php  echo $lastCH?></p>
     		<p> Дата последнего backup`а: <?php  echo $lastBU?></p>
     		<p> Количество файлов backup`а: <?php  echo $count?></p>
-    		<p> Записей о пациентах: <?php  echo $countPacient?> из них <span style = "color:green;"><?php  echo $countPacientOpen?> открытых</span> и <span style = "color:red;"> <?php  echo $countPacientClose?> закрытых </span></p>
+    		<p> Записей о пациентах: <?php  echo $countPacient?> из них <span style = "color:green;"><?php  echo $countPacientOpen?> открытых</span> и<span style = "color:red;"> <?php  echo $countPacientClose?> закрытых </span></p>
     		<input type="submit" class="button" name="submit" value="Сохранить">
     	</form>
     </section>

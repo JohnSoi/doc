@@ -3,7 +3,8 @@
   	if(!$_SESSION['session_username'])
    		header("Location:login.php");
 
-   	require_once('includes/DB.php');  
+   	require_once('includes/DB.php'); 
+   	include 'includes/Date.php'; 
 
 
    	if(isset($_GET['id']))
@@ -123,7 +124,7 @@
 	    	    $dateBr =  $_GET['date'];
 	    	    $tel = $_GET['tel'];
 	    	    if($typeStat == 1)
-	    	      $mesto = $_GET['mesto'];
+	    	      echo $mesto = $_GET['mesto'];
 	    	    else
 	    	      $mesto = "NULL";
 	    	    $ldoc = $_GET['ldoc'];
@@ -161,6 +162,11 @@
 			    	            $money = $data['money'] - $value;
 			    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$_SESSION['ldoc']."'");
 			    	          }
+			    	        if($_SESSION['mest'] != $mesto)
+			    	        {
+			    	        	$freeMset = mysqli_query($connection, "UPDATE mest SET status = 'free' WHERE id = '".$_SESSION['mest']."'");
+			    	        	$busyMest =mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = '".$mesto."'");
+			    	        }
 			    	    }    	      
 	    	        $message = "Запись отредактирована успешно";
 	    	      }
@@ -471,6 +477,7 @@
 					          <p><label for="date">Дата рождения<br><input name="date" type="text" value="'.$patientArray['datebirthday'].'"></label></p>
 					          <p><label for="tel">Номер телефона<br><input name="tel" type="tel" value="'.$patientArray['tel'].'"></label></p>';
 					          if ($typeStat == 1){
+					          	echo $_SESSION['mest'] = $patientArray['mest'];
 					            echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
 					            echo '<option value="'.$patientArray['mest'].'">Койко-место №'.$patientArray['mest'].'</option>';
 					            $query = "SELECT * FROM mest WHERE status = 'free'";
@@ -533,7 +540,8 @@
 					$mesto = mysqli_query($connection, "SELECT mest FROM patient WHERE id = '".$id."'");
 					$mest = mysqli_fetch_assoc($mesto);
 					$mest = $mest['mest'];
-					$updatePatient = mysqli_query($connection, "UPDATE patient SET status = '0' WHERE id = '".$id."'");
+					$dateNow = $date -> getDateTime();
+					$updatePatient = mysqli_query($connection, "UPDATE patient SET status = '0', dateOut = '".$dateNow."' WHERE id = '".$id."'");
 					if($updatePatient)
 					{
 						$updateMesr = mysqli_query($connection, "UPDATE mest SET status = 'free' WHERE id = '".$mest."'");
