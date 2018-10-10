@@ -35,10 +35,102 @@
       		$typePage = $_SESSION['flagstat'];
       	}
 
-      	switch ($typePage)
-      	{
+      	
+          $patientQuery = mysqli_query($connection, "SELECT * FROM patient");
+          $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl");
+          $doctorArray = mysqli_fetch_assoc($doctorQuery);
+
+          $countOpenPat = $countClosePat = $countAPat = $countCPat =  $countAmPat = $countCtPat = 0;
+
+          while($patientData =  mysqli_fetch_assoc($patientQuery))
+          {
+            if($patientData['status'] == 1)
+            {
+              $countOpenPat += 1;
+              if($patientData['type'] == 'Амбулатория')
+                $countAmPat += 1;
+              elseif($patientData['type'] == 'Стационар')
+                $countCtPat += 1;
+            }
+            elseif($patientData['status'] == 0)
+              $countClosePat += 1;
+
+            if($patientData['type'] == 'Амбулатория')
+              $countAPat += 1;
+            elseif($patientData['type'] == 'Стационар')
+              $countCPat += 1;
+          }
+          ?>
+
+
+
+
+          <script type="text/javascript" src="js/loader.js"></script>
+              <script type="text/javascript">
+                google.charts.load("current", {packages:["corechart"]});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                  var data = google.visualization.arrayToDataTable([
+                    ['Тип', 'Значение'],
+                    ['Открытые',     <?php echo $countOpenPat; ?>],
+                    ['Зактырые',      <?php echo $countClosePat; ?>]
+                  ]);
+
+                  var options = {
+                    title: 'Открытые/закрытые карточки пациентов',
+                    pieHole: 0.4,
+                  };
+
+                  var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+                  chart.draw(data, options);
+                }
+              </script>
+              <div id="donutchart" style="width: 900px; height: 500px;"></div>
+              <!-- <script type="text/javascript">
+                google.charts.load("current", {packages:["corechart"]});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                  var data = google.visualization.arrayToDataTable([
+                    ['Тип', 'Значение'],
+                    ['Амбулатория',     <?php echo $countAPat; ?>],
+                    ['Стационар',      <?php echo $countCPat; ?>]
+                  ]);
+
+                  var options = {
+                    title: 'Текущее отношение стационар/амбулатория',
+                    pieHole: 0.4,
+                  };
+
+                  var chart = new google.visualization.PieChart(document.getElementById('donutchart1'));
+                  chart.draw(data, options);
+                }
+              </script>
+               <script type="text/javascript">
+                google.charts.load("current", {packages:["corechart"]});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                  var data = google.visualization.arrayToDataTable([
+                    ['Тип', 'Значение'],
+                    ['Амбулатория',     <?php echo $countAmPat; ?>],
+                    ['Стационар',      <?php echo $countCtPat; ?>]
+                  ]);
+
+                  var options = {
+                    title: 'Отношение стационар/амбулатория',
+                    pieHole: 0.4,
+                  };
+
+                  var chart = new google.visualization.PieChart(document.getElementById('donutchart2'));
+                  chart.draw(data, options);
+                }
+              </script> -->
+          <?php 
+          switch ($typePage)
+            {
       		case 1:
-      			echo "<h2>Вывод статистики амбулатории</h2>";
+            echo '<div id="donutchart" style="width: 900px; height: 500px;"></div>';
+            echo '<div id="donutchart1" style="width: 900px; height: 500px;"></div>';
+            echo '<div id="donutchart2" style="width: 900px; height: 500px;"></div>';
       			break;
       		case 2:
       			echo "<h2>Вывод статистики стационара</h2>";
