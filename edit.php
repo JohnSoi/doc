@@ -123,10 +123,6 @@
 	    	    $name = $_GET['name'];
 	    	    $dateBr =  $_GET['date'];
 	    	    $tel = $_GET['tel'];
-	    	    if($typeStat == 1)
-	    	      echo $mesto = $_GET['mesto'];
-	    	    else
-	    	      $mesto = "NULL";
 	    	    $ldoc = $_GET['ldoc'];
 	    	    if(isset($_GET['doctor']))
 	    	      $doctor = $_GET['doctor'];
@@ -139,10 +135,10 @@
 	    	    if($typeStat == 1)
 		    	    {
 		    	    	$doc = 'Был принят доктором:'.$doctor;
-		    	   		 $pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', mest = '".$mesto."', dist = '".$doc."', doctor = '".$ldoc."' WHERE id='".$id."'");
+		    	   		 $pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', dist = '".$doc."', doctor = '".$ldoc."' WHERE id='".$id."'");
 		    	    }
 	    	   	else
-	    	   		$pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', mest = '".$mesto."', doctor = '".$ldoc."' WHERE id='".$id."'");
+	    	   		$pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', doctor = '".$ldoc."' WHERE id='".$id."'");
 	    	    
 	    	    if ($pacientUpdate)
 	    	      {
@@ -162,11 +158,6 @@
 			    	            $money = $data['money'] - $value;
 			    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$_SESSION['ldoc']."'");
 			    	          }
-			    	        if($_SESSION['mest'] != $mesto)
-			    	        {
-			    	        	$freeMset = mysqli_query($connection, "UPDATE mest SET status = 'free' WHERE id = '".$_SESSION['mest']."'");
-			    	        	$busyMest =mysqli_query($connection, "UPDATE mest SET status = 'busy' WHERE id = '".$mesto."'");
-			    	        }
 			    	    }    	      
 	    	        $message = "Запись отредактирована успешно";
 	    	      }
@@ -476,24 +467,6 @@
 					          <p><label for="name">ФИО пациента<br><input name="name" type="text" value="'.$patientArray['fio'].'"></label></p>
 					          <p><label for="date">Дата рождения<br><input name="date" type="text" value="'.$patientArray['datebirthday'].'"></label></p>
 					          <p><label for="tel">Номер телефона<br><input name="tel" type="tel" value="'.$patientArray['tel'].'"></label></p>';
-					          if ($typeStat == 1){
-					          	echo $_SESSION['mest'] = $patientArray['mest'];
-					            echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
-					            echo '<option value="'.$patientArray['mest'].'">Койко-место №'.$patientArray['mest'].'</option>';
-					            $query = "SELECT * FROM mest WHERE status = 'free'";
-					            $sql = mysqli_query($connection, $query);
-					            $freeBath = mysqli_num_rows($sql);
-					            if (mysqli_num_rows($sql) == 0)
-					            {
-					              echo '<option value="no">Нет койко-мест</option>';
-					            }
-					            else
-					            {
-					              while($row=mysqli_fetch_assoc($sql))
-					              echo '<option value="'.$row[id].'">Койко-место №'.$row[id].'</option>';
-					            }
-					            echo'
-					            </select></label></p>';}
 					          if ($typeStat == 1){
 					          	$ldocEx = explode(':',$patientArray['dist']);
 					          	$_SESSION['ldoc'] = $ldocEx[1];

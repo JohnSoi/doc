@@ -22,7 +22,6 @@
 			include('includes/menu.php');
 		?>
   <div class="content">
-    <section class="input">
       <?php
       	if (isset($_GET['flaginput']))
       	{
@@ -48,12 +47,10 @@
       			break;
       		//Вывод пациентов
           case 2:
-      			echo '<section>';
               if(isset($_SESSION['sum']))
                 unset($_SESSION['sum']);
               $_SESSION['link'] = 'input.php?flaginput=2';
               $input -> getPacientTable($connection, 0);
-            echo '</section>';
       			break;
       		//Вывод персональной таблицы
           case 3:
@@ -97,7 +94,6 @@
 
       	}
       ?>
-    </section>
   </div>
 </div>
 <script src="js/jquery.min.js"></script>

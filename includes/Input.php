@@ -298,7 +298,7 @@
 					$costMestArr = mysqli_fetch_assoc($costMestQuery);
 					$costMest = $costMestArr['value'];
 					$costDay = $counDay * $costMest;
-					echo '<p><strong style = "color:black;">Пациент занимает койко - место: </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
+					echo '<p><strong style = "color:black;">Пациент занимает койко - место (#'.$data['mest'].'): </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
 					$compSum = $data["sumNow"] + $costDay;
 					$transferSum = $compSum - $data["sum"];
 					if ($data['status'] == '1')

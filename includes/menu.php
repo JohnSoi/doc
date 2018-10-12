@@ -28,27 +28,34 @@
 	  	<div class="menu">
 	    	<a href="#" class="menu-btn"><span></span></a>
 			    <nav class="menu-list">
+					<div class="groupBtn"><figure>
+					';
+					if (($typeuser == 'admin') or ($typeuser == 'su'))
+						echo '<a href=""><img src="img/addCl.png" alt="Add" class="icon"></a>';
+					if (($typeuser == 'admin') or ($typeuser == 'su') or ($typeuser == 'doc'))
+						echo '<a href="input.php?flaginput=2"><img src="img/report.png" alt="" class="icon"></a>';
+					if (($typeuser == 'admin') or ($typeuser == 'su'))
+						echo '<a href=""><img src="img/cost.png" alt="" class="icon"></a>';
+					if($typeuser == 'su')
+						echo '<a href=""><img src="img/set.png" alt="" class="icon"></a>';
+					echo '
+					</figure>
+					</div>
+			    ';
 
-			      <figure id = "gr1"><span>Амбулатория</span></figure>
-						<div id="hidgr1">';
+						// if (($typeuser == 'admin') or ($typeuser == 'su'))
+						// 	echo '<a href="add.php?flagadd=2&stac=0">Прием</a>';
 
-						if (($typeuser == 'admin') or ($typeuser == 'su'))
-							echo '<a href="add.php?flagadd=2&stac=0">Прием</a>';
+						// if (($typeuser == 'admin') or ($typeuser == 'su') or ($typeuser == 'doc'))
+						// 	echo '<a href="input.php?flaginput=2">Отчет</a>';
 
-						if (($typeuser == 'admin') or ($typeuser == 'su') or ($typeuser == 'doc'))
-							echo '<a href="input.php?flaginput=2">Отчет</a>';
-
-						if (($typeuser == 'view') or ($typeuser == 'su'))
-							echo '<a href="stat.php?flagstat=1">Статистика</a>';
+						// if (($typeuser == 'view') or ($typeuser == 'su'))
+						// 	echo '<a href="stat.php?flagstat=1">Статистика</a>';
 
 						echo '
-						</div>
 			      <figure id = "gr2"><span>Стационар</span></figure>
 
 					<div id="hidgr2">';
-
-						if (($typeuser == 'admin') or ($typeuser == 'su'))
-						echo '<a href="add.php?flagadd=2&stac=1">Прием</a>';
 
 						if ($typeuser == 'doc')
 						{
@@ -71,31 +78,30 @@
 								}
 							echo '</ol>';
 						}
-
-						if (($typeuser == 'view') or ($typeuser == 'su'))
-							echo '<a href="stat.php?flagstat=2">Статистика</a>';
 						echo '</div>';
 
-				if($typeuser == 'su')
-				{
-			      echo '<figure id = "gr3"><span>Настройки</span></figure>		
-					<div id="hidgr3">
-						<a href="input.php?flaginput=6">Настройка койко мест</a>
-						<a href="input.php?flaginput=5">Список операций</a>
-						<a href="param.php">Параметры</a>
-						<a href="input.php?flaginput=1">Персонал</a>
-						<a href="input.php?flaginput=4">Услуги</a>	
-					</div>';
-				}
+				// if($typeuser == 'su')
+				// {
+			 //      echo '<figure id = "gr3"><span>Настройки</span></figure>		
+				// 	<div id="hidgr3">
+				// 		<a href="input.php?flaginput=6">Настройка койко мест</a>
+				// 		<a href="input.php?flaginput=5">Список операций</a>
+				// 		<a href="param.php">Параметры</a>
+				// 		<a href="input.php?flaginput=1">Персонал</a>
+				// 		<a href="input.php?flaginput=4">Услуги</a>	
+				// 	</div>';
+				// }
 
 				echo '
-			      <a href="logout.php">Выход</a>
-			      <figure id = "bot-date">';
+			      <figure id = "bot-date">
+						<img src="img/user.png" alt="" class="icon">
+			      ';
 			      $username = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
 			      $data = mysqli_fetch_assoc($username);
-			      echo $data['fio'].','.$typeUser;
+			      echo $data['fio'].',<br>'.$typeUser;
 					
 			echo '
+			<a href="logout.php"><img src="img/exit.png" alt="" class="icon"></a>
 			  	  </figure>
 			    </nav>
 			  </div>';
