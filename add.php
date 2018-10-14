@@ -314,22 +314,22 @@
     }
   //Обработка добавления койко места
   elseif($typePage == 7)
-  {
-      if(isset($_GET['register']))
-      {
-        if(!empty($_GET['value']))
+    {
+        if(isset($_GET['register']))
         {
-          $costMest = $_GET['value'];
-          $createMest = mysqli_query($connection, "INSERT INTO mest(status, value) VALUES('free', '".$costMest."')");
-          if($createMest)
-            $message = 'Место добавлено';
+          if(!empty($_GET['value']))
+          {
+            $costMest = $_GET['value'];
+            $createMest = mysqli_query($connection, "INSERT INTO mest(status, value) VALUES('free', '".$costMest."')");
+            if($createMest)
+              $message = 'Место добавлено';
+            else
+              $message = 'Ошибка ввода';
+          }
           else
-            $message = 'Ошибка ввода';
+            $message = 'Заполните поле Стоимость';
         }
-        else
-          $message = 'Заполните поле Стоимость';
-      }
-  }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -392,69 +392,26 @@
 	    					</div>
 	    				';
       			break;
-          //Оснавная панель администратора
-      		case 2:
-            $dateNow = $date->getDateTime();
-            $DBO -> checkDate($connection, $dateNow);
-            echo '     
-            <div class="cont-client">';
-              if($typeStat == 0)
-                echo'<h1>Добавление в амбулаторию</h1>
-              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=0">Прием пациента</a></div>
-              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=0">Денежные операции</a></div>';
-              else
-                echo '<h1>Добавление в стационар</h1>
-              <div class="block1"><img class="icon_big" src="img/addpac.png" alt=""><br><a href="add.php?flagadd=5&stac=1">Прием пациента</a></div>
-              <div class="block2"><img class="icon_big" src="img/money.png" alt=""><br><a href="add.php?flagadd=6&stac=1">Денежные операции</a></div>';
-              echo'
-              <div class="block3"><h1>Статистика за сегодня</h1>';
-              $dateNow = (string)$date->getDate();
-              $sumAll =  $sumNal = $sumBN = $sumA = $sumS = 0;
-              $sum = mysqli_query($connection, 'SELECT * FROM operation WHERE date LIKE "'.$dateNow.'%"');
-                  if(mysqli_num_rows($sum) == 0)
-                    echo "<p align='center'>Нет операций за текущий период</p>";
-                  else 
-                  {
-                    while($data = mysqli_fetch_assoc($sum))
-                    {
-                      $sumAll = $sumAll + (integer)$data['sum'];
-                      if ($data['typeSum'] == 'nal')
-                       $sumNal = $sumNal + (integer)$data['sum'];
-                      elseif ($data['typeSum'] == 'beznal')
-                        $sumBN = $sumBN + (integer)$data['sum'];
-                      if ($data['type'] == 'Амбулатория')
-                       $sumA = $sumA + (integer)$data['sum'];
-                      elseif ($data['type'] == 'Стационар')
-                        $sumS = $sumS + (integer)$data['sum'];
-                    }
-                    
-                    echo "<p align='center'>Общая сумма операций: ".$sumAll." </p>";
-                    echo "<p style='float:left;'>Наличными: ".$sumNal." </p>";
-                    echo "<p style='float:right;'>Безналичными: ".$sumBN." </p><br>";
-                    echo "<p style='float:left;'>Амбулатория: ".$sumA." </p>";
-                    echo "<p style='float:right;'>Стационар: ".$sumS." </p>";
-                  }
-              echo '
-              </div>
-            </div>
-            ';
-      			break;
           //Назначение услуги
           case 3:
             $servQuery = mysqli_query($connection, "SELECT * FROM items");
             echo '
               <div class="content">
                 <section class="add">
+
+                <div class="wrap">
+                <h2>Назначение услуги</h2>
                 <form action="add.php" method="get">
             ';
             while($dataServ = mysqli_fetch_assoc($servQuery))
                  {
-                   echo '<p style="float: left;">'.$dataServ['name'].'</p>';
-                   echo '<input style="float: right;"  type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><br>';
+                   echo '<div class="line"><p>'.$dataServ['name'].'</p>';
+                   echo '<input style="float:right;" type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><br></div>';
                  }     
-            echo '<input type="submit" name="submit" value="Execute">
+            echo '<input type="submit" name="submit" value="Назначить">
             </form>
-            </sectio>
+            </div>
+            </section>
             </div>
             ';
             break;
@@ -488,7 +445,7 @@
                     <form action="add.php" method="GET">
                       <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
                       <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
-                      <p><label for="tel">Номер телефона<br><input name="tel" type="tel"></label></p>';
+                      <p><label for="tel">Номер телефона<br><input id="tel" name="tel" type="tel"></label></p>';
                       if ($typeStat == 1){
                         echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
                         $query = "SELECT * FROM mest WHERE status = 'free'";
@@ -572,9 +529,9 @@
                 }
                 else
                   if ($typeStat == 0)
-                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Амбулатория'");
+                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Амбулатория' AND status = '1'");
                   else
-                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Стационар'");
+                    $patientQuery = mysqli_query($connection, "SELECT fio FROM patient WHERE type = 'Стационар' AND status = '1'");
 
                 echo'
                     <div class="date">Дата операции: '.$date->getDateTime().'</div>
@@ -607,7 +564,7 @@
                     <h1>Добавление нового койко - места</h1>
                     <form action="add.php" id="registerform" method="get" name="registerform">
                       <p>
-                        <label for="value">Стоимость одного одня проживания<br>
+                        <label for="value">Стоимость одного дня проживания<br>
                         <input class="input" id="value" name="value" size="32"  type="text" value=""></label>
                       </p>
                       <p class="submit">
@@ -630,5 +587,19 @@
 </div>
 <script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
+<script src="js/jquery.maskedinput.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $.mask.definitions['~'] = "[+-]";
+        $("#tel").mask("8 (999) 999-9999");
+
+        $("input").blur(function() {
+            $("#info").html("Unmasked value: " + $(this).mask());
+        }).dblclick(function() {
+            $(this).unmask();
+        });
+    });
+
+</script>
 </body>
 </html>

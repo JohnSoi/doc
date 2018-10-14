@@ -35,7 +35,7 @@
 	    		echo "<p class=\"error\">" . "Сообщение: ". $message . "</p>";	
 		?>
   <div class="content">
-    <section class="param">
+    <div class="param">
     	<?php 
     		$param = array();
     		$query = mysqli_query($connection, "SELECT * FROM param");
@@ -56,6 +56,7 @@
     		$countPacient = mysqli_num_rows($query);
     		$countPacientOpen = mysqli_num_rows($queryOpen);
     		$countPacientClose = mysqli_num_rows($queryClose);
+            $operQuery = mysqli_query($connection, "SELECT * FROM operation");
             $queryA = mysqli_query($connection, "SELECT * FROM operation WHERE type = 'Амбулатория'");
             $queryS = mysqli_query($connection, "SELECT *  FROM operation WHERE type = 'Стационар'");
             $sumA = $sumS = 0;
@@ -68,13 +69,15 @@
     	?>
     	<form action="param.php" method="GET">
     		<p><label for="input">Стоимость приема пациента:<br><input name="input" type="text" value=<?php echo $cost; ?>></label></p>
-    		<p> Дата последнего изменения: <?php  echo $lastCH?></p>
-    		<p> Дата последнего backup`а: <?php  echo $lastBU?></p>
-    		<p> Количество файлов backup`а: <?php  echo $count?></p>
-    		<p> Записей о пациентах: <?php  echo $countPacient?> из них <span style = "color:green;"><?php  echo $countPacientOpen?> открытых</span> и<span style = "color:red;"> <?php  echo $countPacientClose?> закрытых </span></p>
+    		<p class="left"> Дата последнего изменения:  <strong><?php  echo $lastCH?></strong></p>
+    		<p class="left"> Дата последнего backup`а: <strong> <?php  echo $lastBU?></strong></p><hr>
+            <p class="left"> Количество строк в таблице Пациенты:  <strong><?php  echo mysqli_num_rows($query);?> из них <?php  echo mysqli_num_rows($queryClose);?> закрыты </strong> (<?php echo 1000-mysqli_num_rows($queryClose);?> строк до очистки [<?php echo mysqli_num_rows($queryClose)/1000*100;?>%])</p>
+             <p class="left"> Количество строк в таблице Операции:  <strong><?php  echo mysqli_num_rows($operQuery);?></strong> (<?php echo 10000-mysqli_num_rows($operQuery);?> строк до очистки [<?php echo mysqli_num_rows($operQuery)/10000*100;?>%])</p>
+    		<p class="left"> Количество файлов backup`а:  <strong><?php  echo $count?></strong> (<?php echo 100-$count;?> файлов до очистки [<?php echo $count?>%])</p><hr>
+    		<p class="left"> Записей о пациентах: <?php  echo $countPacient?> из них <span style = "color:green;"><?php  echo $countPacientOpen?> открытых</span> и<span style = "color:red;"> <?php  echo $countPacientClose?> закрытых </span></p>
     		<input type="submit" class="button" name="submit" value="Сохранить">
     	</form>
-    </section>
+        </div>
   </div>
 </div>
 <script src="js/jquery.min.js"></script>

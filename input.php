@@ -15,6 +15,8 @@
 <?php
 	include("includes/DB.php");
 	include("includes/Input.php");
+  include 'includes/DBOper.php';
+  require_once 'includes/Date.php';
 ?>
 <body>
 	<div class="wrapper">
@@ -33,17 +35,18 @@
       		$typePage = $_SESSION['flaginput'];
       	}
 
+        if (isset($_GET['set']))
+        {
+          $set = $_GET['set'];
+        }
+
       	switch ($typePage)
       	{
           //Вывод персонала
       		case 1:
-      			echo '<section>';
+                echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
                 $_SESSION['link'] = 'input.php?flaginput=1';
 			  				$input -> getPersonalTable($connection);
-			  			echo '</section>';	
-			  			echo '<section>';
-			  				echo "<a class='button' href='add.php?flagadd=1'>Добавить пользователя</a>";
-			  			echo '</section>';
       			break;
       		//Вывод пациентов
           case 2:
@@ -61,18 +64,15 @@
                   unset($_SESSION['sum']);
                 $id = $_GET['id'];
                 $_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
-                $input -> getPacientPersonalTable($connection, $id);
+                $dateNow = $date->getDate();
+                $input -> getPacientPersonalTable($connection, $id, $date);
               echo '</section>';     			
               break;
       		//Вывод услуг
           case 4:
-    				echo '<section>';
-            $_SESSION['link'] = 'input.php?flaginput=4';
+              echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";        
+              $_SESSION['link'] = 'input.php?flaginput=4';
     					$input -> getItemsTable($connection, 1);
-    	  			echo '</section>';	
-    		  		echo '<section>';
-    	  				echo "<a class='button' href='add.php?flagadd=4'>Добавить услугу</a>";
-    	 			echo '</section>';      			
     	 			break;
       		//Вывод операций
           case 5:
@@ -86,6 +86,29 @@
             $_SESSION['link'] = 'input.php?flaginput=6';
             $input->getTablesMest($connection);
             break;
+          case 7:
+            $dateNow = $date->getDateTime();
+            $DBO -> checkDate($connection, $dateNow);
+            $input->getAddPatient($connection);
+            break;
+          case 8:
+          $dateNow = $date->getDateTime();
+            $DBO -> checkDate($connection, $dateNow);
+             $dateNow = $date->getDate();
+              $input->getAddOperation($connection, $dateNow);
+            break;
+          case 9:
+              $input->getParam();
+            break;
+          case 10:
+            $input->getBtn();
+            break;
+          case 11:
+              $input->inPat($connection, $set);
+             break;          
+          case 12:
+            $input->inOp($connection, $set);
+            break;
           //Если случайный переход
           default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
@@ -98,5 +121,6 @@
 </div>
 <script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
+<script src="js/jquery.maskedinput.min.js"></script>
 </body>
 </html>

@@ -36,138 +36,138 @@
       	}
 
     if($typePage == 6)
-    {
-    	if(isset($_GET['register']))
-    	{
-    	  if(!empty($_GET['value']))
-    	  {
-    	    $costMest = $_GET['value'];
-    	    $statusMest = $_GET['status'];
-    	    $createMest = mysqli_query($connection, "UPDATE mest SET value = '".$costMest."', status = '".$statusMest."' WHERE id = '".$id."'");
-    	    if($createMest)
-    	    {
-    	      $message = 'Место изменено';
-    	      echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=6\";}, 100);</script>";
-    	    }
-    	    else
-    	      $message = 'Ошибка ввода';
-    	  }
-    	  else
-    	    $message = 'Заполните поле Стоимость';
-    	}
-    }
+	    {
+	    	if(isset($_GET['register']))
+	    	{
+	    	  if(!empty($_GET['value']))
+	    	  {
+	    	    $costMest = $_GET['value'];
+	    	    $statusMest = $_GET['status'];
+	    	    $createMest = mysqli_query($connection, "UPDATE mest SET value = '".$costMest."', status = '".$statusMest."' WHERE id = '".$id."'");
+	    	    if($createMest)
+	    	    {
+	    	      $message = 'Место изменено';
+	    	      echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=6\";}, 100);</script>";
+	    	    }
+	    	    else
+	    	      $message = 'Ошибка ввода';
+	    	  }
+	    	  else
+	    	    $message = 'Заполните поле Стоимость';
+	    	}
+	    }
     elseif ($typePage == 1)
-    {
-    	//Проверка на нажатие кнопки
-    	if(isset($_GET["register"]))
-   		{	
-    		//Роверка непустот полей
-    		if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])&& !empty($_GET['value'])) 
-    		{
-    			//Получение значений из полей
-    			$full_name= htmlspecialchars($_GET['full_name']);
-    			$dol=htmlspecialchars($_GET['dol']);
-    			$username=htmlspecialchars($_GET['username']);
-    			$password=htmlspecialchars($_GET['password']);
-    			$value=htmlspecialchars($_GET['value']);
-    			//Текст запроса
-   				$sql=mysqli_query($connection, "UPDATE usertbl SET fio = '".$full_name."', dol = '".$dol."', username = '".$username."', password = '".$password."', value = '".$value."' WHERE id = '".$id."'");
-   				//Проверка успешности
-    			if($sql)
-    			{
-    				$message = "Пользователь успешно изменен!"; 
-    				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 2500);</script>";
-    			}
-    			else 
-    			{
-    			 	$message = "Ошибка запроса, обратитесь к администратору!";
-    			}
-    		} 
-    		else 
-    		{
-    			$message = "Все поля обязательны для заполнения!";
-    		}
-    	}
-    }
-    elseif($typePage == 2)
-    {
-    	if(isset($_GET['submit']))
-        {
-          if(!empty($_GET['name']) & !empty($_GET['cost']))
-          {
-            $name = htmlspecialchars($_GET['name']);
-            $cost = htmlspecialchars($_GET['cost']);
-            $bonus = htmlspecialchars($_GET['bonus']);
-            $dist = htmlspecialchars($_GET['dist']);
-
-              $sql = "UPDATE items SET name = '".$name."',cost = '".$cost."',dist = '".$dist."',bonus = '".$bonus."' WHERE id = '".$id."'";
-              $query = mysqli_query($connection, $sql);
-              if($query)
-                {
-                  $message = "Изменение успешно";
-                  echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 1500);</script>";
-                }
-              else
-                $message = "Данные не обработаны";
-          }
-          else
-              $message = "Все поля обязательны для заполнения!";         
-        }
-    }
-    elseif ($typePage == 7)
-    {
-    	if(isset($_GET['submit']))
-    	{
-    		if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']))
+	    {
+	    	//Проверка на нажатие кнопки
+	    	if(isset($_GET["register"]))
+	   		{	
+	    		//Роверка непустот полей
+	    		if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])&& !empty($_GET['value'])) 
 	    		{
-	    	    $name = $_GET['name'];
-	    	    $dateBr =  $_GET['date'];
-	    	    $tel = $_GET['tel'];
-	    	    $ldoc = $_GET['ldoc'];
-	    	    if(isset($_GET['doctor']))
-	    	      $doctor = $_GET['doctor'];
-	    	    $message = 'a';
-	    	    if($typeStat == 0)
-	    	      $type = "Амбулатория";
-	    	    elseif($typeStat == 1)
-	    	      $type = 'Стационар';
-
-	    	    if($typeStat == 1)
-		    	    {
-		    	    	$doc = 'Был принят доктором:'.$doctor;
-		    	   		 $pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', dist = '".$doc."', doctor = '".$ldoc."' WHERE id='".$id."'");
-		    	    }
-	    	   	else
-	    	   		$pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', doctor = '".$ldoc."' WHERE id='".$id."'");
-	    	    
-	    	    if ($pacientUpdate)
-	    	      {
-	    	        if($typeStat == 1)
-		    	        {
-		    	          $setting = mysqli_query($connection, 'SELECT value FROM param WHERE name = "Прием"');
-		    	          $data = mysqli_fetch_assoc($setting);
-		    	          $value = $data['value'];
-		    	          if($_SESSION['ldoc'] != $doctor)
-			    	          {
-			    	            $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio ='".$doctor."'");
-			    	            $data = mysqli_fetch_assoc($query);
-			    	            $money = $data['money'] + $value;
-			    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$doctor."'");
-			    	            $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio ='".$_SESSION['ldoc']."'");
-			    	            $data = mysqli_fetch_assoc($query);
-			    	            $money = $data['money'] - $value;
-			    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$_SESSION['ldoc']."'");
-			    	          }
-			    	    }    	      
-	    	        $message = "Запись отредактирована успешно";
-	    	      }
-	    	      else
-	    	        $message = "Ошибка заполнения";
+	    			//Получение значений из полей
+	    			$full_name= htmlspecialchars($_GET['full_name']);
+	    			$dol=htmlspecialchars($_GET['dol']);
+	    			$username=htmlspecialchars($_GET['username']);
+	    			$password=htmlspecialchars($_GET['password']);
+	    			$value=htmlspecialchars($_GET['value']);
+	    			//Текст запроса
+	   				$sql=mysqli_query($connection, "UPDATE usertbl SET fio = '".$full_name."', dol = '".$dol."', username = '".$username."', password = '".$password."', value = '".$value."' WHERE id = '".$id."'");
+	   				//Проверка успешности
+	    			if($sql)
+	    			{
+	    				$message = "Пользователь успешно изменен!"; 
+	    				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 2500);</script>";
+	    			}
+	    			else 
+	    			{
+	    			 	$message = "Ошибка запроса, обратитесь к администратору!";
+	    			}
+	    		} 
+	    		else 
+	    		{
+	    			$message = "Все поля обязательны для заполнения!";
 	    		}
-    		 else
-    	    $message = "Заполните все поля";
-    	}
-	}
+	    	}
+	    }
+    elseif($typePage == 2)
+	    {
+	    	if(isset($_GET['submit']))
+	        {
+	          if(!empty($_GET['name']) & !empty($_GET['cost']))
+	          {
+	            $name = htmlspecialchars($_GET['name']);
+	            $cost = htmlspecialchars($_GET['cost']);
+	            $bonus = htmlspecialchars($_GET['bonus']);
+	            $dist = htmlspecialchars($_GET['dist']);
+
+	              $sql = "UPDATE items SET name = '".$name."',cost = '".$cost."',dist = '".$dist."',bonus = '".$bonus."' WHERE id = '".$id."'";
+	              $query = mysqli_query($connection, $sql);
+	              if($query)
+	                {
+	                  $message = "Изменение успешно";
+	                  echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 1500);</script>";
+	                }
+	              else
+	                $message = "Данные не обработаны";
+	          }
+	          else
+	              $message = "Все поля обязательны для заполнения!";         
+	        }
+	    }
+    elseif ($typePage == 7)
+	    {
+	    	if(isset($_GET['submit']))
+	    	{
+	    		if (!empty($_GET['name']) & !empty($_GET['date']) & !empty($_GET['tel']))
+		    		{
+		    	    $name = $_GET['name'];
+		    	    $dateBr =  $_GET['date'];
+		    	    $tel = $_GET['tel'];
+		    	    $ldoc = $_GET['ldoc'];
+		    	    if(isset($_GET['doctor']))
+		    	      $doctor = $_GET['doctor'];
+		    	    $message = 'a';
+		    	    if($typeStat == 0)
+		    	      $type = "Амбулатория";
+		    	    elseif($typeStat == 1)
+		    	      $type = 'Стационар';
+
+		    	    if($typeStat == 1)
+			    	    {
+			    	    	$doc = 'Был принят доктором:'.$doctor;
+			    	   		 $pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', dist = '".$doc."', doctor = '".$ldoc."' WHERE id='".$id."'");
+			    	    }
+		    	   	else
+		    	   		$pacientUpdate = mysqli_query($connection,"UPDATE patient SET fio = '".$name."', datebirthday = '".$dateBr."', tel = '".$tel."', doctor = '".$ldoc."' WHERE id='".$id."'");
+		    	    
+		    	    if ($pacientUpdate)
+		    	      {
+		    	        if($typeStat == 1)
+			    	        {
+			    	          $setting = mysqli_query($connection, 'SELECT value FROM param WHERE name = "Прием"');
+			    	          $data = mysqli_fetch_assoc($setting);
+			    	          $value = $data['value'];
+			    	          if($_SESSION['ldoc'] != $doctor)
+				    	          {
+				    	            $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio ='".$doctor."'");
+				    	            $data = mysqli_fetch_assoc($query);
+				    	            $money = $data['money'] + $value;
+				    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$doctor."'");
+				    	            $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio ='".$_SESSION['ldoc']."'");
+				    	            $data = mysqli_fetch_assoc($query);
+				    	            $money = $data['money'] - $value;
+				    	            $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE fio ='".$_SESSION['ldoc']."'");
+				    	          }
+				    	    }    	      
+		    	        $message = "Запись отредактирована успешно";
+		    	      }
+		    	      else
+		    	        $message = "Ошибка заполнения";
+		    		}
+	    		 else
+	    	    $message = "Заполните все поля";
+	    	}
+		}
 ?>
 
 <!DOCTYPE html>
@@ -292,6 +292,7 @@
 					break;
 				//Вывод списка услуг
 				case 3:
+					echo '<div class="wrap">';
 					$query = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
 					$doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
 					$dataDOC = mysqli_fetch_assoc($doctor);
@@ -335,14 +336,17 @@
 									$statServ = 'Не выполнено';
 							elseif($statusServ == 1)
 								$statServ = 'Выполнено';
-
-							echo '<li>'.$nameServ.'		-	'.$nameDoc.'	-	'.$statServ.'</li>';
+							if ($nameDoc == 'Процедура не выполнена')
+								echo '<li>'.$nameServ.'		-	'.$nameDoc.'	-	'.$statServ.'</li>';
+							else
+								echo '<li style="background: hsl(122, 79%, 50%);">'.$nameServ.'		-	'.$nameDoc.'	-	'.$statServ.'</li>';
 							$i++;	
 						}
 						echo '</ul>';
 					}
 					if ($dataDB['doctor'] == $dataDOC['fio'])
 						echo '<a class = "button" href="add.php?id='.$id.'&flagadd=3">Назначить процедуру</a>';
+					echo '</div>';
 					break;
 				//Стать лечащим врачем
 				case 4:

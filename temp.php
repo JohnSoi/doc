@@ -26,18 +26,52 @@
 			include('includes/menu.php');
 		?>
   <div class="content">
-    <section class="add">
-    <form action="temp.php" method="post">
-      12
-      <input type="checkbox" name="yap[]" value="12"><br>
-      8
-      <input type="checkbox" name="yap[]" value="8"><br>
-      44
-      <input type="checkbox" name="yap[]" value="44"><br>
-      <input type="submit" value="Execute">
-    </form>
-    </section>
-  </div>
+    <style>
+      .wrap-10{
+        width: 98%;
+        height: 100%;
+        margin: 0 auto;
+        display: block;
+        background-image: url('../img/bg1.jpg');
+      }
+      .gr-top{
+        display: inline-flex;
+        width: 100%;
+        color: white;
+        height: 33%;
+        justify-content: space-between;
+      }
+      .gr-mid{
+        display: inline-flex;
+        width: 100%;
+        color: white;
+        height: 33%;
+        justify-content: space-around;
+      }
+      .gr-btm{
+        display: inline-flex;
+        width: 100%;
+        color: white;
+        height: 34%;
+        justify-content: space-between;
+      }
+      
+    </style>
+      <div class="wrap-10">
+
+        <div class="gr-top">
+          <div class="btn-top-left"><p>Основные параметры</p></div>
+        </div>
+        
+        <div class="gr-mid">
+          <div class="btn-mid"><p>Койко-места</p></div>
+        </div>
+
+        <div class="gr-btm">
+          <div class="btn-btm-left"><p>Пользователи</p></div>
+        </div>
+        
+      </div>
 </div>
 <script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>

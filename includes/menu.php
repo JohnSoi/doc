@@ -31,28 +31,18 @@
 					<div class="groupBtn"><figure>
 					';
 					if (($typeuser == 'admin') or ($typeuser == 'su'))
-						echo '<a href=""><img src="img/addCl.png" alt="Add" class="icon"></a>';
-					if (($typeuser == 'admin') or ($typeuser == 'su') or ($typeuser == 'doc'))
-						echo '<a href="input.php?flaginput=2"><img src="img/report.png" alt="" class="icon"></a>';
+						echo '<a href="input.php?flaginput=7"><img src="img/addCl.png" alt="Add" class="icon"></a>';
 					if (($typeuser == 'admin') or ($typeuser == 'su'))
-						echo '<a href=""><img src="img/cost.png" alt="" class="icon"></a>';
+						echo '<a href="input.php?flaginput=2"><img src="img/report.png" alt="" class="icon"></a>';
+					if($typeuser == 'doc')
+						echo '<a href="input.php?flaginput=2"><img src="img/report.png" style="width:10%;"></a>';
+					if (($typeuser == 'admin') or ($typeuser == 'su'))
+						echo '<a href="input.php?flaginput=8"><img src="img/cost.png" alt="" class="icon"></a>';
 					if($typeuser == 'su')
-						echo '<a href=""><img src="img/set.png" alt="" class="icon"></a>';
+						echo '<a href="input.php?flaginput=9"><img src="img/set.png" alt="" class="icon"></a>';
 					echo '
 					</figure>
 					</div>
-			    ';
-
-						// if (($typeuser == 'admin') or ($typeuser == 'su'))
-						// 	echo '<a href="add.php?flagadd=2&stac=0">Прием</a>';
-
-						// if (($typeuser == 'admin') or ($typeuser == 'su') or ($typeuser == 'doc'))
-						// 	echo '<a href="input.php?flaginput=2">Отчет</a>';
-
-						// if (($typeuser == 'view') or ($typeuser == 'su'))
-						// 	echo '<a href="stat.php?flagstat=1">Статистика</a>';
-
-						echo '
 			      <figure id = "gr2"><span>Стационар</span></figure>
 
 					<div id="hidgr2">';

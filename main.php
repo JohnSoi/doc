@@ -3,31 +3,9 @@
 	if(!$_SESSION['session_username'])
 		header("Location:login.php");
 ?>
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-	<meta charset="UTF-8">
-	<title>Тестовый сайт</title>
-	<link rel="stylesheet" href="css/style.css">
-	<meta http-equiv="Cache-Control" content="private">
-</head>
 <?php
-	include ('includes/LogIO.php');
-	include("includes/DB.php");
+	if ($typeuser == 'view')
+		header("Location: stat.php");
+	else
+		header("Location: input.php?flaginput=2");
 ?>
-<body>
-	<div class="wrapper">
-		<?php
-			include('includes/menu.php');
-		?>
-  <div class="content">
-    <section class="main">
-      <h2>Главная</h2>
-    </section>
-  </div>
-</div>
-<script src="js/jquery.min.js"></script>
-<script src="js/script.js"></script>
-</body>
-</html>
