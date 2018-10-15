@@ -517,6 +517,10 @@ table caption {
   margin: auto;
   padding-bottom: 15px;
 }
+.container #login .line {
+  display: flex;
+  justify-content: space-between;
+}
 .container form .input,
 .container input[type=text],
 .container input[type=password],
@@ -892,4 +896,7 @@ table caption {
 }
 .wrap-btn-10 .btn-btm-left p {
   color: white;
+}
+input:required {
+  border-bottom: 2px solid red;
 }

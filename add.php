@@ -67,14 +67,17 @@
     		if(isset($_GET["register"]))
     		{	
     			//Роверка непустот полей
-    			if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])&& !empty($_GET['value'])) 
+    			if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])) 
     			{
     				//Получение значений из полей
     				$full_name= htmlspecialchars($_GET['full_name']);
     				$dol=htmlspecialchars($_GET['dol']);
     				$username=htmlspecialchars($_GET['username']);
     				$password=htmlspecialchars($_GET['password']);
-    				$value=htmlspecialchars($_GET['value']);
+    				if(isset($_GET['value']))
+              $value=htmlspecialchars($_GET['value']);
+            else
+              $value = 0;
      				//Запрос к БД и получения количества строк
     				$query=mysqli_query($connection, "SELECT * FROM usertbl WHERE username='".$username."'");
     				$numrows=mysqli_num_rows($query);
@@ -90,7 +93,7 @@
     					if($result)
     					{
     						$message = "Пользователь успешно создан!"; 
-    						echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 2500);</script>";
+    						$DataBase->route();
     					}
     					else 
     					{
@@ -138,7 +141,10 @@
             $updateServPat = mysqli_query($connection, "UPDATE patient SET `sp_uslug` = '".$servNow."' WHERE id = '".$idPacient."'");
             $updateSumServPat = mysqli_query($connection, "UPDATE patient SET all_sum = '".$sumIn."' WHERE id = '".$idPacient."'");
             if($updateServPat && $updateSumServPat)
+            {
               $message = "Процедура добавлена";
+              $DataBase->route();
+            }
         }
       }
     }
@@ -163,8 +169,7 @@
               if($query)
                 {
                   $message = "Добавление успешно";
-                  echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 1500);</script>";
-                }
+                  $DataBase->route();                }
               else
                 $message = "Данные не обработаны";
             }
@@ -250,7 +255,10 @@
                   }
                 }
                 if ($message != "Ошибка заполнения")
+                {
                   $message = "Запись создана успешно";
+                  $DataBase->route();
+                }
               }
               else
                 $message = "Ошибка заполнения";
@@ -301,9 +309,9 @@
                 }
                 else
                     if($patData['type'] == 'Амбулатория')
-                      echo "<script>setTimeout(function(){self.location = 'add.php?flagadd=2&stac=0';}, 500);</script>";
+                      $DataBase->route();
                     else
-                      echo "<script>setTimeout(function(){self.location = 'add.php?flagadd=2&stac=1';}, 500);</script>";
+                      $DataBase->route();
             }
             else
               $message = "Ошибка заполнения";
@@ -322,7 +330,10 @@
             $costMest = $_GET['value'];
             $createMest = mysqli_query($connection, "INSERT INTO mest(status, value) VALUES('free', '".$costMest."')");
             if($createMest)
+            {
               $message = 'Место добавлено';
+              $DataBase->route();
+            }
             else
               $message = 'Ошибка ввода';
           }
@@ -362,27 +373,29 @@
 	    							<form action="add.php" id="registerform" method="get" name="registerform">
 	    								<p>
 	    									<label for="full_name">Полное имя<br>
-	    									<input class="input" id="full_name" name="full_name"size="32"  type="text" value=""></label>
+	    									<input class="input" id="full_name" name="full_name"size="32"  type="text" value="" required></label>
 	    								</p>
  	    								<p><label for="radio">Выберите тип учетной записи<br>
-	    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
-                        <input name="dol" type="radio" value="doc">Доктор<br>
-	    									<input name="dol" type="radio" value="view">Наблюдатель<br>
-	    									<input name="dol" type="radio" value="admin">Администратор<br>
-	    									<input name="dol" type="radio" value="su">Суперпользователь<br>
+                      <select name="dol" id="dol">
+	    									<option value="ddoc">Дежурный Доктор</option>
+                        <option value="doc">Доктор</option>
+	    									<option value="view">Наблюдатель</option>
+	    									<option value="admin">Администратор</option>
+	    									<option value="su">Суперпользователь</option>
+                        </select>
 	    									</label>
 	    								</p>
  	    								<p>
 	    									<label for="username">Имя пользователя<br>
-	    									<input class="input" id="username" name="username"size="20" type="text" value=""></label>
+	    									<input class="input" id="username" name="username"size="20" type="text" value="" required></label>
 	    								</p>
  	    								<p>
 	    									<label for="user_pass">Пароль<br>
-	    									<input class="input" id="password" name="password"size="32" type="password" value=""></label>
+	    									<input class="input" id="password" name="password"size="32" type="password" value="" required></label>
 	    								</p>
  	    								<p>
-	    									<label for="value">Процентная ставка<br>
-	    									<input class="input" id="value" name="value" size="20" type="float" value=""></label>
+	    									<label id="value" style="display: none;" for="value">Процентная ставка<br>
+	    									<input  class="input" name="value" size="20" type="float" value="" pattern="[0-9]{,3}"></label>
 	    								</p>
  	    								<p class="submit">
 	    									<input class="button" id="register" name= "register" type="submit" value="Зарегестрировать">
@@ -390,7 +403,17 @@
 	    				 			</form>
 	    						</div>
 	    					</div>
-	    				';
+                <script> 
+                  var chkType = document.getElementById("dol");
+                  var inVal = document.getElementById("value");
+
+                  chkType.onchange = function(){
+                    if(chkType.value == "doc")
+                      inVal.style.display = "block";
+                    else
+                       inVal.style.display = "none";
+                  }
+                </script>	    				';
       			break;
           //Назначение услуги
           case 3:
@@ -422,9 +445,9 @@
                   <div id="loginin">
                     <h1>Регистрация новой услуги</h1>
                     <form action="add.php" method="GET">
-                      <p><label for="name">Название услуги<br><input name="name" type="text"></label></p>
-                      <p><label for="cost">Стоимость<br><input name="cost" type="text"></label></p>
-                      <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text"></label></p>
+                      <p><label for="name">Название услуги<br><input name="name" type="text" required></label></p>
+                      <p><label for="cost">Стоимость<br><input name="cost" type="text" required pattern="^[0-9]+$"></label></p>
+                      <p><label for="bonus">Бонус за предоставление<br><input name="bonus" type="text" pattern="^[0-9]+$"></label></p>
                       <p><label for="bonus">Описание<br><input name="dist" type="text"></label></p>
                       <input type="submit" class="button" name="submit" value="Добавить">
                     </form>
@@ -443,9 +466,9 @@
                 echo'
                     <div class="date">Дата записи: '.$date->getDateTime().'</div>
                     <form action="add.php" method="GET">
-                      <p><label for="name">ФИО пациента<br><input name="name" type="text"></label></p>
-                      <p><label for="date">Дата рождения<br><input name="date" type="date"></label></p>
-                      <p><label for="tel">Номер телефона<br><input id="tel" name="tel" type="tel"></label></p>';
+                      <p><label for="name">ФИО пациента<br><input name="name" type="text" required></label></p>
+                      <p><label for="date">Дата рождения<br><input name="date" type="date" required></label></p>
+                      <p><label for="tel">Номер телефона<br><input id="tel" name="tel" type="tel" required></label></p>';
                       if ($typeStat == 1){
                         echo '<p><label for="mesto">Койко-место<br><select name="mesto">';
                         $query = "SELECT * FROM mest WHERE status = 'free'";
@@ -495,7 +518,7 @@
                         </select></label></p>';
                       
                       echo '
-                      <p><label for="zal">Внесенная сумма<br><input id="zal" name="zal" value="0" type="text"></label></p>
+                      <p><label for="zal">Внесенная сумма<br><input id="zal" name="zal" value="0" type="text" pattern="[0-9]+$"></label></p>
                       <p><label id="typeZal" for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>
                         <option value="beznal">Безналичный</option>
@@ -547,7 +570,7 @@
                           }
                         echo '
                       </select></label></p>
-                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text"></label></p>
+                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text" pattern="^[0-9]+$" required></label></p>
                       <p><label for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>
                         <option value="beznal">Безналичный</option>
@@ -565,7 +588,7 @@
                     <form action="add.php" id="registerform" method="get" name="registerform">
                       <p>
                         <label for="value">Стоимость одного дня проживания<br>
-                        <input class="input" id="value" name="value" size="32"  type="text" value=""></label>
+                        <input class="input" id="value" name="value" size="32"  type="text" value="" pattern="^[0-9]+$" requires></label>
                       </p>
                       <p class="submit">
                         <input class="button" id="register" name= "register" type="submit" value="Добавить">

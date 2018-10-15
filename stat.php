@@ -25,16 +25,6 @@
   <div class="content">
     <section class="input">
       <?php
-      	if (isset($_GET['flagstat']))
-      	{
-      		$typePage = $_GET['flagstat'];
-      		$_SESSION['flagstat'] = $typePage;
-      	}
-      	else
-      	{
-      		$typePage = $_SESSION['flagstat'];
-      	}
-
             $query = mysqli_query($connection, "SELECT * FROM patient");
             $queryOpen = mysqli_query($connection, "SELECT * FROM patient WHERE status = '1'");
             $queryClose = mysqli_query($connection, "SELECT * FROM patient WHERE status = '0'");
@@ -49,7 +39,18 @@
                 }
                 while ($row = mysqli_fetch_assoc($queryS)){
                     $sumS += $row['sum'];
+                  }
+            $docQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE dol = 'doc'");
+             $str = $str1 =''; 
+                  while($dataServ = mysqli_fetch_assoc($docQuery))
+                      {
+                          $str .= "[' ".$dataServ['fio']." ', ".$dataServ['uslugi']." ],";
+                          $str1 .= "[' ".$dataServ['fio']." ', ".$dataServ['money']." ],";
+                      }
+                      
+
         ?>
+        <h1>Статистка</h1>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
@@ -58,16 +59,13 @@
               function drawChart() {
 
                 var data = google.visualization.arrayToDataTable([
-                  ['Task', 'Hours per Day'],
-                  ['Work',     11],
-                  ['Eat',      2],
-                  ['Commute',  2],
-                  ['Watch TV', 2],
-                  ['Sleep',    7]
+                  ['Тип', 'Количество'],
+                  ['Открытых',     <?php echo $countPacientOpen; ?>],
+                  ['Закрытых',      <?php echo $countPacientClose; ?>],
                 ]);
 
                 var options = {
-                  title: 'My Daily Activities'
+                  title: 'Количество открытых и закрытых пациентов (Всего: <?php echo $countPacient; ?>)'
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -75,25 +73,89 @@
                 chart.draw(data, options);
               }
             </script>
-          </head>
-          <body>
-            <div id="piechart" style="width: 900px; height: 500px;"></div>
-        <?php
-      	switch ($typePage)
-      	{
-      		case 1:
-      			echo "<h2>Вывод статистики амбулатории</h2>";
-      			break;
-      		case 2:
-      			echo "<h2>Вывод статистики стационара</h2>";
-      			break;
-      		default:
-      			echo "<h2>Перенаправление на странцу авторизации</h2>";
-      			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
-      			break;
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
 
-      	}
-      ?>
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['Тип', 'Прибыль'],
+                  ['Амбулаторя',     <?php echo $sumA; ?>],
+                  ['Стационар',      <?php echo $sumS; ?>],
+                ]);
+
+                var options = {
+                  title: 'Прибыльность амбулатории и стационара'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+                chart.draw(data, options);
+              }
+            </script>
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['ФИО', 'Количество услуг'],
+                  <?php echo $str; ?>
+                ]);
+
+                var options = {
+                  title: 'Услуг оказано'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+                chart.draw(data, options);
+              }
+            </script>
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['ФИО', 'РУБЛЕЙ'],
+                  <?php echo $str1; ?>
+                  
+                ]);
+
+                var options = {
+                  title: 'Зарплата врачей'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart3'));
+
+                chart.draw(data, options);
+              }
+            </script>
+          </head>
+          <style type="text/css">
+            .wrap-gr{
+                display: grid;
+                grid-template-columns: 50% 50%;
+                /*grid-template-rows: 50% 50%;*/
+            }
+            .piechart{
+              border: 2px solid grey;
+            }
+          </style>
+          <body>
+            <div class="wrap-gr">
+              <div id="piechart"></div>
+              <div  id="piechart1"></div>
+              <div id="piechart2"></div>
+              <div  id="piechart3"></div>
+            </div>
     </section>
   </div>
 </div>

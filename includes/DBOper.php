@@ -13,7 +13,7 @@
 		public function checkDate($con, $dateTimeNow)
 		{
 			//Отключения вывода ошибок
-			ini_set('display_errors','Off');
+			ini_set('display_errors','On');
 			//Получение даты последнего перемщения столбцов услуг и зарплаты
 			$query = mysqli_query($con, 'SELECT value FROM param WHERE name = "Последнее изменение"');
 

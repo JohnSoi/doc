@@ -47,8 +47,7 @@
 	    	    if($createMest)
 	    	    {
 	    	      $message = 'Место изменено';
-	    	      echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=6\";}, 100);</script>";
-	    	    }
+				  $DataBase->route();	    	    }
 	    	    else
 	    	      $message = 'Ошибка ввода';
 	    	  }
@@ -56,6 +55,7 @@
 	    	    $message = 'Заполните поле Стоимость';
 	    	}
 	    }
+
     elseif ($typePage == 1)
 	    {
 	    	//Проверка на нажатие кнопки
@@ -76,8 +76,7 @@
 	    			if($sql)
 	    			{
 	    				$message = "Пользователь успешно изменен!"; 
-	    				echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 2500);</script>";
-	    			}
+						$DataBase->route();	    			}
 	    			else 
 	    			{
 	    			 	$message = "Ошибка запроса, обратитесь к администратору!";
@@ -89,6 +88,7 @@
 	    		}
 	    	}
 	    }
+
     elseif($typePage == 2)
 	    {
 	    	if(isset($_GET['submit']))
@@ -105,8 +105,7 @@
 	              if($query)
 	                {
 	                  $message = "Изменение успешно";
-	                  echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=4\";}, 1500);</script>";
-	                }
+						$DataBase->route();	                }
 	              else
 	                $message = "Данные не обработаны";
 	          }
@@ -114,6 +113,7 @@
 	              $message = "Все поля обязательны для заполнения!";         
 	        }
 	    }
+	    
     elseif ($typePage == 7)
 	    {
 	    	if(isset($_GET['submit']))
@@ -160,6 +160,7 @@
 				    	          }
 				    	    }    	      
 		    	        $message = "Запись отредактирована успешно";
+		    	        $DataBase->route();
 		    	      }
 		    	      else
 		    	        $message = "Ошибка заполнения";
@@ -203,53 +204,58 @@
 	    									<label for="full_name">Полное имя<br>
 	    									<input class="input" id="full_name" name="full_name"size="32"  type="text" value="'.$patArr['fio'].'"></label>
 	    								</p>
- 	    								<p><label for="radio">Выберите тип учетной записи<br>
+	    								<p><label for="radio">Выберите тип учетной записи<br>
+		                      					<select name="dol" id="dol">
+			    									
+		                        			
  	    								';
  	    								switch ($patArr['dol'])
  	    								{
  	    									case 'ddoc':
  	    										echo '
-			    									<input name="dol" type="radio" value="ddoc" checked>Дежурный Доктор<br>
-		                        					<input name="dol" type="radio" value="doc">Доктор<br>
-			    									<input name="dol" type="radio" value="view">Наблюдатель<br>
-			    									<input name="dol" type="radio" value="admin">Администратор<br>
-			    									<input name="dol" type="radio" value="su">Суперпользователь<br>';
+			    									<option value="ddoc">Дежурный Доктор</option>
+		                        					<option value="doc">Доктор</option>
+			    									<option value="view">Наблюдатель</option>
+			    									<option value="admin">Администратор</option>
+			    									<option value="su">Суперпользователь</option>';
 			    								break;
 			    							case 'doc':
  	    										echo '
-			    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
-		                        					<input name="dol" type="radio" value="doc" checked>Доктор<br>
-			    									<input name="dol" type="radio" value="view">Наблюдатель<br>
-			    									<input name="dol" type="radio" value="admin">Администратор<br>
-			    									<input name="dol" type="radio" value="su">Суперпользователь<br>';
+ 	    											<option value="doc">Доктор</option>
+			    									<option value="ddoc">Дежурный Доктор</option>
+			    									<option value="view">Наблюдатель</option>
+			    									<option value="admin">Администратор</option>
+			    									<option value="su">Суперпользователь</option>';
 			    								break;
 			    							case 'view':
  	    										echo '
-			    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
-		                        					<input name="dol" type="radio" value="doc">Доктор<br>
-			    									<input name="dol" type="radio" value="view" checked>Наблюдатель<br>
-			    									<input name="dol" type="radio" value="admin">Администратор<br>
-			    									<input name="dol" type="radio" value="su">Суперпользователь<br>';
+ 	    											<option value="view">Наблюдатель</option>
+			    									<option value="ddoc">Дежурный Доктор</option>
+		                        					<option value="doc">Доктор</option>
+			    									<option value="admin">Администратор</option>
+			    									<option value="su">Суперпользователь</option>';
 			    								break;
 			    							case 'admin':
  	    										echo '
-			    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
-		                        					<input name="dol" type="radio" value="doc">Доктор<br>
-			    									<input name="dol" type="radio" value="view">Наблюдатель<br>
-			    									<input name="dol" type="radio" value="admin" checked>Администратор<br>
-			    									<input name="dol" type="radio" value="su">Суперпользователь<br>';
+ 	    											<option value="admin">Администратор</option>
+			    									<option value="view">Наблюдатель</option>
+			    									<option value="ddoc">Дежурный Доктор</option>
+		                        					<option value="doc">Доктор</option>
+			    									<option value="su">Суперпользователь</option>';
 			    								break;
 			    							case 'su':
  	    										echo '
-			    									<input name="dol" type="radio" value="ddoc">Дежурный Доктор<br>
-		                        					<input name="dol" type="radio" value="doc">Доктор<br>
-			    									<input name="dol" type="radio" value="view">Наблюдатель<br>
-			    									<input name="dol" type="radio" value="admin">Администратор<br>
-			    									<input name="dol" type="radio" value="su" checked>Суперпользователь<br>';
+ 	    											<option value="su">Суперпользователь</option>
+			    									<option value="admin">Администратор</option>
+			    									<option value="view">Наблюдатель</option>
+			    									<option value="ddoc">Дежурный Доктор</option>
+		                        					<option value="doc">Доктор</option>
+			    									';
 			    								break;
 			    						}
  	    								echo '
-	    									</label>
+	    										</select>
+		    								</label>
 	    								</p>
  	    								<p>
 	    									<label for="username">Имя пользователя<br>

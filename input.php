@@ -87,26 +87,31 @@
             $input->getTablesMest($connection);
             break;
           case 7:
+          $_SESSION['link'] = 'input.php?flaginput=7';
             $dateNow = $date->getDateTime();
             $DBO -> checkDate($connection, $dateNow);
             $input->getAddPatient($connection);
             break;
           case 8:
+          $_SESSION['link'] = 'input.php?flaginput=8';
           $dateNow = $date->getDateTime();
             $DBO -> checkDate($connection, $dateNow);
              $dateNow = $date->getDate();
               $input->getAddOperation($connection, $dateNow);
             break;
           case 9:
+          $_SESSION['link'] = 'input.php?flaginput=9';
               $input->getParam();
             break;
           case 10:
+          $_SESSION['link'] = 'input.php?flaginput=10';
             $input->getBtn();
             break;
           case 11:
               $input->inPat($connection, $set);
              break;          
           case 12:
+          $_SESSION['link'] = 'input.php?flaginput=11';
             $input->inOp($connection, $set);
             break;
           //Если случайный переход
