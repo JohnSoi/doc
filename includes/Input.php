@@ -512,20 +512,19 @@
 			}
 
 		function inOp($connection, $set)
-		{	
-			if ($set == 0) 
-				{
-					$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC LIMIT 20");
-					$this-> getOperationTable($connection, $result);
-					echo '<a class="button" href="http://localhost/doc/input.php?flaginput=12&set=1">Вывести все операции</a>';
-				}
-				else
-				{
-					$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC");
-					$this-> getOperationTable($connection, $result);
-				}
-			
-		}
+			{	
+				if ($set == 0) 
+					{
+						$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC LIMIT 20");
+						$this-> getOperationTable($connection, $result);
+						echo '<a class="button" href="http://localhost/doc/input.php?flaginput=12&set=1">Вывести все операции</a>';
+					}
+					else
+					{
+						$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC");
+						$this-> getOperationTable($connection, $result);
+					}	
+			}
 
 		function getOperationTable($connection, $result)
 			{

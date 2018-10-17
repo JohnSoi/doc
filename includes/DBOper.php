@@ -129,17 +129,17 @@
 		/* --- Работа с БД и чистка строк --- */
 		//Проверка количества строк в БД (Переменная подключения к БД)
 		protected function checkCountDB($con){
-			$query = mysqli_query($con, 'SELECT * FROM patient WHERE  status = "0"');
-			$count = mysqli_num_rows($query);
+			// $query = mysqli_query($con, 'SELECT * FROM patient WHERE  status = "0"');
+			// $count = mysqli_num_rows($query);
 
-			//Количество строк, после которого удаляться первые строки
-			$param = 1000;
+			// //Количество строк, после которого удаляться первые строки
+			// $param = 1000;
 
-			if ($count > $param)
-			{
-				$count = $count - $param;
-				$this -> delStrDB($con, $count, $query, 1);
-			}
+			// if ($count > $param)
+			// {
+			// 	$count = $count - $param;
+			// 	$this -> delStrDB($con, $count, $query, 1);
+			// }
 
 			$param = 10000;
 

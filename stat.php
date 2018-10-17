@@ -19,10 +19,7 @@
 ?>
 <body>
 	<div class="wrapper">
-		<?php
-			include('includes/menu.php');
-		?>
-  <div class="content">
+    <div class="content">
     <section class="input">
       <?php
             $query = mysqli_query($connection, "SELECT * FROM patient");
@@ -156,10 +153,14 @@
               <div id="piechart2"></div>
               <div  id="piechart3"></div>
             </div>
+            <?php
+              $typeuser = $_SESSION['typeUser']; 
+              $_SESSION['link'] = (isset($_SESSION['link'])) ? $_SESSION['link'] : 'main.php';
+              if($typeuser != 'view') { echo '<a class="button" href="'.$_SESSION['link'].'">Вернуться</a>';} 
+            ?>
     </section>
   </div>
 </div>
 <script src="js/jquery.min.js"></script>
-<script src="js/script.js"></script>
 </body>
 </html>
