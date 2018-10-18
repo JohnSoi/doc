@@ -124,14 +124,10 @@
 					</table>';	}	
 			}
 
-		function getPacientTable($connection, $type)
+		function getServTable($connection, $type)
 			{
-				if ($_SESSION['typeUser'] == 'doc')
-				{
-					$doctor = mysqli_query($connection, "SELECT fio FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
-					$data = mysqli_fetch_assoc($doctor);
-					$result = mysqli_query($connection,"SELECT * FROM patient WHERE type = 'Амбулатория' AND status = '1' AND (doctor = '".$data['fio']."' OR doctor = 'no')");
-				}
+				if($type == 0)
+					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория'");
 				else
 					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
 
@@ -218,7 +214,7 @@
 				}
 			}
 
-		function getPacientPersonalTable($connection, $id, $date)
+		function getPacientPersonalTable($connection, $id, $date, $typeuser)
 			{
 				$result = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
 
@@ -227,72 +223,46 @@
 				else{
 					while ($data = mysqli_fetch_assoc($result))
 					{
-						echo '<div class="wrap-inf">';
-						echo "<h1 align='center'>".$data['fio']."</h1>";
-						if ($data['status'] == '0')
-							echo "<h1 align='center' style = 'color:red;'>Выписан</h1>";
-						echo '<p><strong style = "">Дата рождения: </strong>'.$data["datebirthday"].'</p>';
-						echo '<p><strong style = "">Номер телефона: </strong>'.$data["tel"].'</p><hr>';
-						if  (!empty($data['doctor']))
-						{ 
-							echo '<p><strong style = "">Список услуг: </strong></p>';
-							echo '<a href="edit.php?id='.$id.'&flagedit=3">Просмотреть список</a>';
-						}
-						echo '<p><strong style = "">Вся сумма услуг: </strong>'.$data["all_sum"].'</p>';
-						echo '<p><strong style = "">Услуг оказано на: </strong>'.$data["sumNow"].'</p><hr>';
-						if  ($data['doctor']=='no')
-						{
-							echo '<p style = "background: hsl(357, 75%, 50%);"><strong style = "">Лечащий доктор: </strong>Доктор не назначен</p>';
-							if ($_SESSION['typeUser'] == 'doc')
-								echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=4$stat=1">Стать лечащим врачем</a>';
-						}
-						else{
-							echo '<p><strong style = "">Лечащий доктор: </strong>'.$data["doctor"].'</p>';
-						}
-						if (empty($data["dist"]))
-							echo '<p style = "background: red;"><strong style = "">Описание: </strong> Описание отсутствует </p>';
-						else
-						echo '<p><strong style = "">Описание: </strong>'.$data["dist"].'</p><hr>';
-						echo '<p><strong style = "">Дата поступления: </strong>'.$data["dateIn"].'</p>';
+						//Текущая дата
 						$dateNow = $date->getDate();
+						//Разбиение даты заселения на дату и время
 						$dateIn = explode(' ', $data["dateIn"]);
+						//Количество дней в стационаре
 						$counDay = $date->getPeriod($dateIn[0]) + 1;
+						//Получение стоимости койко - места
 						$costMestQuery = mysqli_query($connection, "SELECT * FROM mest WHERE id = '".$data['mest']."'");
 						$costMestArr = mysqli_fetch_assoc($costMestQuery);
 						$costMest = $costMestArr['value'];
+						//Стоимость проживания
 						$costDay = $counDay * $costMest;
-						echo '<p><strong style = "">Пациент занимает койко - место (#'.$data['mest'].'): </strong>'.$counDay.' ('.$costDay.' руб.)</p>';
+						//Сумма к оплате
 						$compSum = $data["sumNow"] + $costDay;
-						echo '<p><strong>Итого к оплате (Койко - место и услуги) : </strong>'.$compSum.' руб.</p>';
-						echo '<p><strong>Уже внесено: </strong>'.$data["sum"].' руб.</p>';
+						//Разнича между внесенными деньгами и суммы к оплате
 						$transferSum = $compSum - $data["sum"];
-						if (($data["sumNow"]+$costDay) == 0)
-							$data["sumNow"] = 1;
-						$perSum = ($data["sum"] / ($data["sumNow"] + $costDay)) * 100;
-						if ($perSum > 100)
-							$perSum = 100;
-						echo '
-						<hr>
-						<progress max="100" value="'.$perSum.'">'.$perSum.'</progress>
-						<p align = "center">Платеж внесен на '.$perSum.' %</p>
-						<hr>';
-						if ($data['status'] == '1')
-						{
-							if($_SESSION['typeUser'] == 'admin')
-							{
-								if($data["sum"] < $compSum)
-									echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму (".$transferSum." руб.)</a>";
-								if($data["sum"] > $compSum)
-									echo "<a id='inBtn' class='button' href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги (".abs($transferSum)." руб.)</a>";
-								if($data["sum"] == $compSum)
-									echo "<a id='inBtn' class='button' href='edit.php?flagedit=8&id=".$data['id']."'>Выписать</a>";
-							}
-							if($_SESSION['typeUser'] == 'su')
-								echo '<a class=\'button\' style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7&stat=1">Редактировать</a>';
-						echo '</div>';
-						}
-						else
-							echo "<script>setTimeout(function(){self.location=\"add.php?flagadd=2&stac=1\";}, 1500);</script>";
+						echo '		
+							<div class="wrap-input">
+							 <div class="name"><p>'.$data['fio'].'</p></div>
+							 <div class="date"><p>Дата рождения: <br>'.$data['datebirthday'].'</p></div>
+							 <div class="tel"><p>Телефон: <br>'.$data['tel'].'</p></div>
+							 <div class="datest"> <p>Дата записи: <br>'.$data['dateIn'].'</p></div>      
+							 <div class="datefin"><p>Дата выписки: <br>';
+							 if(empty($data['dateOut']))
+							 	echo '<a href="#">Установить</a>';
+							 else
+							 {
+							 	echo $data['dateOut'];
+							 	if($typeuser == 'su')
+							 		echo '<br><a href="#">Отменить</a>';
+							 }
+							 echo '</p></div>
+							 <div class="oper"><iframe width="100%" height="100%" src="input.php?flaginput=2" frameborder="1"></iframe></div>
+							 <div class="mest"> Койко - место</div>
+							 <div class="serv"> Назначения </div>
+							 <div class="btn-cl"> Закрыть</div>
+							 <div class="btn-cost">Оплата</div>
+							 <div class="doc">Лечащий доктор</div>
+							</div>
+						';
 					}
 				}
 			}

@@ -1,0 +1,114 @@
+.wrap-input {
+  display: grid !important;
+  width: 100%;
+  min-height: 600px;
+  margin: 0 auto;
+  margin-top: 3%;
+  background: white;
+  grid-template-columns: repeat(8, 12.5%);
+  grid-template-rows: repeat(20, 5%);
+  text-align: center;
+}
+.wrap-input .name {
+  margin: 1px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  padding-top: 2px;
+  font-size: 32px;
+  display: grid;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .name p {
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.wrap-input .date {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: grid;
+  font-size: 18px;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .date p {
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.wrap-input .tel {
+  grid-column-start: 4;
+  grid-column-end: 6;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: grid;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .tel p {
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.wrap-input .datest {
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  display: grid;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .datest p {
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.wrap-input .datefin {
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+.wrap-input .oper {
+  margin: 2px;
+  grid-column-start: 6;
+  grid-column-end: 9;
+  grid-row-start: 1;
+  grid-row-end: 9;
+}
+.wrap-input .mest {
+  background: green;
+  grid-column: 0.16666667;
+  grid-row: 0.6;
+  grid-column-start: 1;
+  grid-column-end: 6;
+  grid-row-start: 3;
+  grid-row-end: 9;
+}
+.wrap-input .serv {
+  background: blue;
+  grid-column-start: 1;
+  grid-column-end: 9;
+  grid-row-start: 9;
+  grid-row-end: 17;
+}
+.wrap-input .btn-cl {
+  background: #000;
+  color: white;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  grid-row-start: 17;
+  grid-row-end: 20;
+}
+.wrap-input .btn-cost {
+  background: red;
+  grid-column-start: 6;
+  grid-column-end: 8;
+  grid-row-start: 17;
+  grid-row-end: 20;
+}
+.wrap-input .doc {
+  background: yellow;
+  grid-column-start: 1;
+  grid-column-end: 9;
+  grid-row-start: 20;
+  grid-row-end: 21;
+}

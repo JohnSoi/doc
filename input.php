@@ -11,6 +11,7 @@
 	<title>Вывод</title>
 	<link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/input.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <?php
@@ -54,20 +55,21 @@
               if(isset($_SESSION['sum']))
                 unset($_SESSION['sum']);
               $_SESSION['link'] = 'input.php?flaginput=2';
-              $input -> getPacientTable($connection, 0);
+              $input -> getServTable($connection, 0);
       			break;
       		//Вывод персональной таблицы
           case 3:
-              echo '<section>';
                 if(isset($_SESSION['flagop']))
                   unset($_SESSION['flagop']);
                 if(isset($_SESSION['sum']))
                   unset($_SESSION['sum']);
+                require_once 'includes/LogIO.php';
+                $username = $access->getUserName();
+                $typeuser = $_SESSION['typeUser'];
                 $id = $_GET['id'];
                 $_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
                 $dateNow = $date->getDate();
-                $input -> getPacientPersonalTable($connection, $id, $date);
-              echo '</section>';     			
+                $input -> getPacientPersonalTable($connection, $id, $date, $typeuser);   			
               break;
       		//Вывод услуг
           case 4:

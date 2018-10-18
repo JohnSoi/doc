@@ -184,7 +184,6 @@ table caption {
   background-color: #27ae60;
 }
 .add {
-  background-image: url('../img/bg.jpg');
   color: black;
 }
 .add .wrap {
@@ -524,7 +523,7 @@ table caption {
   background: #ae2;
 }
 .wrap-btn {
-  width: 90%;
+  width: 70%;
   height: 100%;
   margin-left: 5%;
   display: block;

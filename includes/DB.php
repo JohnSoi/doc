@@ -183,7 +183,7 @@
 		function route()
 		{
 			if (isset($_SESSION['link']))
-				echo "<script>setTimeout(function(){self.location=\"".$_SESSION['link']."\";}, 1500);</script>";
+				echo "<script>setTimeout(function(){self.location=\"".$_SESSION['link']."\";}, 700);</script>";
 			else
 				header("Location: main.php");
 		}

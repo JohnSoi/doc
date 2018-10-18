@@ -9,8 +9,8 @@
 					<figure>';
 						if (($typeuser == 'doc') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" class="icon"></a>';
-						if($typeuser == 'doc')
-							echo '<a href="input.php?flaginput=2"><img src="img/report.png" style="width:10%;"></a>';
+						if(($typeuser == 'doc')or ($typeuser == 'su'))
+							echo '<a href="input.php?flaginput=2&st=1"><img src="img/report.png" class="icon"></a>';
 						if (($typeuser == 'admin') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=6&stac=1"><img src="img/cost.png" alt="" class="icon"></a>';
 						if($typeuser == 'su')
@@ -34,7 +34,7 @@
 				    <form class="form-search" action="search.php">
 						<input type="text" placeholder="Нажмите Enter">
 				    </form>	
-					<a href="#"><img src="img/exit.png" alt="" class="icon"></a>
+					<a href="logout.php"><img src="img/exit.png" alt="" class="icon"></a>
 			  	 </figure>
 			</nav>
 
@@ -43,8 +43,8 @@
 					<figure>';
 						if (($typeuser == 'admin') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" class="icon"></a>';
-						if($typeuser == 'doc')
-							echo '<a href="input.php?flaginput=2"><img src="img/report.png" style="width:10%;"></a>';
+						if(($typeuser == 'doc')or ($typeuser == 'su'))
+							echo '<a href="input.php?flaginput=2&st=0"><img src="img/report.png" class="icon style="width:10%;"></a>';
 						if (($typeuser == 'admin') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=6&stac=0"><img src="img/cost.png" alt="" class="icon"></a>';
 						if($typeuser == 'su')
@@ -68,7 +68,7 @@
 				    <form class="form-search" action="search.php">
 						<input type="text" placeholder="Нажмите Enter">
 				    </form>	
-					<a href="#"><img src="img/exit.png" alt="" class="icon"></a>
+					<a href="logout.php"><img src="img/exit.png" alt="" class="icon"></a>
 			  	 </figure>
 			</nav>
 		</div>';
