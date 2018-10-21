@@ -42,7 +42,7 @@ input:focus {
 /* Декорация наведения */
 /* Оформление секций */
 section {
-  height: 80vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   color: #fff;
@@ -66,7 +66,7 @@ table {
 }
 table th {
   font-weight: bold;
-  padding: 21px 25px 22px 25px;
+  padding: 10px 10px 11px 10px;
   border-top: 1px solid #fafafa;
   border-bottom: 1px solid #e0e0e0;
   background: #ededed;
@@ -93,13 +93,13 @@ table tr {
 }
 table tr td:first-child {
   text-align: left;
-  padding-left: 20px;
+  padding-left: 10px;
   border-left: 0;
 }
 table tr td {
   max-width: 16%;
   position: relative;
-  padding: 18px;
+  padding: 8px;
   border-top: 1px solid #ffffff;
   border-bottom: 1px solid #e0e0e0;
   border-left: 1px solid #e0e0e0;
@@ -775,4 +775,15 @@ table caption {
 }
 input:required {
   border-bottom: 2px solid red;
+}
+.stat {
+  width: 70%;
+  margin: 0 auto;
+  background: white;
+  color: black;
+  padding: 5px;
+}
+.stat h2 {
+  width: 100%;
+  text-align: center;
 }

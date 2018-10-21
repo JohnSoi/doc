@@ -16,12 +16,33 @@
 <?php
 	include ('includes/LogIO.php');
 	include("includes/DB.php");
+  include("includes/Date.php");
 ?>
 <body>
 	<div class="wrapper">
     <div class="content">
     <section class="input">
       <?php
+          $dateNowO = $date->getDate();
+          $allsum = $sumAm = $sumSt = $sumN = $sumB = 0;
+            $operationQuery = mysqli_query($connection, "SELECT * FROM operation WHERE date  LIKE '".$dateNowO."%'");
+            if(mysqli_num_rows($operationQuery) == 0)
+              $allsum = 'Нет данных в БД';
+            else
+            {
+              while($dataDB = mysqli_fetch_assoc($operationQuery))
+              {
+                $allsum += $dataDB['sum'];
+                if ($dataDB['type'] == 'Амбулатория')
+                    $sumAm += $dataDB['sum'];
+                  else
+                    $sumSt += $dataDB['sum'];
+                if ($dataDB['typeSum'] == 'nal')
+                  $sumB += $dataDB['sum'];
+                else
+                  $sumN += $dataDB['sum'];
+              }
+            }
             $query = mysqli_query($connection, "SELECT * FROM patient");
             $queryOpen = mysqli_query($connection, "SELECT * FROM patient WHERE status = '1'");
             $queryClose = mysqli_query($connection, "SELECT * FROM patient WHERE status = '0'");
@@ -154,9 +175,23 @@
               <div  id="piechart3"></div>
             </div>
             <?php
+            echo '
+            <div class="stat">
+                <h1 style="color: black;">Статистика операций за сегодня</h1>';
+                if($allsum == 'Нет данных в БД')
+                  echo '<h2>'.$allsum.'</h2>';
+                else
+                  echo'
+                    <h2 style="color: black;">Общая сумма:'.$allsum.' рублей</h2>
+                    <p style="float: right; color: black;" >Наличный расчет: '.$sumN.'рублей</p>
+                    <p style="float: left; color: black;" >Безналичный расчет: '.$sumB.'рублей</p><br>
+                    <p style="float: left; color: black;" >Поступления из амбулатории: '.$sumAm.'рублей</p>
+                    <p style="float: right; color: black;" >Поступления из стационара: '.$sumSt.'рублей</p>';
+            echo '</div>';
               $typeuser = $_SESSION['typeUser']; 
               $_SESSION['link'] = (isset($_SESSION['link'])) ? $_SESSION['link'] : 'main.php';
               if($typeuser != 'view') { echo '<a class="button" href="'.$_SESSION['link'].'">Вернуться</a>';} 
+              else echo '<a class="button" href="logout.php">Выйти</a>';
             ?>
     </section>
   </div>

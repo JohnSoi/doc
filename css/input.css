@@ -9,6 +9,9 @@
   grid-template-rows: repeat(20, 5%);
   text-align: center;
 }
+.wrap-input p {
+  cursor: pointer;
+}
 .wrap-input .name {
   margin: 1px;
   grid-column-start: 1;
@@ -75,40 +78,58 @@
   grid-row-end: 9;
 }
 .wrap-input .mest {
-  background: green;
-  grid-column: 0.16666667;
-  grid-row: 0.6;
+  margin: 1px;
   grid-column-start: 1;
   grid-column-end: 6;
   grid-row-start: 3;
   grid-row-end: 9;
+  padding-top: 6px;
 }
 .wrap-input .serv {
-  background: blue;
+  margin: 1px;
   grid-column-start: 1;
   grid-column-end: 9;
   grid-row-start: 9;
   grid-row-end: 17;
 }
 .wrap-input .btn-cl {
-  background: #000;
-  color: white;
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: 17;
   grid-row-end: 20;
+  display: grid;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .btn-cl a {
+  font-size: 20px;
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.wrap-input .btn-cl p {
+  font-size: 20px;
+  grid-row-start: 2;
+  grid-row-end: 4;
 }
 .wrap-input .btn-cost {
-  background: red;
+  display: grid;
   grid-column-start: 6;
   grid-column-end: 8;
   grid-row-start: 17;
   grid-row-end: 20;
+  grid-template-rows: repeat(4, 25%);
+}
+.wrap-input .btn-cost p {
+  font-size: 20px;
+  grid-row-start: 2;
+  grid-row-end: 4;
 }
 .wrap-input .doc {
+  padding: 3px;
   background: yellow;
   grid-column-start: 1;
   grid-column-end: 9;
   grid-row-start: 20;
   grid-row-end: 21;
+  font-size: 20px;
+  padding-bottom: 0px;
 }

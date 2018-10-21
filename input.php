@@ -25,6 +25,7 @@
 		<?php
 			include('includes/menu.php');
 		?>
+      <script src="js/script.js"></script>
   <div class="content">
       <?php
       	if (isset($_GET['flaginput']))
@@ -128,7 +129,6 @@
   </div>
 </div>
 <script src="js/jquery.min.js"></script>
-<script src="js/script.js"></script>
 <script src="js/jquery.maskedinput.min.js"></script>
 </body>
 </html>

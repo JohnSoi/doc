@@ -8,7 +8,6 @@
 		/* --- Функция перевода в классовые переменные --- */
 		function __construct($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME)
 		{
-			echo "<script>console.log('[DB.php] Создан объект DB');</script>";
 			$this->Server = $DB_SERVER;
 	        $this->User = $DB_USER;
 	        $this->Pass = $DB_PASS;
@@ -184,6 +183,14 @@
 		{
 			if (isset($_SESSION['link']))
 				echo "<script>setTimeout(function(){self.location=\"".$_SESSION['link']."\";}, 700);</script>";
+			else
+				header("Location: main.php");
+		}
+
+		function routeF()
+		{
+			if (isset($_SESSION['link']))
+				echo "<script>setTimeout(function(){self.location=\"".$_SESSION['link']."\";}, 10);</script>";
 			else
 				header("Location: main.php");
 		}

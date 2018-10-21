@@ -31,8 +31,8 @@
 						echo '</ol>';
 				echo '</div>
 			    <figure id = "bot-date">
-				    <form class="form-search" action="search.php">
-						<input type="text" placeholder="Нажмите Enter">
+				    <form class="form-search" action="search.php" method="GET">
+						<input name="search" type="text" placeholder="Нажмите Enter">
 				    </form>	
 					<a href="logout.php"><img src="img/exit.png" alt="" class="icon"></a>
 			  	 </figure>
@@ -41,7 +41,7 @@
 			<nav id="menu-list-am" class="menu-list-am">
 				<div class="groupBtn">
 					<figure>';
-						if (($typeuser == 'admin') or ($typeuser == 'su'))
+						if (($typeuser == 'doc') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" class="icon"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
 							echo '<a href="input.php?flaginput=2&st=0"><img src="img/report.png" class="icon style="width:10%;"></a>';
@@ -65,8 +65,8 @@
 						echo '</ol>';
 				echo '</div>
 			    <figure id = "bot-date">
-				    <form class="form-search" action="search.php">
-						<input type="text" placeholder="Нажмите Enter">
+				    <form class="form-search" action="search.php" method="GET">
+						<input name="search" type="text" placeholder="Нажмите Enter">
 				    </form>	
 					<a href="logout.php"><img src="img/exit.png" alt="" class="icon"></a>
 			  	 </figure>

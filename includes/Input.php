@@ -14,7 +14,7 @@
 					echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
 				else{
 				echo'
-					<table>
+					<table >
 						<caption>Список Персонала</caption>
 						<thead>
 						<tr>
@@ -126,91 +126,86 @@
 
 		function getServTable($connection, $type)
 			{
-				if($type == 0)
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория'");
-				else
-					$result = mysqli_query($connection, "SELECT * FROM `patient` WHERE type = 'Амбулатория' AND  status = 1 ORDER BY id DESC");
-
-
+				if ($_GET['st'] == 1)
+					$month = date("m");
+				else 
+				{
+					$month = date("m") - 1;
+					if ($month == 0)
+						$month = 1;
+				}
+				$result = mysqli_query($connection, "SELECT * FROM `patient`");
+				$doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+				$dataDOC = mysqli_fetch_assoc($doctor);
+				$idDoctor = $dataDOC['id'];
 
 				if (mysqli_num_rows($result) == 0)
 					echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
 				else{
-				echo'
-					<table>';
-					if ($type == 0) 
-						echo '<caption>Пациенты в амбулатории</caption>';
-					else
-						echo '<caption>Пациенты в стационаре</caption>';
-					echo '
+					echo'
+					<table align="center">
 						<thead>
-						<tr>
-						    <th rowspan="2">ФИО</th>
-						    <th rowspan="2">Дата рождения</th>
-						    <th rowspan="2">Телефон</th>
-						    <th rowspan="2">Услуги</th>
-						    <th rowspan="2">Стоимость</th>
-						    <th rowspan="2">Лечащий доктор</th>
-						    <th rowspan="2">Внесенная сумма</th>
-						    <th rowspan="2">Заметки</th>
-						    <th rowspan="2">Дата поступления</th>';
-						    if ($type == 1)
-						    	echo'<th rowspan="2">Койко место</th>';
-						   	echo'<th rowspan="2">Парметр</th>
-						  </tr>
+							<tr>
+							    <th rowspan="2">ФИО пациент</th>>
+							    <th rowspan="2">Услуга</th>
+							    <th rowspan="2">Дата выполнения</th>
+							    <th rowspan="2">Статус</th>
+							</tr>
 						</thead>
 						<tbody>';
-								while($data = mysqli_fetch_assoc($result)) {
-									echo '<tr>';
-								    echo '<td>'.$data['fio'].'</td>'; 
-								    echo '<td>'.$data['datebirthday'].'</td>'; 
-								    echo '<td>'.$data['tel'].'</td>'; 
-								    echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=3"><img class = "icon" src="img/list.png" alt="Посмотреть"></a></td>';
-								    echo '<td>'.$data['all_sum'].'</td>';
-								    if  ($data['doctor'] == 'no')
-								    	echo '<td style = "background: rgba(200,10,10,0.3);">Доктор не назначен</td>';
-								    else
-								    	echo '<td style = "background: rgba(10,200,10,0.3);">'.$data['doctor'].'</td>';
-								    if  (empty($data['sum']))
-								    	echo '<td style = "background: rgba(200,10,10,0.3);">Сумма не внесена</td>';
-								    else
-								    	echo '<td style = "background: rgba(10,200,10,0.3);">'.$data['sum'].'</td>';
-								    if  (empty($data['dist']))
-								    	echo '<td style = "background: rgba(200,10,10,0.3);">Заметок нет</td>';
-								    else
-								   		echo '<td>'.$data['dist'].'</td>';
-								    echo '<td>'.$data['dateIn'].'</td>';
-								    if ($type == 1)
-								    	echo '<td>'.$data['mest'].'</td>'; 
-								    echo '<td>';
-								    if ($_SESSION['typeUser'] == 'doc')
-								    	if ($data['doctor']=='no')
-								    		echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=4">Стать лечащим врачем</a>';
-								    	else
-								    		echo '<p>Параметров нет</p>';
-								    elseif ($_SESSION['typeUser'] == 'admin')
-								    {
-								    	$transferSum = $data["sumNow"] - $data["sum"];
-								    	if($data["sum"] < $data["sumNow"])
-								    		echo "<a href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Внести сумму (".$transferSum." руб.)</a>";
-								    	if($data["sum"] > $data["sumNow"])
-								    		echo "<a href='add.php?flagadd=6&stac=1&sum=".$transferSum."&id=".$data['id']."&flagop=1'>Вернуть деньги (".abs($transferSum)." руб.)</a>";
-								    	if($data["sum"] == $data["sumNow"])
-								    		echo "<a href='edit.php?flagedit=8&id=".$data['id']."'>Выписать</a>";
-								    }
-								    elseif ($_SESSION['typeUser'] == 'su')
-								    	echo '<a style = "color: blue;" href="edit.php?id='.$data['id'].'&flagedit=7&stat=0">Редактировать</a>';
-								    echo '</td>';
-								    echo '</tr>';
-								    }
+
+							while($data = mysqli_fetch_assoc($result)) {
+								echo '<tr>';
+								$namePat = $data['fio'];
+								$listServ = explode(',',$data['sp_uslug']);
+								$countServ = count($listServ);
+								$i = 0;
+								while ($i < $countServ) {
+									$exListServ = explode('-', $listServ[$i]);
+									$idServ = $exListServ[0];
+									$serv = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
+									$dataserv = mysqli_fetch_assoc($serv);
+									$servName = $dataserv['name'];
+									$idDoc = $exListServ[1];
+									$stServ = $exListServ[2];
+									if ($stServ == 1)
+										$dateServ = $exListServ[3];
+									else
+										$dateServ = '---';
+									if($idDoc == $idDoctor)
+										if($stServ == 1)
+										{
+											$dateTime = explode(' ', $dateServ);
+											$dateService = explode('/', $dateTime[0]);
+											$monthServ = $dateService[1];
+											if($monthServ == $month)
+											{
+												echo '<td>'.$namePat.'</td>';
+												echo '<td>'.$servName.'</td>';
+												echo '<td>'.$dateServ.'</td>';
+												echo '<td>Выполнено</td>';
+												echo '</tr>';
+											}
+
+										}
+										elseif($stServ == 0)
+										{
+												echo '<td>'.$namePat.'</td>';
+												echo '<td>'.$servName.'</td>';
+												echo '<td>'.$dateServ.'</td>';
+												echo '<td>Не выполнено</td>';
+												echo '</tr>';
+										}
+
+									$i++;
+
+								}
+								echo '</tr>';
+							}
 	 					echo '</tbody>
-					</table>';
-					if (mysqli_num_rows($result) == 1)
-						echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечится '.mysqli_num_rows($result).' пациент</p>'; 
-					elseif ((mysqli_num_rows($result) == 2) or (mysqli_num_rows($result) == 3) or (mysqli_num_rows($result) == 4))	
-						echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациента</p>';
-					else
-						echo '<p align="center" style = "color: black; margin: 10px;">В данный момент лечaтся '.mysqli_num_rows($result).' пациентов</p>';
+					</table>
+					<a class="button" href="input.php?flaginput=2&st=0">Предыдущий месяц</a>
+					';
 				}
 			}
 
@@ -247,21 +242,56 @@
 							 <div class="datest"> <p>Дата записи: <br>'.$data['dateIn'].'</p></div>      
 							 <div class="datefin"><p>Дата выписки: <br>';
 							 if(empty($data['dateOut']))
-							 	echo '<a href="#">Установить</a>';
+							 	echo '<a href="add.php?flagadd=8&id='.$id.'">Установить</a>';
 							 else
 							 {
 							 	echo $data['dateOut'];
 							 	if($typeuser == 'su')
-							 		echo '<br><a href="#">Отменить</a>';
+							 		echo '<br><a href="add.php?flagadd=9&id='.$id.'">Отменить</a>';
 							 }
 							 echo '</p></div>
-							 <div class="oper"><iframe width="100%" height="100%" src="input.php?flaginput=2" frameborder="1"></iframe></div>
-							 <div class="mest"> Койко - место</div>
-							 <div class="serv"> Назначения </div>
-							 <div class="btn-cl"> Закрыть</div>
-							 <div class="btn-cost">Оплата</div>
-							 <div class="doc">Лечащий доктор</div>
+							 <div class="oper"><iframe id="oper"  width="100%" height="100%" src="oper.php?id='.$id.'" frameborder="1" seamless></iframe></div>';
+							 if($data['type'] == 'Стационар')
+							 	echo '<div class="mest"><iframe id = "mest" seamless width="100%" height="100%" src="mest.php?id='.$id.'" frameborder="1"></iframe></div>';
+							 else
+							 {
+							 	isset($_SESSION['sum_mest']);
+							 	      echo '<script>menuSt.style.display = "none";
+							 	        menuAm.style.display = "flex";</script>';
+							 }
+							 echo '
+							 <div class="serv"><iframe id="serv" width="100%" height="100%" src="serv.php?id='.$id.'" frameborder="1"></iframe></div>';
+							 if(isset($_SESSION['sum_mest']))
+							 	$sumF = $data['sumNow'] + $_SESSION['sum_mest'];
+							 else
+							 	$sumF = $data['sumNow'];
+							 if($data['status'] == 0)
+							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
+							 elseif (($sumF == $data['sum']) and (!empty($data['dateOut'])))
+							  echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
+							 else
+							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
+							 if ($sumF  == $data['sum'])
+							 	echo '<div class="btn-cost" style="border:10px green solid ;"><p>Оплата</p></div>';
+							 else
+							 	echo '<div class="btn-cost" style="border:10px red solid ;"><p>Оплата</p></div>';
+							 echo '
+							 <div class="doc">Лечащий доктор: '.$data['doctor'].'</div>
 							</div>
+							<script>
+								var lo = document.getElementById(\'oper\');
+								setInterval(function() {
+								     lo.src = \'oper.php?id='.$id.'\';
+								}, 10000);
+								var serv = document.getElementById(\'serv\');
+								setInterval(function() {
+								     serv.src = \'serv.php?id='.$id.'\';
+								}, 10000);
+								var mest = document.getElementById(\'mest\');
+								setInterval(function() {
+								     mest.src = \'mest.php?id='.$id.'\';
+								}, 10000);
+							</script>
 						';
 					}
 				}
@@ -274,7 +304,7 @@
 				$countMest = mysqli_num_rows($mestQuery);
 
 				if ($countMest == 0)
-					echo "<p>Добавьте койко - место</p>";
+					echo "<h1>Добавьте койко - место</h1>";
 				else
 				{
 					echo '<h1>Список койко мест</h1>';

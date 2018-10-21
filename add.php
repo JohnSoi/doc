@@ -111,8 +111,30 @@
     			}
     		}
     }
+  //назначение койко - места
+  elseif($typePage == 2)
+    {
+      if(isset($_GET['mest']))
+      {
+        $idMest = $_GET['mest'];
+        //Данные о пациентах храняться в ассоциативном массиве
+        $PatientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+        $dataDB = mysqli_fetch_assoc($PatientQuery);
+      
+        $mest = $dataDB['mest'];
+        $listMest = explode(',', $mest);
+        $countMest = count($listMest);
+        if ($countMest == 0)
+          $listMestIn = $idMest;
+        else
+          $listMestIn =  $mest.','.$idMest;
+        $queryUpd = mysqli_query($connection, "UPDATE patient SET mest = '".$listMestIn."' WHERE id = '".$idPacient."'");
+        if($queryUpd)
+          echo "<script>setTimeout(function(){window.close();}, 500);</script>";
+      }
+    }
   //Обработка назначения услуг
-  if($typePage == 3)
+  elseif($typePage == 3)
     {
       if(isset($_GET['submit']))
       {
@@ -143,7 +165,7 @@
             if($updateServPat && $updateSumServPat)
             {
               $message = "Процедура добавлена";
-              $DataBase->route();
+              echo "<script>setTimeout(function(){window.close();}, 100);</script>";
             }
         }
       }
@@ -276,10 +298,14 @@
                     echo "<script>setTimeout(function(){self.location = 'input.php?flaginput=3&id=".$patData['id']."';}, 500);</script>";
                 }
                 else
+                {
+                    if($_SESSION['fl']==1)
+                      echo "<script>setTimeout(function(){window.close();}, 500);</script>";
                     if($patData['type'] == 'Амбулатория')
                       $DataBase->route();
                     else
                       $DataBase->route();
+                }
             }
             else
               $message = "Ошибка заполнения";
@@ -384,6 +410,26 @@
                   }
                 </script>	    				';
       			break;
+          //Добавление койко - места
+          case 2:
+            echo '
+              <form action="add.php">
+              <label for="mest">
+                <p>
+                  <select name="mest">';
+                    $mestQuery = mysqli_query($connection, "SELECT * FROM mest");
+                    while($dataDB = mysqli_fetch_assoc($mestQuery))
+                    {
+                      echo '<option value="'.$dataDB['id'].'"> Койко место №'.$dataDB['id'].' ('.$dataDB['value'].')</option>';
+                    }
+                  echo '  
+                  </select>
+                </p>
+              </label>
+                <p><input type="submit" value="Добавить"></p>
+              </form>
+            ';
+            break;
           //Назначение услуги
           case 3:
             $servQuery = mysqli_query($connection, "SELECT * FROM items");
@@ -451,6 +497,26 @@
           case 6:
            echo '
             <div class="cont-client">';
+            $dateNowO = $date->getDate();
+            $allsum = $sumA = $sumS = $sumN = $sumB = 0;
+              $operationQuery = mysqli_query($connection, "SELECT * FROM operation WHERE date  LIKE '".$dateNowO."%'");
+              if(mysqli_num_rows($operationQuery) == 0)
+                $allsum = 'Нет данных в БД';
+              else
+              {
+                while($dataDB = mysqli_fetch_assoc($operationQuery))
+                {
+                  $allsum += $dataDB['sum'];
+                  if ($dataDB['typeSum'] == 'nal')
+                    $sumB += $dataDB['sum'];
+                  else
+                    $sumN += $dataDB['sum'];
+                  if ($dataDB['type'] == 'Амбулатория')
+                    $sumA += $dataDB['sum'];
+                  else
+                    $sumS += $dataDB['sum'];
+                }
+              }
                 if ($typeStat == 0)
                    echo '<h1>Добавление денежной операции в амбулаторию</h1>';
                  else
@@ -473,22 +539,38 @@
 
                     <p><label for="name">Пациент<br><select  name="name">';
                         if(isset($_GET['id']))
+                        {
                           echo '<option value="'.$fioPacient.'">'.$fioPacient.'</option>';
+                          $_SESSION['fl']=1;
+                        }
                         else
                           while($dataDB = mysqli_fetch_assoc($patientQuery))
                           {
+                            $_SESSION['fl']=0;
                             echo '<option value="'.$dataDB['fio'].'">'.$dataDB['fio'].'</option>';
                           }
                         echo '
                       </select></label></p>
-                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text" pattern="^[0-9]+$" required></label></p>
+                      <p><label for="zal">Внесенная сумма<br><input name="zal" value="'.$sumOper.'" type="text" pattern="\-?[0-9]+$" required></label></p>
                       <p><label for="typezal">Тип платежа<br><select  name="typezal">
                         <option value="nal">Наличный</option>
                         <option value="beznal">Безналичный</option>
                       </select></label></p> 
                       <input type="submit" class="button" name="submit" value="Добавить">
                     </form>
-                </div>';
+                </div>
+                <div class="stat">
+                    <h1>Статистика операций за сегодня</h1>';
+                    if($allsum == 'Нет данных в БД')
+                      echo '<h2>'.$allsum.'</h2>';
+                    else
+                      echo'
+                        <h2>Общая сумма:'.$allsum.' рублей</h2>
+                        <p style="float: right;" >Наличный расчет: '.$sumN.'рублей</p>
+                        <p style="float: left;" >Безналичный расчет: '.$sumB.'рублей</p><br>
+                        <p style="float: left;" >Поступления из амбулатории: '.$sumA.'рублей</p>
+                        <p style="float: right;" >Поступления из стационара: '.$sumS.'рублей</p>';
+                echo '</div>';
             break;
           //Добавление койко - места
           case 7:
@@ -509,6 +591,20 @@
                 </div>
             ';
             break;
+          //Установка даты выписки
+          case 8:
+            $dateNow = $date -> getDateTime();
+            $updateDateOut = mysqli_query($connection, "UPDATE patient SET dateOut = '".$dateNow."' WHERE id = '".$idPacient."'");
+            if($updateDateOut)
+              $DataBase->routeF();
+            break;
+          //Удалить дату выписки
+          case 9:
+            $dateNow = $date -> getDateTime();
+            $updateDateOut = mysqli_query($connection, "UPDATE patient SET dateOut = '' WHERE id = '".$idPacient."'");
+            if($updateDateOut)
+              $DataBase->routeF();
+            break;
       		default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";
       			echo "<script>setTimeout(function(){self.location=\"login.php\";}, 1500);</script>";
@@ -519,8 +615,14 @@
     </section>
   </div>
 </div>
-<script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
+<?php 
+  if(isset($typeStat))
+    if($typeStat == 0)
+      echo '<script>menuSt.style.display = "none";
+        menuAm.style.display = "flex";</script>';
+ ?>
+<script src="js/jquery.min.js"></script>
 <script src="js/jquery.maskedinput.min.js"></script>
 <script type="text/javascript">
     $(function() {

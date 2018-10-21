@@ -25,6 +25,7 @@
 	<meta charset="UTF-8">
 	<title>Параметры</title>
 	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <body>

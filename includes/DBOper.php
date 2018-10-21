@@ -141,7 +141,7 @@
 			// 	$this -> delStrDB($con, $count, $query, 1);
 			// }
 
-			$param = 10000;
+			$param = 1000;
 
 			$query = mysqli_query($con, 'SELECT * FROM operation');
 			$count = mysqli_num_rows($query);
