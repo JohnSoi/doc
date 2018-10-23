@@ -140,6 +140,9 @@
       {
         if(isset($_GET['serv']))
         {
+            $doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+            $dataDOC = mysqli_fetch_assoc($doctor);
+            $idDoctor = $dataDOC['id'];
             $coutnServPatientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
             $coutnServPatient = mysqli_fetch_assoc($coutnServPatientQuery);
             if($coutnServPatient['sp_uslug'] == '')
@@ -153,9 +156,9 @@
               $sumServArr = mysqli_fetch_assoc($sumServQuery);
               $sumServ += $sumServArr['cost'];
               if(($i == 0) && ($coutnServPatient == 0))
-                $listServ = $arrayServ[$i].'-0-0';
+                $listServ = $arrayServ[$i].'-'.$idDoctor.'-0-0';
               else
-                $listServ .= ','.$arrayServ[$i].'-0-0';
+                $listServ .= ','.$arrayServ[$i].'-'.$idDoctor.'-0-0';
             }
             $servNow = $coutnServPatient['sp_uslug'];
             $servNow .= $listServ;
@@ -472,6 +475,7 @@
       			break;
           //Добавление пациента
           case 5:
+            $DBO->checkDate($connection, $date->getDateTime());
             $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
             $doctorArray = mysqli_fetch_assoc($doctorQuery);
             $doctorName = $doctorArray['fio'];

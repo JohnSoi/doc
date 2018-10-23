@@ -146,7 +146,7 @@
 					<table align="center">
 						<thead>
 							<tr>
-							    <th rowspan="2">ФИО пациент</th>>
+							    <th rowspan="2">ФИО пациент</th>
 							    <th rowspan="2">Услуга</th>
 							    <th rowspan="2">Дата выполнения</th>
 							    <th rowspan="2">Статус</th>
@@ -166,10 +166,10 @@
 									$serv = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
 									$dataserv = mysqli_fetch_assoc($serv);
 									$servName = $dataserv['name'];
-									$idDoc = $exListServ[1];
-									$stServ = $exListServ[2];
+									$idDoc = $exListServ[2];
+									$stServ = $exListServ[3];
 									if ($stServ == 1)
-										$dateServ = $exListServ[3];
+										$dateServ = $exListServ[4];
 									else
 										$dateServ = '---';
 									if($idDoc == $idDoctor)
@@ -203,9 +203,11 @@
 								echo '</tr>';
 							}
 	 					echo '</tbody>
-					</table>
-					<a class="button" href="input.php?flaginput=2&st=0">Предыдущий месяц</a>
-					';
+					</table>';
+					if ($_GET['st'] == 1)
+						echo '<a class="button" href="input.php?flaginput=2&st=0">Предыдущий месяц</a>';
+					else
+						echo '<a class="button" href="input.php?flaginput=2&st=1">Текущий месяц</a>';
 				}
 			}
 

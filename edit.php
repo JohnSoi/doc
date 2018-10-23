@@ -383,10 +383,10 @@
 							{
 								$exListServ = explode('-', $listServ[$i]);
 								$idServ = $exListServ[0];
-								$exListServ[1] = $idDoctor;
-								$exListServ[2] = 1;
+								$exListServ[2] = $idDoctor;
+								$exListServ[3] = 1;
 								$dateNow = $date->getDateTime();
-								$listServ[$i] = $idServ.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$dateNow;
+								$listServ[$i] = $idServ.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$exListServ[3].'-'.$dateNow;
 							}
 							if($i != 0)
 							{

@@ -27,6 +27,9 @@
 
 	  include("includes/DB.php");
 	  require_once 'includes/Date.php';
+	  require_once 'includes/LogIO.php';
+	  $username = $access->getUserName();
+	  $typeuser = $_SESSION['typeUser'];
 
 	  $patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
 	  $namePat = mysqli_fetch_assoc($patQuery);
@@ -58,10 +61,11 @@
 						while ($i < $countServ) {
 							$exListServ = explode('-', $listServ[$i]);
 							$idServ = $exListServ[0];
-							$idDoc = $exListServ[1];
-							$statusServ = $exListServ[2];
+							$idNaDoc = $exListServ[1];
+							$idDoc = $exListServ[2];
+							$statusServ = $exListServ[3];
 							if ($statusServ == 1)
-								$dataServ = $exListServ[3];
+								$dataServ = $exListServ[4];
 							else
 								$dataServ = 'нет даты';
 							$query = mysqli_query($connection, "SELECT * FROM items WHERE id= '".$idServ."'");
@@ -78,6 +82,9 @@
 								$data = mysqli_fetch_assoc($query);
 								$nameDoc = $data['fio'];	
 							}
+							$query1 = mysqli_query($connection, "SELECT fio FROM usertbl WHERE id= '".$idNaDoc."'");
+							$data1 = mysqli_fetch_assoc($query1);
+							$nameNDoc = $data1['fio'];
 
 							if($statusServ == 0)
 								if(($_SESSION['typeUser'] == 'doc') or ($_SESSION['typeUser'] == 'ddoc') or ($_SESSION['typeUser'] == 'su'))
@@ -90,9 +97,9 @@
 								$statServ = 'Выполнено';
 							}
 							if ($nameDoc == 'Процедура не выполнена')
-								echo '<li>'.$nameServ.'		-	'.$nameDoc.'	-	'.$statServ.'</li>';
+								echo '<li>'.$nameServ.'		-	Назначил:'.$nameNDoc.'		-	Выполнил:'.$nameDoc.'	-	'.$statServ.'</li>';
 							else
-								echo '<li style="background: hsl(122, 79%, 50%);">'.$nameServ.'		-	'.$nameDoc.'	-	'.$statServ.'	-	'.$dataServ.'</li>';
+								echo '<li style="background: hsl(122, 79%, 50%);">'.$nameServ.'		-	Назначил:'.$nameNDoc.'		-	Выполнил:'.$nameDoc.'	-	'.$statServ.'	-	'.$dataServ.'</li>';
 							$i++;	
 						}
 			echo '</ol>
@@ -101,7 +108,7 @@
 			';
 			$_SESSION['sum_serv'] = $allsum;
 			if($flag == 0)
-				if($ldoc == $nameDoct)
+				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))
 					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
 		}	
 	?>

@@ -56,7 +56,7 @@
               if(isset($_SESSION['sum']))
                 unset($_SESSION['sum']);
               $_SESSION['link'] = 'input.php?flaginput=2';
-              $input -> getServTable($connection, 0);
+              $input->getServTable($connection, 0);
       			break;
       		//Вывод персональной таблицы
           case 3:
@@ -70,7 +70,7 @@
                 $id = $_GET['id'];
                 $_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
                 $dateNow = $date->getDate();
-                $input -> getPacientPersonalTable($connection, $id, $date, $typeuser);   			
+                $input->getPacientPersonalTable($connection, $id, $date, $typeuser);   			
               break;
       		//Вывод услуг
           case 4:
