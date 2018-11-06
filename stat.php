@@ -1,4 +1,5 @@
 <?php
+  // Подключение сторонних файлов и проверка на неавторизованность
 	session_start();
   if(!$_SESSION['session_username'])
     header("Location:login.php");
@@ -11,6 +12,7 @@
 	<meta charset="UTF-8">
 	<title>Статистика</title>
 	<link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/menu.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <?php
@@ -20,56 +22,79 @@
 ?>
 <body>
 	<div class="wrapper">
-    <div class="content">
-    <section class="input">
+    <div class="wrapper">
       <?php
+        /* --- Подключение меню --- */
+        include('includes/menu.php');
+      ?>
+        <div class="content">
+      <?php
+          // Текущая дата
           $dateNowO = $date->getDate();
+          // Зануление переменных
           $allsum = $sumAm = $sumSt = $sumN = $sumB = 0;
-            $operationQuery = mysqli_query($connection, "SELECT * FROM operation WHERE date  LIKE '".$dateNowO."%'");
-            if(mysqli_num_rows($operationQuery) == 0)
+          // Запрос
+          $operationQuery = mysqli_query($connection, "SELECT * FROM operation WHERE date  LIKE '".$dateNowO."%'");
+          // Если пусто - вывести сообщение
+          if(mysqli_num_rows($operationQuery) == 0)
               $allsum = 'Нет данных в БД';
-            else
+          // При наличие данных запустить счетчики
+          else
             {
+              // Цикл счетчика
               while($dataDB = mysqli_fetch_assoc($operationQuery))
               {
+                // Вся сумма
                 $allsum += $dataDB['sum'];
+
                 if ($dataDB['type'] == 'Амбулатория')
+                    // Сумма в амбулатории
                     $sumAm += $dataDB['sum'];
                   else
+                    // Сумма в стационаре
                     $sumSt += $dataDB['sum'];
+
                 if ($dataDB['typeSum'] == 'nal')
-                  $sumB += $dataDB['sum'];
-                else
+                  // Сумма наличными
                   $sumN += $dataDB['sum'];
+                else
+                  // Сумма безналичного платежа
+                  $sumB += $dataDB['sum'];
               }
             }
+
+            // Запросы к БД
             $query = mysqli_query($connection, "SELECT * FROM patient");
             $queryOpen = mysqli_query($connection, "SELECT * FROM patient WHERE status = '1'");
             $queryClose = mysqli_query($connection, "SELECT * FROM patient WHERE status = '0'");
             $countPacient = mysqli_num_rows($query);
             $countPacientOpen = mysqli_num_rows($queryOpen);
             $countPacientClose = mysqli_num_rows($queryClose);
-                $queryA = mysqli_query($connection, "SELECT * FROM operation WHERE type = 'Амбулатория'");
-                $queryS = mysqli_query($connection, "SELECT *  FROM operation WHERE type = 'Стационар'");
-                $sumA = $sumS = 0;
-                while ($row = mysqli_fetch_assoc($queryA)){
-                    $sumA += $row['sum'];
-                }
-                while ($row = mysqli_fetch_assoc($queryS)){
-                    $sumS += $row['sum'];
-                  }
+            $queryA = mysqli_query($connection, "SELECT * FROM operation WHERE type = 'Амбулатория'");
+            $queryS = mysqli_query($connection, "SELECT *  FROM operation WHERE type = 'Стационар'");
+            $sumA = $sumS = 0;
+            // Циклы подсчета сумм
+            while ($row = mysqli_fetch_assoc($queryA)){
+              $sumA += $row['sum'];
+              }
+            while ($row = mysqli_fetch_assoc($queryS)){
+               $sumS += $row['sum'];
+              }
+            // Запрос к пользователям Врачам
             $docQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE dol = 'doc'");
-             $str = $str1 =''; 
-                  while($dataServ = mysqli_fetch_assoc($docQuery))
-                      {
-                          $str .= "[' ".$dataServ['fio']." ', ".$dataServ['uslugi']." ],";
-                          $str1 .= "[' ".$dataServ['fio']." ', ".$dataServ['money']." ],";
-                      }
+            // Строковые перемнные
+            $str = $str1 =''; 
+            // Цикл получения строки для построения графиков
+            while($dataServ = mysqli_fetch_assoc($docQuery)){
+              $str .= "[' ".$dataServ['fio']." ', ".$dataServ['uslugi']." ],";
+              $str1 .= "[' ".$dataServ['fio']." ', ".$dataServ['money']." ],";
+              }
                       
 
         ?>
         <h1>Статистка</h1>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <!-- Скрипт вывода графика количества пациентов в амбулатории и стационаре -->
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
               google.charts.setOnLoadCallback(drawChart);
@@ -91,6 +116,7 @@
                 chart.draw(data, options);
               }
             </script>
+            <!-- Скрипт графика прибыли по категориям -->
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
@@ -113,6 +139,7 @@
                 chart.draw(data, options);
               }
             </script>
+            <!-- Скрипт графика вывода количества услуг по врачам -->
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
@@ -134,6 +161,7 @@
                 chart.draw(data, options);
               }
             </script>
+            <!-- Скрипт гафика зарплат врачей -->
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
@@ -188,14 +216,15 @@
                     <p style="float: left; color: black;" >Поступления из амбулатории: '.$sumAm.'рублей</p>
                     <p style="float: right; color: black;" >Поступления из стационара: '.$sumSt.'рублей</p>';
             echo '</div>';
+            // Вывод кнопки по типу записи
               $typeuser = $_SESSION['typeUser']; 
               $_SESSION['link'] = (isset($_SESSION['link'])) ? $_SESSION['link'] : 'main.php';
               if($typeuser != 'view') { echo '<a class="button" href="'.$_SESSION['link'].'">Вернуться</a>';} 
               else echo '<a class="button" href="logout.php">Выйти</a>';
             ?>
-    </section>
   </div>
 </div>
 <script src="js/jquery.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

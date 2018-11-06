@@ -1,4 +1,5 @@
 <?php
+// Подключение сторонних файлов и проверка на неавторизованность
 	session_start();
   if(!$_SESSION['session_username'])
     header("Location:login.php");
@@ -19,9 +20,11 @@
 <body>
   <div class="wrapper">
     <?php
+      // Подключение меню
       include('includes/menu.php');
     ?>
   <div class="content">
+    <!-- Переопределение фона секции -->
     <style>
       .add{
         background: white;
@@ -29,17 +32,22 @@
     </style>
     <section class="add">
       <?php 
+      // Получение переменной из запроса
         $search = $_GET['search'];
+        // Поиск по запрросу в таблице пациентов
         $searchQuery = mysqli_query($connection, "SELECT * FROM patient WHERE fio LIKE '%".$search."%'");
-        $searchQuery = mysqli_query($connection, "SELECT * FROM patient WHERE fio LIKE '%".$search."%'");
+        // При отсутствие выполнить другой запрос
         if(mysqli_num_rows($searchQuery) == 0)
         {
+          // Поиск по ИД
           $searchQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id LIKE '%".$search."%'");
+          // При отсуттствии вывод сообщения
           if(mysqli_num_rows($searchQuery) == 0)
           {
             echo '<img style="width: 40%; margin-left: 30%;" src="img/ops.jpg" alt="">';
             echo '<h1>Поиск не дал результатов</h1>';
           }
+          // Вывод результатов в таблице
           else
           {
             echo '<table>

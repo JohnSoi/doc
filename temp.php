@@ -1,114 +1,137 @@
+
 <?php
+	// Подключение сторонних файлов и проверка на неавторизованность
 	session_start();
   if(!$_SESSION['session_username'])
     header("Location:login.php");
-  
-	include("includes/DB.php");
-  include("includes/Date.php");
-  include('includes/DBOper.php');
-
-  if(isset($_POST['yap']))
-    echo count($_POST['yap']);
-
 ?>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Добавление</title>
-	<link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/menu.css">
+	<title>Вывод</title>
+	<link rel="stylesheet" href="css/mini.css">
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <body>
-	<div class="wrapper">
-		<?php
-			include('includes/menu.php');
-		?>
-  <div class="content">
-    <style>
-      .wrap-input{
-        margin: 0 auto;
-        display: grid;
-        width: 95%;
-        height: 94%;
-        margin: 0 auto;
-        margin-top: 3%;
-        background: white;
-        grid-template-columns: repeat(8, 12.5%);
-        grid-template-rows: repeat(8, 12.5%);
-        text-align: center;
-        justify-content: center;
-      }
-      .name{
-        background: #000;
-        grid-column: 1/3;
-        color: white;
-      }
-      .date
-      {
-        background: red;
-        grid-column: 1/3;
-        grid-row: 2/3;
-      }
-      .datest{
-        background: yellow;
-        grid-column: 4/5;
-      }
-      .datafin{
-        background: #000;
-        color: white;
-        grid-column: 5/6;
-      }
-      .oper{
-        background: brown;
-        grid-column: 6/9;
-        grid-row: 1/5;
-      }
-      .mest{
-        background: green;
-        grid-column: 1/6;
-        grid-row: 3/5;
-      }
-      .serv{
-        background: blue;
-        grid-column: 2/7;
-        grid-row: 5/7;
-      }
-      .btn-cl{
-        background: #000;
-        color: white;
-        grid-column: 2/4;
-        grid-row: 7/8;
-      }
-      .btn-cost{
-        background: red;
-        grid-column: 5/7;
-        grid-row: 7/8;
-      }
-      .doc{
-        background: yellow;
-        grid-column: 1/9;
-        grid-row: 8/9;
-      }
-    </style>
-    <?php require_once 'includes/Date.php'; ?>
-      <div class="wrap-input">
-       <div class="name">Иванов И.И.</div>
-       <div class="date">Дата</div>
-       <div class="datest"><?php echo $date->getDateTime(); ?></div>      
-       <div class="datefin">Закрыта карта</div>
-       <div class="oper"><iframe width="100%" height="100%" src="input.php?flaginput=2" frameborder="1"></iframe></div>
-       <div class="mest"> Койко - место</div>
-       <div class="serv"> Назначения </div>
-       <div class="btn-cl"> Закрыть</div>
-       <div class="btn-cost">Оплата</div>
-       <div class="doc">Лечащий доктор</div>
-      </div>
-</div>
-<script src="js/jquery.min.js"></script>
-<script src="js/script.js"></script>
+	<?php
+	  // Получение парметров из запроса 
+	  if (isset($_GET['id'])){
+          $idPacient = $_GET['id'];
+          $_SESSION['id_serv'] = $idPacient;
+        }
+      else{
+          if(isset($_SESSION['id_serv']))
+            $idPacient = $_SESSION['id_serv'];
+        }
+      // Подключение сторонних файлов и параметров
+	  include("includes/DB.php");
+	  require_once 'includes/Date.php';
+	  require_once 'includes/LogIO.php';
+	  $username = $access->getUserName();
+	  $typeuser = $_SESSION['typeUser'];
+
+	  // Запросы и параметры в переменные
+	  $patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+	  $namePat = mysqli_fetch_assoc($patQuery);
+	  $doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
+	  $dataDOC = mysqli_fetch_assoc($doctor);
+	  $idDoctor = $dataDOC['id'];
+	  $nameDoct = $dataDOC['fio'];
+	  $typePat = $namePat['type'];
+	  $serv = $namePat['sp_uslug'];
+	  $ldoc = $namePat['doctor'];
+	  $flag = !empty($namePat['dateOut']);
+	  $namePat = $namePat['fio'];
+
+	  // При отсутствие выдать сообщение
+	  if (empty($serv)){
+			echo "<div align = 'center'><h1>Нет данных в Базе данных для пациента ".$namePat."</h1></div>";
+			if($flag == 0)
+				if($ldoc == $nameDoct)
+					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
+			}
+	  // Вывод назначений 
+	  else{
+			echo'<h1>Список назначений пациента '.$namePat.'</h1>
+			<table align="center">'; 
+				$sumall = 0;
+				$listServ = explode(',', $serv);
+				$countServ = count($listServ);
+				$i = $allsum = $sumNow = 0;
+
+				echo '<tr>';
+					echo "<td>Дата назначения</td>";
+					echo "<td>Процедура</td>";
+					echo "<td>Стоимость</td>";
+					echo "<td>Назначил</td>";
+					echo "<td>Выполнил</td>";
+					echo "<td>Статус</td>";
+					echo "<td>Время выполненияы</td>";
+				echo '</tr>';
+
+				while ($i < $countServ){
+					$exListServ = explode('-', $listServ[$i]);
+					$idServ = $exListServ[0];
+					$idNaDoc = $exListServ[1];
+					$idDoc = $exListServ[2];
+					$statusServ = $exListServ[3];
+					if ($statusServ == 1)
+						$dataServ = $exListServ[4];
+					else
+						$dataServ = 'нет даты';
+					$query = mysqli_query($connection, "SELECT * FROM items WHERE id= '".$idServ."'");
+					$data = mysqli_fetch_assoc($query);
+					$nameServ = $data['name'];
+					$costServ = $data['cost'];
+					$allsum += $costServ;
+
+					if ($idDoc == 0)
+						$nameDoc = 'Не выполнена';
+
+					else{
+						$query = mysqli_query($connection, "SELECT fio FROM usertbl WHERE id= '".$idDoc."'");
+						$data = mysqli_fetch_assoc($query);
+						$nameDoc = $data['fio'];	
+						}
+					
+					$query1 = mysqli_query($connection, "SELECT fio FROM usertbl WHERE id= '".$idNaDoc."'");
+					$data1 = mysqli_fetch_assoc($query1);
+					$nameNDoc = $data1['fio'];
+
+					echo '<tr>';
+						if($statusServ == 0)
+							if(($_SESSION['typeUser'] == 'doc') or ($_SESSION['typeUser'] == 'ddoc') or ($_SESSION['typeUser'] == 'su'))
+								$statServ = '<p><a href="link.html" class="rollover"></a></p>';
+							else
+								$statServ = 'Не выполнено';
+						elseif($statusServ == 1){	
+							$sumNow += $costServ;
+							$statServ = 'Выполнено';
+							}
+						if ($nameDoc == 'Не выполнена')
+							echo '<td></td><td>'.$nameServ.'</td><td>'.$costServ.'</td><td>'.$nameNDoc.'</td><td>'.$nameDoc.'</td><td>'.$statServ.'</td><td>'.$dataServ.'</td>';
+						else
+							echo '<td></td><td style="background: hsl(122, 79%, 50%);"></td><td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$costServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameNDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$statServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$dataServ.'</td>';
+						$i++;	
+						}
+					echo '</tr>';
+					echo '<tr>';
+						echo "<td rowspan='2' style=\"background: hsl(59, 76%, 50%);\">Общая сумма услуг</td>";
+						echo "<td style=\"background: hsl(59, 76%, 50%);\">".$allsum."</td>";
+						echo '<td style="background: hsl(59, 76%, 50%);">Выполнено на</td>';
+						echo '<td style="background: hsl(59, 76%, 50%);">'.$sumNow.'</td>';
+					echo '</tr>';
+			echo '</table>
+			<hr>
+			<p>Общая сумма услуг: '.$allsum.' (Выполнено: '.$sumNow.')</p>
+			';
+			$_SESSION['sum_serv'] = $allsum;
+			if($flag == 0)
+				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))
+					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
+		}	
+	?>
 </body>
 </html>
-

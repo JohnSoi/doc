@@ -1,10 +1,11 @@
+/* --- Минимальный набор стилей --- */
 /* Переопределение стилей таблиц */
-table {
+table{
   font-family:Arial, Helvetica, sans-serif;
   color:#000;
   font-size:12px;
   background:#eaebec;
-  margin:20px;
+  margin:10px;
   border:#ccc 1px solid;
  
   -moz-border-radius:3px;
@@ -14,81 +15,95 @@ table {
   -moz-box-shadow: 0 1px 2px #d1d1d1;
   -webkit-box-shadow: 0 1px 2px #d1d1d1;
   box-shadow: 0 1px 2px #d1d1d1;
- th {
-  font-weight:bold;
-  padding:21px 25px 22px 25px;
-  border-top:1px solid #fafafa;
-  border-bottom:1px solid #e0e0e0;
- 
-  background: #ededed;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-  background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
-}
- th:first-child{
-  text-align: left;
-  padding-left:20px;
-}
- tr:first-child th:first-child{
-  -moz-border-radius-topleft:3px;
-  -webkit-border-top-left-radius:3px;
-  border-top-left-radius:3px;
-}
- tr:first-child th:last-child{
-  -moz-border-radius-topright:3px;
-  -webkit-border-top-right-radius:3px;
-  border-top-right-radius:3px;
-}
- tr{
-  text-align: center;
-  padding-left:20px;
-}
- tr td:first-child{
-  text-align: left;
-  padding-left:20px;
-  border-left: 0;
-}
- tr td {
-  max-width: 16%;
-  position: relative;
-  padding:18px;
-  border-top: 1px solid #ffffff;
-  border-bottom:1px solid #e0e0e0;
-  border-left: 1px solid #e0e0e0;
- 
-  background: #fafafa;
-  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
-  background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
-}
- tr:nth-child(even) td{
-  background: #f6f6f6;
-  background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
-  background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
-}
- tr:last-child td{
-  border-bottom:0;
-}
- tr:last-child td:first-child{
-  -moz-border-radius-bottomleft:3px;
-  -webkit-border-bottom-left-radius:3px;
-  border-bottom-left-radius:3px;
-}
- tr:last-child td:last-child{
-  -moz-border-radius-bottomright:3px;
-  -webkit-border-bottom-right-radius:3px;
-  border-bottom-right-radius:3px;
-}
- tr:hover td{
-  background: #f2f2f2;
-  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
-  background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
-}
-}
+
+  th{
+    font-weight:bold;
+    padding:10px 12px 10px 12px;
+    border-top:1px solid #fafafa;
+    border-bottom:1px solid #e0e0e0;
+   
+    background: #ededed;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+    background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+    }
+
+  th:first-child{
+    padding-left:8px;
+    text-align: center;
+    }
+
+  tr:first-child th:first-child{
+    -moz-border-radius-topleft:3px;
+    -webkit-border-top-left-radius:3px;
+    border-top-left-radius:3px;
+    }
+
+  tr:first-child th:last-child{
+    -moz-border-radius-topright:3px;
+    -webkit-border-top-right-radius:3px;
+    border-top-right-radius:3px;
+    }
+
+  tr{
+    text-align: center;
+    padding-left:8px;
+    }
+
+  tr td:first-child{
+    text-align: center;
+    padding-left:8px;
+    border-left: 0;
+    }
+
+  tr td {
+    max-width: 16%;
+    position: relative;
+    padding:8px;
+    border-top: 1px solid #ffffff;
+    border-bottom:1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+   
+    background: #fafafa;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+    background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+    }
+
+  tr:nth-child(even) td{
+    background: #f6f6f6;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+    background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+    }
+
+  tr:last-child td{
+    border-bottom:0;
+    }
+
+  tr:last-child td:first-child{
+    -moz-border-radius-bottomleft:3px;
+    -webkit-border-bottom-left-radius:3px;
+    border-bottom-left-radius:3px;
+    }
+
+  tr:last-child td:last-child{
+    -moz-border-radius-bottomright:3px;
+    -webkit-border-bottom-right-radius:3px;
+    border-bottom-right-radius:3px;
+    }
+  
+  tr:hover td{
+    background: #f2f2f2;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+    background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+    }
+  }
+/* --- Стиль заголовков --- */
 h1{
   border: 1px solid black;
   font-size: 14px;
   text-align: center;
-}
-.button {
+  }
+/* --- Стиль кнопик --- */
+.button{
   display: block;
   padding: 15px;
   width: 40%;
@@ -97,7 +112,8 @@ h1{
   margin: 10px auto;
   text-align: center;
   transition: 3s;
-}
-.button:hover {
+  }
+/* --- Эффект наведения --- */
+.button:hover{
   border-bottom: 4px red solid;
-}
+  }

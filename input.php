@@ -1,7 +1,33 @@
 <?php
+  /* --- Проверка на авторизованность --- */
 	session_start();
   if(!$_SESSION['session_username'])
     header("Location:login.php");
+
+    include("includes/DB.php");
+
+    if (isset($_GET['id'])){
+          $id = $_GET['id'];
+          $_SESSION['idIn'] = $id;
+          }
+        else
+          if(isset($_SESSION['idIn']))
+            $id = $_SESSION['idIn'];
+          
+
+    if(isset($_GET['ad'])){
+      $ad = $_GET['ad'];
+      $updateAd = mysqli_query($connection, "UPDATE patient SET ad = '".$ad."' WHERE  id = '".$id."'");
+      }
+    if(isset($_GET['agent'])){
+      $agent = $_GET['agent'];
+      $updateAd = mysqli_query($connection, "UPDATE patient SET agent = '".$agent."' WHERE  id = '".$id."'");
+      }
+    if(isset($_GET['agent']) || isset($_GET['ad']))
+        if($updateAd){
+              $message = "Изменения приняты ";
+              echo "<script>setTimeout(function(){window.close();}, 100);</script>";
+              }
 ?>
 
 <!DOCTYPE html>
@@ -15,34 +41,40 @@
 	<meta http-equiv="Cache-Control" content="private">
 </head>
 <?php
-	include("includes/DB.php");
+  /* --- Подключение сторонних файлов --- */
 	include("includes/Input.php");
   include 'includes/DBOper.php';
   require_once 'includes/Date.php';
+  /* --- Вывод сообщения при наличии --- */
+  if (!empty($message)) 
+      echo "<p class=\"error\">" . "Сообщение: ". $message . "</p>";  
 ?>
 <body>
 	<div class="wrapper">
 		<?php
+      /* --- Подключение меню --- */
 			include('includes/menu.php');
 		?>
       <script src="js/script.js"></script>
   <div class="content">
       <?php
+        /* --- Получение параметров и установка сессий --- */
       	if (isset($_GET['flaginput']))
-      	{
-      		$typePage = $_GET['flaginput'];
-      		$_SESSION['flaginput'] = $typePage;
-      	}
+        	{
+        		$typePage = $_GET['flaginput'];
+        		$_SESSION['flaginput'] = $typePage;
+        	}
       	else
-      	{
-      		$typePage = $_SESSION['flaginput'];
-      	}
+        	{
+        		$typePage = $_SESSION['flaginput'];
+        	}
 
         if (isset($_GET['set']))
-        {
-          $set = $_GET['set'];
-        }
+          {
+            $set = $_GET['set'];
+          }
 
+        /* --- Вывод в зависимости от параметров --- */
       	switch ($typePage)
       	{
           //Вывод персонала
@@ -90,33 +122,71 @@
             $_SESSION['link'] = 'input.php?flaginput=6';
             $input->getTablesMest($connection);
             break;
+          // Добавление пациента
           case 7:
-          $_SESSION['link'] = 'input.php?flaginput=7';
+            $_SESSION['link'] = 'input.php?flaginput=7';
             $dateNow = $date->getDateTime();
             $DBO -> checkDate($connection, $dateNow);
             $input->getAddPatient($connection);
             break;
+          // Добавление операций
           case 8:
-          $_SESSION['link'] = 'input.php?flaginput=8';
-          $dateNow = $date->getDateTime();
+            $_SESSION['link'] = 'input.php?flaginput=8';
+            $dateNow = $date->getDateTime();
             $DBO -> checkDate($connection, $dateNow);
              $dateNow = $date->getDate();
               $input->getAddOperation($connection, $dateNow);
             break;
+          // Вывод параметров
           case 9:
-          $_SESSION['link'] = 'input.php?flaginput=9';
-              $input->getParam();
+            $_SESSION['link'] = 'input.php?flaginput=9';
+            $input->getParam();
             break;
+          // Вывод кнопок
           case 10:
-          $_SESSION['link'] = 'input.php?flaginput=10';
+            $_SESSION['link'] = 'input.php?flaginput=10';
             $input->getBtn();
             break;
+          // Вывод пациентов
           case 11:
-              $input->inPat($connection, $set);
+             $_SESSION['link'] = 'input.php?flaginput=11';
+             $input->inPat($connection, $set);
              break;          
+          /* --- Вывод операций --- */
           case 12:
-          $_SESSION['link'] = 'input.php?flaginput=11';
+            $_SESSION['link'] = 'input.php?flaginput=12';
             $input->inOp($connection, $set);
+            break;
+          /* --- Выбор рекламы --- */
+          case 13:
+            echo '
+              <form action="">
+                <p><h1>Укажите источник рекламы</h1>
+                  <select name="ad">
+                      <option value="ТВ">ТВ</option>
+                      <option value="Агенты">Агенты</option>
+                      <option value="Газеты">Газеты</option>
+                      <option value="Наружняя реклама">Наружняя реклама</option>
+                  </select>
+                </p>
+                <input type="submit" value="Сохранить">
+              </form>
+            ';
+            break;
+          /* --- Выбор агентов --- */
+          case 14:
+            echo '
+              <form action="">
+                <p><h1>Укажите агента</h1>
+                  <select name="agent">
+                      <option value="Скорая помощь">Скорая помощь</option>
+                      <option value="21 Больница">21 Больница</option>
+                      <option value="Справочник">Справочник</option>
+                  </select>
+                </p>
+                <input type="submit" value="Сохранить">
+              </form>
+            ';
             break;
           //Если случайный переход
           default:

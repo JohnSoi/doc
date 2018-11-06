@@ -1,13 +1,29 @@
+/* --- Стиль персонального вывода пациентов --- */
+/* --- Общий грид макет --- */
 .wrap-input {
   display: grid !important;
   width: 100%;
-  min-height: 600px;
+  min-height: 800px;
+  max-height: 900px;
   margin: 0 auto;
   margin-top: 3%;
   background: white;
   grid-template-columns: repeat(8, 12.5%);
   grid-template-rows: repeat(20, 5%);
   text-align: center;
+  /* --- Имя пациента --- */
+  /* --- Дата рождения --- */
+  /* --- Номер телефона --- */
+  /* --- Дата записи --- */
+  /* --- Датат выписки --- */
+  /* --- Список операций --- */
+  /* --- Описание --- */
+  /* --- Кнопки маркетологии --- */
+  /* --- Список мест --- */
+  /* --- Список назначений --- */
+  /* --- Кнопка закрытия --- */
+  /* --- Кнопка оплаты --- */
+  /* --- Лечащий доктор --- */
 }
 .wrap-input p {
   cursor: pointer;
@@ -75,7 +91,19 @@
   grid-column-start: 6;
   grid-column-end: 9;
   grid-row-start: 1;
-  grid-row-end: 9;
+  grid-row-end: 7;
+}
+.wrap-input .inf {
+  grid-column-start: 6;
+  grid-column-end: 9;
+  grid-row-start: 7;
+  grid-row-end: 11;
+}
+.wrap-input .butt {
+  grid-column-start: 6;
+  grid-column-end: 9;
+  grid-row-start: 11;
+  grid-row-end: 17;
 }
 .wrap-input .mest {
   margin: 1px;
@@ -88,7 +116,7 @@
 .wrap-input .serv {
   margin: 1px;
   grid-column-start: 1;
-  grid-column-end: 9;
+  grid-column-end: 6;
   grid-row-start: 9;
   grid-row-end: 17;
 }
@@ -119,7 +147,7 @@
   grid-template-rows: repeat(4, 25%);
 }
 .wrap-input .btn-cost p {
-  font-size: 20px;
+  font-size: 16px;
   grid-row-start: 2;
   grid-row-end: 4;
 }

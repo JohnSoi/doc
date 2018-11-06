@@ -1,3 +1,4 @@
+/* --- Работа с меню --- */
 var btn = document.getElementById("menu-btn");
 var btnAm = document.getElementById("menu-btn-am");
 var menuSt = document.getElementById("menu-list-st");

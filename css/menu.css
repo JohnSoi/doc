@@ -1,3 +1,5 @@
+/* --- Стили меню --- */
+/* --- Общие параметры группировки в фигуре --- */
 figure {
   padding: 3px;
   border-radius: 0 0 3px 3px;
@@ -28,9 +30,11 @@ figure p {
 figure span {
   cursor: pointer;
 }
+/* --- Эффект наведения --- */
 figure:hover {
   margin: 0;
 }
+/* --- Основной вертикальный блок меню --- */
 .menu {
   position: fixed;
   left: 0;
@@ -45,6 +49,7 @@ figure:hover {
   background-size: cover;
   transition: 0.5s;
 }
+/* --- Список меню в стационаре --- */
 .menu-list-st {
   display: flex;
   align-items: center;
@@ -56,6 +61,7 @@ figure:hover {
   text-transform: uppercase;
   font-weight: 900;
 }
+/* --- Список меню в амбулатории --- */
 .menu-list-am {
   display: none;
   align-items: center;
@@ -67,12 +73,14 @@ figure:hover {
   text-transform: uppercase;
   font-weight: 900;
 }
+/* --- Содержимое списка меню --- */
 .menu-items {
   text-align: center;
   background: white;
   width: 98%;
   margin: 0 auto;
 }
+/* --- Форма поиска --- */
 .form-search {
   display: flex;
 }
@@ -82,12 +90,14 @@ figure:hover {
   position: absolute;
   left: 0;
 }
+/* --- Блок контента --- */
 .content {
   width: 80%;
   margin-left: 20%;
   position: relative;
   z-index: 0;
 }
+/* --- Нижний блок меню --- */
 #bot-date {
   position: absolute;
   bottom: 0;
