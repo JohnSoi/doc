@@ -12,14 +12,16 @@
         {
             // Получение данных из запроса
             $value = $_GET['input'];
-            $idG = $_GET['id'];
-            $idTest = $_GET['test'];
+            $ads = $_GET['ads'];
+            $disp = $_GET['disp'];
+            $agents = $_GET['agents'];
             // Запись значения в БД 
             $changeParam = mysqli_query($connection, "UPDATE param SET value = '".$value."' WHERE name = 'Прием'");
-            $changeID = mysqli_query($connection, "UPDATE param SET value = '".$idG."' WHERE name = 'ИД Гель'");
-            $changeTest = mysqli_query($connection, "UPDATE param SET value = '".$idTest."' WHERE name = 'ИД Тест'");
+            $changeAds = mysqli_query($connection, "UPDATE param SET value = '".$ads."' WHERE name = 'Реклама'");
+            $changeDisp = mysqli_query($connection, "UPDATE param SET value = '".$disp."' WHERE name = 'Диспетчеры'");
+            $changeAg = mysqli_query($connection, "UPDATE param SET value = '".$agents."' WHERE name = 'Агенты'"); 
             // Выод результата
-            if ($changeParam && $changeID && $changeTest)
+            if ($changeParam && $changeAds && $changeDisp && $changeAg)
                 $message = "Параметры сохранены";
             else
               $message = "Ошибка сохранения";
@@ -60,19 +62,6 @@
     		$cost = $param['Прием'];
     		$lastCH = $param['Последнее изменение'];
     		$lastBU = $param['Последняя копия'];
-            $idG = $param['ИД Гель'];
-            $idTest = $param['ИД Тест'];
-            $querySearch = mysqli_query($connection, "SELECT * FROM items WHERE name LIKE '%ель'");
-            if (mysqli_num_rows($querySearch) != 0){
-                $searchArray = mysqli_fetch_assoc($querySearch);
-                $varIdG = $searchArray['id'];
-                }
-            $querySearch = mysqli_query($connection, "SELECT * FROM items WHERE name LIKE '%ест'");
-            if (mysqli_num_rows($querySearch) != 0){
-                $searchArray = mysqli_fetch_assoc($querySearch);
-                $varIdTest = $searchArray['id'];
-                }
-
             // Вывод количества файлов
     		$count = $DBO -> countFile(); 
             // Запросы для счетчиков
@@ -93,11 +82,26 @@
             while ($row = mysqli_fetch_assoc($queryS)){
                 $sumS += $row['sum'];
             }
+
+            $paramQuery = mysqli_query($connection, "SELECT * FROM param");
+            while($dataDB = mysqli_fetch_assoc($paramQuery))
+            {
+                $nameParam = $dataDB['name'];
+
+                if($nameParam == 'Диспетчеры')
+                    $dispList = (string)$dataDB['value'];
+                elseif($nameParam == 'Реклама')
+                    $adsList = (string)$dataDB['value'];
+                elseif($nameParam == 'Агенты')
+                    $agentsList = (string)$dataDB['value'];
+            }
+
     	?>
     	<form action="param.php" method="GET">
     		<p><label for="input">Стоимость приема пациента:<br><input name="input" type="text" value=<?php echo $cost; ?>></label></p>
-            <p><label for="id">ИД записи с гелем <?php if(isset($varIdG)) echo '('.$varIdG.')'; ?><br><input name="id" type="text" value=<?php echo $idG; ?>></label></p>
-            <p><label for="id">ИД записи Тест <?php if(isset($varIdTest)) echo '('.$varIdTest.')'; ?><br><input name="test" type="text" value=<?php echo $idTest; ?>></label></p>
+            <?php echo '<p><label for="ads">Список рекламы<br><input type="text" name="ads" value="'.$adsList.'"><span style="font-family: sans-serif; font-size: 10px; color: grey;">Введите значения через запятую</span></label></p>
+            <p><label for="disp">Список диспечеров<br><input type="text" name="disp" value="'.$dispList.'"><span style="font-family: sans-serif; font-size: 10px; color: grey;">Введите значения через запятую</span></label></p>
+            <p><label for="agents">Список агентов<br><input type="text" name="agents" value="'.$agentsList.'"><span style="font-family: sans-serif; font-size: 10px; color: grey;">Введите значения через запятую</span></label></p>';  ?>
     		<p class="left"> Дата последнего изменения:  <strong><?php  echo $lastCH?></strong></p>
     		<p class="left"> Дата последнего backup`а: <strong> <?php  echo $lastBU?></strong></p><hr>
             <p class="left"> Количество строк в таблице Пациенты:  <strong><?php  echo mysqli_num_rows($query);?> из них <?php  echo mysqli_num_rows($queryClose);?> закрыты </strong> (<?php echo 1000-mysqli_num_rows($queryClose);?> строк до очистки [<?php echo mysqli_num_rows($queryClose)/1000*100;?>%])</p>

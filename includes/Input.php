@@ -301,10 +301,18 @@
 							 	$sumF = $sumNow;
 							if($data['status'] == 0)
 							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
-							elseif (($sumF == $data['sum']) and (!empty($data['dateOut'])) &&($_SESSION['typeUser']!='view') && ($allday == $countDayClinic))
-								echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
-							else
-							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
+							else{ 
+								if($data['type'] == 'Стационар')
+									if(($sumF == $data['sum']) and (!empty($data['dateOut'])) &&($_SESSION['typeUser']!='view' || $_SESSION['typeUser']!='admin' ) && ($allday == $countDayClinic) && (!empty($data['ad'])) && (!empty($data['dispecher'])))
+											echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
+									else
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
+								else
+									if(($sumF == $data['sum']) and (!empty($data['dateOut'])) && ($_SESSION['typeUser']!='view' || $_SESSION['typeUser']!='admin') && (!empty($data['ad'])) && (!empty($data['dispecher'])))
+											echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
+									else
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
+								}
 							$sumDol = $sumF  - $data['sum'];
 							if ($sumF  == $data['sum'])
 							 	echo '<div class="btn-cost" style="border:10px green solid ;"><p>Оплата</p></div>';

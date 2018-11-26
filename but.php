@@ -34,6 +34,7 @@
 	  $namePat = mysqli_fetch_assoc($patQuery);
 	  $adPat = $namePat['ad'];
 	  $agentPat = $namePat['agent'];
+	  $dispPat = $namePat['dispecher'];
 
 	  if(($_SESSION['typeUser']!='view') && ($_SESSION['typeUser']!='admin'))
 	  {
@@ -51,6 +52,13 @@
 				echo '<a href="" class="button">'.$agentPat.'</a>';
 		else
 			echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">Агенты</a>';
+		if(!empty($dispPat))
+			if($_SESSION['typeUser'] =='su')
+				echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">'.$dispPat.'</a>';
+			else
+				echo '<a href="" class="button">'.$dispPat.'</a>';
+		else
+			echo '<a href="input.php?flaginput=15&id='.$idPacient.'" class="button" target="_blank">Диспетчеры</a>';
 	}
 	else{
 		if(!empty($adPat))
@@ -61,6 +69,10 @@
 			echo '<a href="" class="button">'.$agentPat.'</a>';
 		else
 			echo '<a href="" class="button">Агенты</a>';
+		if(!empty($dispPat))
+			echo '<a href="" class="button">'.$dispPat.'</a>';
+		else
+			echo '<a href="" class="button">Диспетчеры</a>';
 	}
 	?>
 </body>	

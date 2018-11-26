@@ -23,7 +23,11 @@
       $agent = $_GET['agent'];
       $updateAd = mysqli_query($connection, "UPDATE patient SET agent = '".$agent."' WHERE  id = '".$id."'");
       }
-    if(isset($_GET['agent']) || isset($_GET['ad']))
+    if(isset($_GET['disp'])){
+      $disp = $_GET['disp'];
+      $updateAd = mysqli_query($connection, "UPDATE patient SET dispecher = '".$disp."' WHERE  id = '".$id."'");
+      }
+    if(isset($_GET['agent']) || isset($_GET['ad']) || isset($_GET['disp']))
         if($updateAd){
               $message = "Изменения приняты ";
               echo "<script>setTimeout(function(){window.close();}, 100);</script>";
@@ -159,15 +163,19 @@
             break;
           /* --- Выбор рекламы --- */
           case 13:
+           $paramQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Реклама'");
+           $paramArr = mysqli_fetch_assoc($paramQuery);
+           $adsList = $paramArr['value'];
+           $adsListEx = explode(',', $adsList);
+           $countList = count($adsListEx);
             echo '
               <form action="">
                 <p><h1>Укажите источник рекламы</h1>
-                  <select name="ad">
-                      <option value="ТВ">ТВ</option>
-                      <option value="Агенты">Агенты</option>
-                      <option value="Газеты">Газеты</option>
-                      <option value="Наружняя реклама">Наружняя реклама</option>
-                  </select>
+                  <select name="ad">';
+                     for ($i=0; $i < $countList; $i++) { 
+                       echo '<option value="'.$adsListEx[$i].'">'.$adsListEx[$i].'</option>';
+                     }
+                  echo '</select>
                 </p>
                 <input type="submit" value="Сохранить">
               </form>
@@ -175,14 +183,39 @@
             break;
           /* --- Выбор агентов --- */
           case 14:
+          $paramQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Агенты'");
+          $paramArr = mysqli_fetch_assoc($paramQuery);
+          $agList = $paramArr['value'];
+          $agListEx = explode(',', $agList);
+          $countList = count($agListEx);
             echo '
               <form action="">
                 <p><h1>Укажите агента</h1>
-                  <select name="agent">
-                      <option value="Скорая помощь">Скорая помощь</option>
-                      <option value="21 Больница">21 Больница</option>
-                      <option value="Справочник">Справочник</option>
-                  </select>
+                  <select name="agent">';
+                     for ($i=0; $i < $countList; $i++) { 
+                       echo '<option value="'.$agListEx[$i].'">'.$agListEx[$i].'</option>';
+                     }
+                  echo '</select>
+                </p>
+                <input type="submit" value="Сохранить">
+              </form>
+            ';
+            break;
+          /* --- Выбор диспетчера --- */
+          case 15:
+          $paramQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Диспетчеры'");
+          $paramArr = mysqli_fetch_assoc($paramQuery);
+          $dispList = $paramArr['value'];
+          $dispListEx = explode(',', $dispList);
+          $countList = count($dispListEx);
+            echo '
+              <form action="">
+                <p><h1>Укажите диспетчера</h1>
+                  <select name="disp">';
+                     for ($i=0; $i < $countList; $i++) { 
+                       echo '<option value="'.$dispListEx[$i].'">'.$dispListEx[$i].'</option>';
+                     }
+                  echo '</select>
                 </p>
                 <input type="submit" value="Сохранить">
               </form>
