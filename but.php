@@ -35,14 +35,20 @@
 	  $adPat = $namePat['ad'];
 	  $agentPat = $namePat['agent'];
 
-	  if($_SESSION['typeUser']!='view')
+	  if(($_SESSION['typeUser']!='view') && ($_SESSION['typeUser']!='admin'))
 	  {
 	  	if(!empty($adPat))
-			echo '<a href="input.php?flaginput=13&id='.$idPacient.'" class="button" target="_blank">'.$adPat.'</a>';
+	  		if($_SESSION['typeUser'] =='su')
+				echo '<a href="input.php?flaginput=13&id='.$idPacient.'" class="button" target="_blank">'.$adPat.'</a>';
+			else
+				echo '<a href="" class="button">'.$adPat.'</a>';
 		else
 			echo '<a href="input.php?flaginput=13&id='.$idPacient.'" class="button" target="_blank">Реклама</a>';
 		if(!empty($agentPat))
-			echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">'.$agentPat.'</a>';
+			if($_SESSION['typeUser'] =='su')
+				echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">'.$agentPat.'</a>';
+			else
+				echo '<a href="" class="button">'.$agentPat.'</a>';
 		else
 			echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">Агенты</a>';
 	}

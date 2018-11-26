@@ -213,12 +213,15 @@ table{
 
     .line{
       width: 100%;
-      display: inline-flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 10% 90%;
 
       p{
         width: 80%;
         text-align: left;
+        }
+        input[type=checkbox]{
+          min-height: 20px;
         }
       }
 
@@ -365,6 +368,8 @@ table{
   padding: 15px;
   width: 40%;
   color: white;
+  text-decoration: none;
+  font-family: sans-serif;
   background: hsl(238, 50%, 50%);
   margin: 10px auto;
   text-align: center;

@@ -47,7 +47,7 @@
 	  if (empty($serv)){
 			echo "<div align = 'center'><h1>Нет данных в Базе данных для пациента ".$namePat."</h1></div>";
 			if($flag == 0)
-				if($ldoc == $nameDoct)
+				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))
 					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
 			}
 	  // Вывод назначений 
@@ -118,20 +118,34 @@
 							$statServ = 'Выполнено';
 							}
 						if ($nameDoc == 'Не выполнена'){
-							echo '<td>'.$dataN.'</td><td>'.$nameServ.'</td>';
+							echo '<td>'.$dataN.'<br><a href="edit.php?flagedit=11&id='.$idPacient.'&date='.$dataN.'&idServ='.$idServ.'">Отменить</a></td>';
+							echo '<td>'.$nameServ.'</td>';
 							if(isset($servCost))
 								echo '<td>'.$servCost.'</td>';
 							else
 								echo '<td>'.$costServ.'</td>';
-							echo '<td>'.$nameNDoc.'</td><td>'.$nameDoc.'</td><td>'.$statServ.'</td><td>'.$dataServ.'</td>';
+							echo '<td>'.$nameNDoc.'</td>
+							<td>'.$nameDoc.'</td>
+							<td>'.$statServ.'</td>
+							<td>'.$dataServ.'</td>';
 							}
 						else{
-							echo '<td style="background: hsl(122, 79%, 50%);">'.$dataN.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td>';
+							if($typeuser == 'su')
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$dataN.'<br><a href="edit.php?flagedit=11&id='.$idPacient.'&date='.$dataN.'&idServ='.$idServ.'">Отменить</a></td>
+								<td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td>';
+							else
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$dataN.'</td>
+								<td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td>';
 							if(isset($servCost))
 								echo '<td style="background: hsl(122, 79%, 50%);">'.$servCost.'</td>';
 							else
 								echo '<td style="background: hsl(122, 79%, 50%);">'.$costServ.'</td>';
-							echo '<td style="background: hsl(122, 79%, 50%);">'.$nameNDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$statServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$dataServ.'</td>';
+							echo '<td style="background: hsl(122, 79%, 50%);">'.$nameNDoc.'</td>
+							<td style="background: hsl(122, 79%, 50%);">'.$nameDoc;
+							if(($nameDoc == $nameDoct) || ($typeuser == 'su'))
+								echo '<br><a href="edit.php?flagedit=9&id='.$idPacient.'&dataServ='.$dataServ.'&idServ='.$idServ.'">Отменить</a>';
+							echo'</td><td style="background: hsl(122, 79%, 50%);">'.$statServ.'</td>
+							<td style="background: hsl(122, 79%, 50%);">'.$dataServ.'</td>';
 							}
 						$i++;	
 						}

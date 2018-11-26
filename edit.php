@@ -146,6 +146,23 @@
 	    	    $message = "Заполните все поля";
 	    	}
 		}
+	/* --- Редактирование номера карты --- */
+	elseif ($typePage == 10) {
+		if(isset($_GET['submit'])){
+			$newCard = $_GET['idNew'];
+			$searchId = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = '".$newCard."'");
+			
+			if(mysqli_num_rows($searchId) != 0)
+				$message = "Такой номер карты уже существует";
+			else{
+		 		$updateId = mysqli_query($connection, "UPDATE patient SET numCard = '".$newCard."' WHERE id = '".$id."'");
+		 		if($updateId){
+		 			header("Location:input.php?flaginput=3&id=".$id);
+		 		}
+				}
+			}
+	 	
+	 } 
 ?>
 
 <!DOCTYPE html>
@@ -609,6 +626,112 @@
 									
 									$DataBase -> route();
 								}
+								break;
+							// Отмена выполнения
+							case 9:
+								$listServIn = '';
+								$idPatient = $_GET['id'];
+								$dataServ = $_GET['dataServ'];
+								$idServ = $_GET['idServ'];
+								$servQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPatient."'");
+								$servArr = mysqli_fetch_assoc($servQuery);
+								$listServ = $servArr['sp_uslug'];
+								$servListArray = explode(',', $listServ);
+								$count = count($servListArray);
+								for ($i=0; $i < $count; $i++) {
+									$exListServ = explode('-', $servListArray[$i]);
+									$idServS = $exListServ[0];
+									$dataS = $exListServ[4];
+									if(($idServS == $idServ)&&($dataS == $dataServ))
+										if($i == 0)
+											$listServIn = $idServS.'-'.$exListServ[1].'-0-0-0-'.$exListServ[5];
+										else
+											$listServIn .= ','.$idServS.'-'.$exListServ[1].'-0-0-0-'.$exListServ[5];
+									else
+										if($i == 0)
+											$listServIn = $idServS.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$exListServ[3].'-'.$exListServ[4].'-'.$exListServ[5];
+										else
+											$listServIn .= ','.$idServS.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$exListServ[3].'-'.$exListServ[4].'-'.$exListServ[5];
+								}
+								$updateServList = mysqli_query($connection, "UPDATE patient SET sp_uslug = '".$listServIn."' WHERE id = '".$idPatient."'");
+								if($updateServList)
+									header("Location:serv.php?id=".$idPatient);
+								break;
+							// Редактирование номера карты
+							case 10:
+								$searchId = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+								$idArr = mysqli_fetch_assoc($searchId);
+								$cardNum = $idArr['numCard'];
+								echo '
+									<form action="edit.php">
+										<label for="id">Введите новый номер карты<br><input name="idNew" type="text" value="'.$cardNum.'"></label>
+										<input type="submit" name="submit" value="Изменить">
+									</form>
+								';
+								break;
+							//Отмена процедуры
+							case 11:
+								// id='.$idPacient.'&dataServ='.$dataServ.'&idServ='.$idServ.'
+								// 2-1-1-1-22/11/2018 9:54-22/11/2018
+								$listServIn = '';
+								$idPatient = $_GET['id'];
+								$dataServ = $_GET['date'];
+								$idServ = $_GET['idServ'];
+								$servQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPatient."'");
+								$servArr = mysqli_fetch_assoc($servQuery);
+								$listServ = $servArr['sp_uslug'];
+								$servListArray = explode(',', $listServ);
+								$count = count($servListArray);
+								for ($i=0; $i < $count; $i++){
+
+									$exListServ = explode('-', $servListArray[$i]);
+									$idServS = $exListServ[0];
+									$dataS = $exListServ[5];
+									if(($idServS == $idServ)&&($dataS == $dataServ))
+										{}
+									else{
+										if(($i == ($count-1))||($count == 2))
+											$listServIn .= $idServS.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$exListServ[3].'-'.$exListServ[4].'-'.$exListServ[5];
+										else
+											$listServIn .= $idServS.'-'.$exListServ[1].'-'.$exListServ[2].'-'.$exListServ[3].'-'.$exListServ[4].'-'.$exListServ[5].',';
+									}
+								}
+								echo $listServIn;
+								$updateServList = mysqli_query($connection, "UPDATE patient SET sp_uslug = '".$listServIn."' WHERE id = '".$idPatient."'");
+								if($updateServList)
+									header("Location:serv.php?id=".$idPatient);
+								break;
+							case 12:
+								$idPatient = $_GET['id'];
+
+								$patientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+								$patientArray = mysqli_fetch_assoc($patientQuery);
+								$sumNow = $patientArray['sum'];
+								$fioPatient = $patientArray['fio'];
+								$typePatient = $patientArray['type'];
+
+								$depositQuery = mysqli_query($connection, "SELECT * FROM deposit WHERE fio = '".$fioPatient."'");
+								$depositArray = mysqli_fetch_assoc($depositQuery);
+								$sumDeposit = $depositArray['sum'];
+								$depositUpdate = mysqli_query($connection, "UPDATE deposit SET sum = '0' WHERE fio = '".$fioPatient."'");
+
+								if($depositUpdate){
+									$sumIn = $sumNow + $sumDeposit;
+									$updatePatient = mysqli_query($connection, "UPDATE patient SET sum = '".$sumIn."' WHERE id = '".$id."'");
+									if($updatePatient)
+									{
+										$createOper = mysqli_query($connection, "INSERT INTO operation(date, client, sum, type, typeSum) VALUES('".$date->getDateTime()."','".$fioPatient."','".$sumDeposit."','".$typePatient."','dep')");
+										if(!$createOper)
+											echo 'Ошибка создания операции';
+										else
+											header("Location:oper.php?id=".$id);
+									}
+									else
+										echo 'Ошибка в обновление текущей суммы';
+								}
+								else
+									echo 'Ошибка в обнулении депозита';
+
 								break;
 							}
 				 	?>

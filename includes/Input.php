@@ -219,6 +219,8 @@
 		/* --- Индивидуальная таблица пациента --- */
 		function getPacientPersonalTable($connection, $id, $date, $typeuser){
 			$result = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+			unset($_SESSION['cost_serv']);
+			unset($_SESSION['cost_mest']);
 
 			if (mysqli_num_rows($result) == 0)
 				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
@@ -228,36 +230,33 @@
 					$dateNow = $date->getDate();
 					//Разбиение даты заселения на дату и время
 					$dateIn = explode(' ', $data["dateIn"]);
-					//Количество дней в стационаре
-					$counDay = $date->getPeriod($dateIn[0]) + 1;
-					//Получение стоимости койко - места
-					$costMestQuery = mysqli_query($connection, "SELECT * FROM mest WHERE id = '".$data['mest']."'");
-					$costMestArr = mysqli_fetch_assoc($costMestQuery);
-					$costMest = $costMestArr['value'];
-					//Стоимость проживания
-					$costDay = $counDay * $costMest;
 					$_SESSION['frameid'] = $id;
-					//Сумма к оплате
-					$compSum = $data["sumNow"] + $costDay;
-					//Разнича между внесенными деньгами и суммы к оплате
-					$transferSum = $compSum - $data["sum"];
-					unset($_SESSION['sum_mest']);
 					echo '	
 					<div id="reload" style="display: none; width: 100%; background: red; color: white;text-align:center;"><strong>Обновите страницу</strong> <a href=javascript:history.go(0)>Обновить</a></div>	
 						<div class="wrap-input">
-							<div class="name"><p>'.$data['fio'].'</p></div>
+							<div class="name"><p>';
+							if($data['type'] == 'Стационар')
+							 	echo '<a class="numcard" href="edit.php?flagedit=10&id='.$data['id'].'">#'.$data['numCard'].'</a> ';
+							echo $data['fio'].'</p></div>
 							<div class="date"><p>Дата рождения: <br>'.$data['datebirthday'].'</p></div>';
 							if (!empty($data['tel']))
 							 echo '<div class="tel"><p>Телефон: <br>'.$data['tel'].'</p></div>';
-							echo '<div class="datest"> <p>Дата записи: <br>'.$data['dateIn'].'</p></div>      
+							echo '<div class="datest"><p>Дата записи: <br>'.$data['dateIn'].'</p>
+							<br><a href="add.php?flagadd=11&id='.$id.'">Изменить</a>
+							</div>      
 							<div class="datefin"><p>Дата выписки: <br>';
-								 if((empty($data['dateOut']))&&($_SESSION['typeUser']!='view'))
+								 if((empty($data['dateOut']))&&($_SESSION['typeUser']!='view')&&($_SESSION['typeUser']!='admin'))
 								 	echo '<a href="add.php?flagadd=8&id='.$id.'">Установить</a>';
 								 else {
 								 	echo $data['dateOut'];
-								 	if($typeuser == 'su')
-								 		echo '<br><a href="add.php?flagadd=9&id='.$id.'">Отменить</a>';
+								 	if($typeuser == 'su'){
+								 		echo '<br><a href="add.php?flagadd=10&id='.$id.'">Изменить</a>';
+								 		echo '<br><a href="add.php?flagadd=9&id='.$id.'">Отменить</a>';}
 								 	}
+							if(!empty($data['dateOut']))
+								$countDayClinic = $date->getPeriod($data['dateIn'],$data['dateOut']);
+							else
+								$countDayClinic = $date->getPeriod($data['dateIn'],$date->getDateTime());
 							echo '</p></div>
 							<div class="oper"><iframe id="oper"  width="100%" height="100%" src="oper.php?id='.$id.'" frameborder="1" seamless></iframe></div>
 							<div class="butt"><iframe id="butt"  width="100%" height="100%" src="but.php?id='.$id.'" frameborder="1" seamless></iframe></div>
@@ -284,21 +283,25 @@
 												$mestArr = mysqli_fetch_assoc($mestQuery);
 												$costMest = $mestArr['value'];
 												$allsum += $costMest*$countD;
+												$allday += $countD;
 												$i++;
 												}
-									$_SESSION['sum_mest'] = $allsum;
+									$sum_mest = $allsum;
+									$_SESSION['cost_mest'] = $allsum;
 								}
 
 								}
+							$sumNow = 0;
+								
 							if(isset($_SESSION['cost_serv']))
 								$sumNow = $_SESSION['cost_serv'];
-							if(isset($_SESSION['sum_mest']))
-							 	$sumF = $sumNow + $_SESSION['sum_mest'];
+							if(isset($sum_mest))
+							 	$sumF = $sumNow + $sum_mest;
 							else
 							 	$sumF = $sumNow;
 							if($data['status'] == 0)
 							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
-							elseif (($sumF == $data['sum']) and (!empty($data['dateOut'])) &&($_SESSION['typeUser']!='view'))
+							elseif (($sumF == $data['sum']) and (!empty($data['dateOut'])) &&($_SESSION['typeUser']!='view') && ($allday == $countDayClinic))
 								echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
 							else
 							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
@@ -312,11 +315,11 @@
 						</div>
 						<script>
 							var lo = document.getElementById(\'oper\');
-							setInterval(function() {lo.src = \'oper.php?id='.$_SESSION['frameid'].'\';}, 10000);
+							setInterval(function() {lo.src = \'oper.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var serv = document.getElementById(\'serv\');
-							setInterval(function() {serv.src = \'serv.php?id='.$_SESSION['frameid'].'\';}, 10000);
+							setInterval(function() {serv.src = \'serv.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var mest = document.getElementById(\'mest\');
-							setInterval(function() {mest.src = \'mest.php?id='.$_SESSION['frameid'].'\';}, 10000);
+							setInterval(function() {mest.src = \'mest.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var inf = document.getElementById(\'inf\');
 							setInterval(function() {inf.src = \'inf.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var but = document.getElementById(\'butt\');

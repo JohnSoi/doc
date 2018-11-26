@@ -7,9 +7,11 @@
 			}
 
 		/* --- Функция получения количества дней между датами --- */
-		public function getPeriod($datein){
-			$dateInp = explode('/', $datein);
-			$dateOut = explode('/', $this->getDate());
+		public function getPeriod($datein, $dateout){
+			$datein = explode(' ', $datein);
+			$dateout = explode(' ', $dateout);
+			$dateInp = explode('/', $datein[0]);
+			$dateOut = explode('/', $dateout[0]);
 
 			$yearIn = $dateInp[2];
 			$monthIn = $dateInp[1];

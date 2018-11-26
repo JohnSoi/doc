@@ -218,6 +218,13 @@
             $dist = $_GET['dist'];
             $message = 'a';
 
+            $searchMaxNumCard = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = (SELECT MAX(numCard) FROM patient)");
+            echo mysqli_num_rows($searchMaxNumCard);
+            $searchArr = mysqli_fetch_assoc($searchMaxNumCard);
+            if($typeStat == 1)
+              $maxNum = $searchArr['numCard'] + 1;
+            else
+              $maxNum = 0;
             if($typeStat == 0)
               $type = "Амбулатория";
             elseif($typeStat == 1)
@@ -226,7 +233,7 @@
             $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
             $doctorArray = mysqli_fetch_assoc($doctorQuery);
             $doctorName = $doctorArray['fio'];
-            $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor, status, dist) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','0','0','".$type."','".$doctorName."', '1', '".$dist."')");
+            $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor, status, dist, numCard) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','0','0','".$type."','".$doctorName."', '1', '".$dist."', '".$maxNum."')");
 
             if ($pacient){
                 $cost = 'SELECT * FROM param WHERE name = "Прием"';
@@ -326,6 +333,26 @@
             $message = 'Заполните поле Стоимость';
           }
       }
+    //Обработка изменений даты выписки
+    elseif ($typePage == 10) {
+      if(isset($_GET['submit']))
+      {
+        $dateOut = $_GET['date'];
+        $updateDateOut = mysqli_query($connection, "UPDATE patient SET dateOut = '".$dateOut."' WHERE id = '".$idPacient."'");
+        if($updateDateOut)
+          header("Location:input.php?flaginput=3&id=".$idPacient);
+      }
+    }
+    //Обработка изменений даты поступления
+    elseif ($typePage == 11) {
+      if(isset($_GET['submit']))
+      {
+        $dateIn = $_GET['date'];
+        $updateDateOut = mysqli_query($connection, "UPDATE patient SET dateIn = '".$dateIn."' WHERE id = '".$idPacient."'");
+        if($updateDateOut)
+          header("Location:input.php?flaginput=3&id=".$idPacient);
+      }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -434,16 +461,16 @@
                               <p><label for="date">Дата процедуры<br><input name="date" type="date" required></label></p>';
                               while($dataServ = mysqli_fetch_assoc($servQuery)){
                                 if($dataServ['cost']>1){
-                                  echo '<div class="line"><p>'.$dataServ['name'].'('.$dataServ['cost'].')</p>';
-                                  echo '<input style="float:right;" type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><br></div>';
+                                  echo '<div class="line">';
+                                  echo '<input style="float:right;" type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><p>'.$dataServ['name'].'('.$dataServ['cost'].')</p></div>';
                                   }
                                 elseif($dataServ['cost'] == 1){
-                                  echo '<div class="line"><p>'.$dataServ['name'].'</p><input type="text" name="costServ[]" value="0" placeholder="Введите стоимость"></div>';
+                                  echo '<div class="line"><input type="text" name="costServ[]" value="0" placeholder="Введите стоимость"><p>'.$dataServ['name'].'</p></div>';
                                   $listSrv[] = $dataServ['id'];
                                   }
                                 else{
-                                  echo '<div class="line"><p>'.$dataServ['name'].'('.$dataServ['cost'].')</p>';
-                                  echo '<input style="float:right;" type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><br></div>';
+                                  echo '<div class="line">';
+                                  echo '<input style="float:right;" type="checkbox" name="serv[]" value="'.$dataServ['id'].'"><p>'.$dataServ['name'].'(Бесплатно)</p></div>';
                                   }
                               }
                               $_SESSION['listSrvCost'] = $listSrv;
@@ -607,9 +634,83 @@
                   if($updateDateOut)
                     $DataBase->routeF();
                   break;
-            		// Обновление значений койко мест
+            		// Редактирование даты выписки
                 case 10: 
-                  var_dump($_GET['mest[]']);
+                  $pacientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+                  $patientArray = mysqli_fetch_assoc($pacientQuery);
+                  $dateOut = $patientArray['dateOut'];
+                  echo '
+                    <form action="add.php">
+                      <label for="date"><input name="date" type="text" value="'.$dateOut.'"></label>
+                      <input type="submit" value="Сохранить" name="submit">
+                    </form>
+                  ';
+                  break;
+                // Редактирование даты поступления
+                case 11:
+                  $pacientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+                  $patientArray = mysqli_fetch_assoc($pacientQuery);
+                  $dateIn = $patientArray['dateIn'];
+                  echo '
+                    <form action="add.php">
+                      <label for="date"><input name="date" type="text" value="'.$dateIn.'"></label>
+                      <input type="submit" value="Сохранить" name="submit">
+                    </form>
+                  ';
+                  break;
+                // Перевод средств в депозит
+                case 12:
+                  $id = $_GET['id'];
+                  $sum = $_GET['sum'];
+
+                  $searchClientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+                  $searchClientArray = mysqli_fetch_assoc($searchClientQuery);
+                  $fioClient = $searchClientArray['fio'];
+                  $typeClient = $searchClientArray['type'];
+                  $sumNow = $searchClientArray['sum'];
+
+                  $searchDeposit = mysqli_query($connection, "SELECT * FROM deposit WHERE fio = '".$fioClient."'");
+                  //Если депозита нет
+                  if(mysqli_num_rows($searchDeposit) == 0){
+                    $createDeposit = mysqli_query($connection, "INSERT INTO deposit(fio, sum) VALUES('".$fioClient."','".$sum."')");
+                    if($createDeposit){
+                        $createOper = mysqli_query($connection, "INSERT INTO operation(date, client, sum, type, typeSum) VALUES('".$date->getDateTime()."','".$fioClient."','-".$sum."','".$typeClient."','dep')");
+                        if($createOper){
+                          $sumNowIn = $sumNow - $sum;
+                          $updateSumNowClients = mysqli_query($connection, "UPDATE patient SET sum = '".$sumNowIn."' WHERE fio = '".$fioClient."'");
+                          if($updateSumNowClients)
+                          {header("Location:oper.php?id=".$id);}
+                          else
+                            echo 'Непредвиденная ошибка работы с изменением текущей суммы';
+                        }
+                        else
+                          echo 'Непредвиденная ошибка работы с созданием операции';
+                  }
+                    else
+                       echo 'Непредвиденная ошибка работы с созданием депозита';
+
+                  }
+                  //Ели депозит существует
+                  else{
+                      $arrDeposit = mysqli_fetch_assoc($searchDeposit);
+                      $sumIn = $arrDeposit['sum'] + $sum;
+                      $updateDeposit = mysqli_query($connection, "UPDATE deposit SET sum = '".$sumIn ."' WHERE fio = '".$fioClient."'");
+                      if($updateDeposit){
+                        $createOper = mysqli_query($connection, "INSERT INTO operation(date, client, sum, type, typeSum) VALUES('".$date->getDateTime()."','".$fioClient."','-".$sum."','".$typeClient."','dep')");
+                        if($createOper){
+                          $sumNowIn = $sumNow - $sum;
+                          $updateSumNowClients = mysqli_query($connection, "UPDATE patient SET sum = '".$sumNowIn."' WHERE id = '".$id."'");
+                          if($updateSumNowClients)
+                            {header("Location:oper.php?id=".$id);}
+                          else
+                            echo 'Непредвиденная ошибка работы с изменением текущей суммы';
+                        }
+                      else
+                        echo 'Непредвиденная ошибка работы с созданием операции';
+                      }
+                    else
+                      echo 'Непредвиденная ошибка работы с созданием депозита';
+                  }
                   break;
                 /* --- Значение при отсутствии параметра --- */
                 default:

@@ -188,12 +188,15 @@ table tr:hover td {
 }
 .add .wrap .line {
   width: 100%;
-  display: inline-flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 10% 90%;
 }
 .add .wrap .line p {
   width: 80%;
   text-align: left;
+}
+.add .wrap .line input[type=checkbox] {
+  min-height: 20px;
 }
 .add .wrap input:checked {
   background: green;
@@ -321,6 +324,8 @@ table tr:hover td {
   padding: 15px;
   width: 40%;
   color: white;
+  text-decoration: none;
+  font-family: sans-serif;
   background: #4044bf;
   margin: 10px auto;
   text-align: center;

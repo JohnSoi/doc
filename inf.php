@@ -12,7 +12,7 @@
 
 	$patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPatient."'");
 	$patArray = mysqli_fetch_assoc($patQuery);
-	echo '<h1>Описание для пациента '.$patArray['fio'].'</h1>';
+	echo '<h1>Контакты '.$patArray['fio'].'</h1>';
 	if (!empty($patArray['dist']))
 		$patDist = '<p style=" text-align: center;font-size: 22px;">'.$patArray['dist'].'</p>';
 	else
