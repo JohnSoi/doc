@@ -9,7 +9,7 @@
 			if ($typeuser != 'view'){
 				echo '<div class="groupBtn">
 					<figure>';
-						if (($typeuser == 'doc') or ($typeuser == 'su'))
+						if (($typeuser == 'doc') or ($typeuser == 'su') or ($typeuser == 'ddoc'))
 							echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" class="icon"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
 							echo '<a href="input.php?flaginput=2&st=1"><img src="img/report.png" class="icon"></a>';

@@ -32,6 +32,13 @@
               $message = "Изменения приняты ";
               echo "<script>setTimeout(function(){window.close();}, 100);</script>";
               }
+    if(isset($_GET['submit']))
+    {
+      $comment = $_GET['comment'];
+      $updateComment = mysqli_query($connection, "UPDATE patient SET comment = '".$comment."' WHERE id = '".$id."'");
+      if($updateComment)
+        echo "<script>setTimeout(function(){window.close();}, 100);</script>";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -218,6 +225,18 @@
                   echo '</select>
                 </p>
                 <input type="submit" value="Сохранить">
+              </form>
+            ';
+            break;
+          //Вывод комментария
+          case 16:
+            $patientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+            $patArr = mysqli_fetch_assoc($patientQuery);
+            $comment = $patArr['comment'];
+            echo '
+              <form action="input.php">
+                <label for="comment">Комментарий<br><input name="comment" type="text" value="'.$comment.'"></label>
+                <input class="button" type="submit" name="submit" value="Сохранить">
               </form>
             ';
             break;

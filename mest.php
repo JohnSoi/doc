@@ -18,20 +18,20 @@
 	  /* --- Получение параметров --- */
 	  if (isset($_GET['id']))
         {
-          $idPacient = $_GET['id'];
-          $_SESSION['id_mest'] = $idPacient;
+          $idPatient = $_GET['id'];
+          $_SESSION['id_mest'] = $idPatient;
         }
         else
         {
           if(isset($_SESSION['id_mest']))
-            $idPacient = $_SESSION['id_mest'];
+            $idPatient = $_SESSION['id_mest'];
         }
       /* --- Подключение сторонних файлов --- */
 	  include("includes/DB.php");
 	  require_once 'includes/Date.php';
 
 	  /* ---  Запрос к таблице пациентов и пользователей и получение необходимых парметров --- */
-	  $patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
+	  $patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPatient."'");
 	  $namePat = mysqli_fetch_assoc($patQuery);
 	  $doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
 	  $dataDOC = mysqli_fetch_assoc($doctor);
@@ -49,7 +49,7 @@
 			echo "<div align = 'center'><h1>Нет данных в Базе данных для пациента ".$namePat."</h1></div>";
 			if($flag == 0)
 				if($ldoc == $nameDoct)
-					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=2">Добавить койко - место</a>';
+					echo '<a target="_blank" class = "button" href="add.php?id='.$idPatient.'&flagadd=2">Добавить койко - место</a>';
 			}
 	  else{
 			echo'<h1>Койко место для пациента '.$namePat.'</h1>';
@@ -69,7 +69,7 @@
 						$costMest = $mestArr['value'];
 						$nameMest = $mestArr['status'];
 						echo '<tr>';
-							echo '<td>'.$nameMest.' ('.$costMest.')</td>';
+							echo '<td>'.$nameMest.' ('.$costMest.')<br><a href="del.php?flagdel=4&id='.$idPatient.'&idServ='.$i.'">Отменить</a></td>';
 							echo '<td>'.$countD.'</td>';
 							echo '<td>'.$costMest*$countD.'</td>';
 						echo '</tr>';
@@ -87,7 +87,7 @@
 			/* --- Вывод кнопки --- */
 			if($flag == 0)
 				if($ldoc == $nameDoct)
-					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=2">Добавить койко - место</a>';
+					echo '<a target="_blank" class = "button" href="add.php?id='.$idPatient.'&flagadd=2">Добавить койко - место</a>';
 			}	
 	?>
 </body>

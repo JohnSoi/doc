@@ -233,6 +233,9 @@
             $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
             $doctorArray = mysqli_fetch_assoc($doctorQuery);
             $doctorName = $doctorArray['fio'];
+            $doctorDol = $doctorArray['dol'];
+            if ($doctorDol == 'ddoc')
+              $doctorName = '';
             $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor, status, dist, numCard) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','0','0','".$type."','".$doctorName."', '1', '".$dist."', '".$maxNum."')");
 
             if ($pacient){
@@ -516,14 +519,16 @@
                               <p><label for="name">ФИО пациента<br><input name="name" type="text" required></label></p>
                               <p><label for="date">Дата рождения<br><input name="date" type="date" required></label></p>
                               <p><label for="tel">Номер телефона<br><input id="tel" name="tel" type="tel"></label></p>
-                              <p><label for="dist">Дополнительная информация<br><input id="dist" name="dist" type="text"></label></p>
-                              <p>Лечащий доктор:'.$doctorName.'</p>
-                              <input type="submit" class="button" name="submit" value="Добавить">   
+                              <p><label for="dist">Дополнительная информация<br><input id="dist" name="dist" type="text"></label></p>';
+                              if($doctorArray['dol'] != 'ddoc')
+                               echo '<p>Лечащий доктор:'.$doctorName.'</p>';
+                              echo '<input type="submit" class="button" name="submit" value="Добавить">   
                             </form>
                       </div>';
                   break;
                 //Добавление денежной операции
                 case 6:
+                $DBO->checkDate($connection, $date->getDateTime());
                   echo '
                     <div class="cont-client">';
                       $dateNowO = $date->getDate();

@@ -54,7 +54,7 @@
 			echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">Агенты</a>';
 		if(!empty($dispPat))
 			if($_SESSION['typeUser'] =='su')
-				echo '<a href="input.php?flaginput=14&id='.$idPacient.'" class="button" target="_blank">'.$dispPat.'</a>';
+				echo '<a href="input.php?flaginput=15&id='.$idPacient.'" class="button" target="_blank">'.$dispPat.'</a>';
 			else
 				echo '<a href="" class="button">'.$dispPat.'</a>';
 		else

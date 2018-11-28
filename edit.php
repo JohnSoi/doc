@@ -505,7 +505,8 @@
 									$countDay = count($listMest);
 									$i = 0;
 									/* --- Цикл вывода данных --- */
-									while ($i<$countDay){
+									if(!empty($dataDB['mest']))
+										while ($i<$countDay){
 											$expMest= explode('-', $listMest[$i]);
 											$id = $expMest[0];
 											$countD = $expMest[1];
@@ -528,10 +529,35 @@
 										$dataServ = mysqli_fetch_assoc($ServicesQuery);
 										$nameServ = $dataServ['name'];
 										$exName = explode(' ', $nameServ);
-										if((strpos($nameServ,'ель') !== false) && ($exName != 'Тест')){
-											$cost_g = $exListServ[6];
+										if((strpos($nameServ,'Эспераль-гель') !== false)){
+											echo $cost_g = $dataServ['cost'];
 											echo 'good';
+											}
+										if((strpos($nameServ,'Химзащита') !== false)){
+											echo $cost_h = $dataServ['cost'];
+											echo 'goodh';
+											}
+										
+										$i++;
 										}
+
+									$i = 0;
+
+									while ($i < $countServ){
+										$exListServ = explode('-', $listServ[$i]);
+										$idServ = $exListServ[0];
+										$ServicesQuery = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
+										$dataServ = mysqli_fetch_assoc($ServicesQuery);
+										$nameServ = $dataServ['name'];
+										$exName = explode(' ', $nameServ);
+										if((strpos($nameServ,'эспераль-гель') !== false)){
+											echo $idT = $exListServ[0];
+											echo 'good id';
+											}
+										if((strpos($nameServ,'химзащита') !== false)){
+											echo $idH = $exListServ[0];
+											echo 'goodh id';
+											}
 										$i++;
 										}
 
@@ -570,51 +596,60 @@
 												$percentDoc = $dataDoc['value'];
 												//Сумма для пополнения кошелька доктора процентом от стоимости
 												$inSumDoc = $cost * $percentDoc / 100;
-												echo 'Был выбран бонус за выполнение <br>';
 												}
 											else
 												//Сумма пополнеиия кошелька бонусом от услуги
 												$inSumDoc = $bonus;
-											echo 'Сумма надюавки: '.$inSumDoc.'<br>';
+
+											echo 'Сумма надбавки: '.$inSumDoc.'<br>';
+
+											$addSum = 0;
 
 											if($idServ == $idT){
-												$addSum = $cost_g*$dataDocN['value'] / 100;
-												echo 'Процедура тест<br>';
-												echo 'Надбавка за тест'.$addSum.'<br>';
-												echo 'Стоимость геля'.$cost_g.'<br>';
+												echo '%'.$dataDocN['value'];
+												echo 'I'.$addSum += $cost_g*$dataDoc['value']/100;
+												}
+											elseif ($idServ == $idH) {
+												echo 'H'.$addSum += $cost_h*$dataDoc['value']/100;
 											}
-											else
-												$addSum=0;
+												
+
 
 											if ($bonusN == 0){
 												//Если бонуса нет, назначается процент от стоимости 
 												$percentDocN = $dataDocN['value'];
 												//Сумма для пополнения кошелька доктора процентом от стоимости
 												$inSumDocN = $cost * $percentDocN / 100;
-												echo 'Был выбран бонус за назначение <br>';
 												}
 											else
 												//Сумма пополнеиия кошелька бонусом от услуги
 												$inSumDocN = $bonusN;
-											echo 'Сумма надюавки: '.$inSumDocN.'<br>';
-											echo 'Сумма текущая: '.$dataDoc['money'].'<br>';
+											
+											echo 'Сумма надюавки за назначение: '.$inSumDocN.'<br>';
 
-											echo 'Надбавка за тест'.$addSum.'<br>';
 
 											//Увеличение текущей зарплаты врача на значение, описанное выше
 											$insSumDoc = $dataDoc['money'] + $inSumDoc+$addSum;
 											$insSumDocN = $dataDocN['money'] + $inSumDocN;
+											if($idDoctor == $idDoctorN)
+												$insSumDocN += $insSumDoc;
+
 											echo 'Сумма записи за выполнение: '.$insSumDoc.'<br>';
 											echo 'Сумма записи за назначение: '.$insSumDocN.'<br>';
 
 											//Запись новой зарплаты
 											if ($exListServ[3] == 1){
-												$insertDocQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDoc."' WHERE id = '".$idDoctor."'");
-												$insertDocNQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDocN."' WHERE id = '".$idDoctorN."'");
+												if($idDoctor == $idDoctorN)
+													$insertDocNQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDocN."' WHERE id = '".$idDoctorN."'");
+												else
+													$insertDocQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDoc."' WHERE id = '".$idDoctor."'");
+													$insertDocNQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDocN."' WHERE id = '".$idDoctorN."'");
 												}
+											echo '<hr>';	
 											$i++;
-											echo '<hr>';
+											
 											}
+									
 									
 									$queryDocL = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio = '".$nameLDoc."'");
 									$lDocArray = mysqli_fetch_assoc($queryDocL);

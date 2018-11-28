@@ -30,5 +30,35 @@
 	    	$result = mysqli_query($connection, $query) or die("Ошибка " . mysqli_error($connection)); 
 			echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=6\";}, 0);</script>";
 			}
+		elseif($_GET['flagdel'] == 4){
+			$idPatient = $_GET['id'];
+			$idServ = $_GET['idServ'];
+			$listMestIn = '';
+
+			$patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = ".$idPatient);
+			$patArr = mysqli_fetch_assoc($patQuery);
+			$listMest = $patArr['mest'];
+			$listMest = explode(',', $listMest);
+			$countList = count($listMest);
+			for ($i=0; $i < $countList; $i++) {
+				echo $listMestIn[$i];
+				if($countList == 1)
+					$listMestIn = 0;
+				else
+					if($i == $idServ)
+						{}
+					else{
+						if($i == 0)
+							$listMestIn .= $listMest[$i];
+						elseif($i == 1 && $idServ == 0)
+							$listMestIn .= $listMest[$i];
+						else
+							$listMestIn .= ','.$listMest[$i];
+						}
+				}
+			$updatePatient = mysqli_query($connection, "UPDATE patient SET mest = '".$listMestIn."' WHERE id = ".$idPatient);
+			if($updatePatient)
+				header("Location:mest.php?id=".$idPatient);
+			}
 		}
 ?>

@@ -6,7 +6,6 @@
   min-height: 800px;
   max-height: 900px;
   margin: 0 auto;
-  margin-top: 3%;
   background: white;
   grid-template-columns: repeat(8, 12.5%);
   grid-template-rows: repeat(20, 5%);
@@ -22,6 +21,7 @@
   /* --- Список мест --- */
   /* --- Список назначений --- */
   /* --- Кнопка закрытия --- */
+  /* --- Кнопка комментария --- */
   /* --- Кнопка оплаты --- */
   /* --- Лечащий доктор --- */
 }
@@ -135,8 +135,8 @@
   grid-row-end: 17;
 }
 .wrap-input .btn-cl {
-  grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
   grid-row-start: 17;
   grid-row-end: 20;
   display: grid;
@@ -152,10 +152,16 @@
   grid-row-start: 2;
   grid-row-end: 4;
 }
+.wrap-input .comment {
+  grid-column-start: 3;
+  grid-column-end: 7;
+  grid-row-start: 17;
+  grid-row-end: 20;
+}
 .wrap-input .btn-cost {
   display: grid;
-  grid-column-start: 6;
-  grid-column-end: 8;
+  grid-column-start: 7;
+  grid-column-end: 9;
   grid-row-start: 17;
   grid-row-end: 20;
   grid-template-rows: repeat(4, 25%);

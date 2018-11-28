@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 15 2018 г., 18:22
+-- Время создания: Ноя 28 2018 г., 18:27
 -- Версия сервера: 10.1.31-MariaDB
 -- Версия PHP: 5.6.34
 
@@ -25,6 +25,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `deposit`
+--
+
+CREATE TABLE `deposit` (
+  `id` int(11) NOT NULL,
+  `fio` text COLLATE utf8_bin NOT NULL,
+  `sum` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `items`
 --
 
@@ -33,7 +45,8 @@ CREATE TABLE `items` (
   `name` varchar(60) COLLATE utf8_bin NOT NULL,
   `cost` text COLLATE utf8_bin NOT NULL,
   `dist` text COLLATE utf8_bin NOT NULL,
-  `bonus` text COLLATE utf8_bin NOT NULL
+  `bonus` text COLLATE utf8_bin NOT NULL,
+  `bonusN` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -72,7 +85,7 @@ CREATE TABLE `operation` (
 CREATE TABLE `param` (
   `id` int(11) NOT NULL,
   `name` varchar(90) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `value` text NOT NULL
+  `value` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -80,7 +93,12 @@ CREATE TABLE `param` (
 --
 
 INSERT INTO `param` (`id`, `name`, `value`) VALUES
-(1, 'Прием', '100');
+(1, 'Прием', '100'),
+(2, 'Последнее изменение', '28/11/2018'),
+(3, 'Последняя копия', '28/11/2018 18:45'),
+(6, 'Диспетчеры', 'Иванов,Фролова,Кто-то Там'),
+(7, 'Реклама', 'ТВ,Агенты,Газета,Наружняя реклама,Вывеска'),
+(8, 'Агенты', 'Скорая помощь, 21 больница, Справочник');
 
 -- --------------------------------------------------------
 
@@ -103,7 +121,13 @@ CREATE TABLE `patient` (
   `mest` text NOT NULL,
   `status` int(11) NOT NULL,
   `sumNow` int(11) NOT NULL,
-  `dateOut` text NOT NULL
+  `dateOut` text NOT NULL,
+  `ad` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `agent` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `credits` int(11) NOT NULL,
+  `numCard` int(11) NOT NULL,
+  `dispecher` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `comment` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -130,11 +154,17 @@ CREATE TABLE `usertbl` (
 --
 
 INSERT INTO `usertbl` (`id`, `fio`, `dol`, `username`, `password`, `value`, `money_prevMonth`, `money`, `uslugi_prevMonth`, `uslugi`) VALUES
-(1, 'No Data', 'No Data', 'Administrator', 'Creator01', 0, 0, 0, 0, 0);
+(1, 'Петров И.И,', 'su', 'Administrator', 'Creator01', 2, 220, 840, 18, 36);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `deposit`
+--
+ALTER TABLE `deposit`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `items`
@@ -177,6 +207,12 @@ ALTER TABLE `usertbl`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `deposit`
+--
+ALTER TABLE `deposit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `items`
 --
 ALTER TABLE `items`
@@ -198,7 +234,7 @@ ALTER TABLE `operation`
 -- AUTO_INCREMENT для таблицы `param`
 --
 ALTER TABLE `param`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `patient`
@@ -210,7 +246,7 @@ ALTER TABLE `patient`
 -- AUTO_INCREMENT для таблицы `usertbl`
 --
 ALTER TABLE `usertbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -53,7 +53,18 @@
 			}
 
 		/* --- Функция проверки наличия системных таблиц и создания их при необходимости --- */
-		protected function checkTable($connect){	
+		protected function checkTable($connect){
+		// Проверка наличия таблицы депозита
+			$tableDep = mysqli_query($connect, "SELECT * FROM deposit");
+			if(!$tableDep)
+				mysqli_query($connect,"
+					CREATE TABLE `items` (
+					  `id` int(11) NOT NULL AUTO_INCREMENT,
+					  `fio` varchar(60) COLLATE utf8_bin NOT NULL,
+					  `sum` int(11) NOT NULL,
+					  PRIMARY KEY (`id`)
+					) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+					");	
 			// Проверка наличия таблицы Услуг
 			$tableIt = mysqli_query($connect, "SELECT * FROM items");
 			if(!$tableIt)
@@ -90,6 +101,9 @@
 						  `dateOut` text NOT NULL,
 						  `ad` text NOT NULL,
 						  `agent` text NOT NULL,
+						  `dispecher` text NOT NULL,
+						  `comment` text NOT NULL,
+						  `numCard` int(11) NOT NULL,
 						  PRIMARY KEY (`id`)
 						) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 					");
@@ -121,7 +135,10 @@
 						  `value` text NOT NULL,
 						  PRIMARY KEY (`id`)
 						) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-						INSERT INTO param VALUES("1","Прием","3000");
+						INSERT INTO param VALUES("1","Прием","100");
+						INSERT INTO param VALUES("2","Диспетчеры","Иванов,Фролова,Кто-то Там");
+						INSERT INTO param VALUES("3","Реклама","ТВ,Агенты,Газета,Наружняя реклама,Вывеска");
+						INSERT INTO param VALUES("4","Агенты","Скорая помощь, 21 больница, Справочник");
 					');
 			// Проверка таблицы Операций
 			$tableOper = mysqli_query($connect, "SELECT * FROM operation");

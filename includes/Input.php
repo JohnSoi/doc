@@ -154,24 +154,18 @@
 			if (mysqli_num_rows($result) == 0)
 				echo "<div align = 'center'><h1>Нет данных в Базе данных</h1></div>";
 			else{
-				echo'
-					<table align="center">
-						<thead>
-							<tr>
-							    <th rowspan="2">ФИО пациент</th>
-							    <th rowspan="2">Услуга</th>
-							    <th rowspan="2">Дата выполнения</th>
-							    <th rowspan="2">Статус</th>
-							</tr>
-						</thead>
-						<tbody>';
+				$listServP = array();
+				$nameSrvArray = array();
 							while($data = mysqli_fetch_assoc($result)) {
-								echo '<tr>';
 									$namePat = $data['fio'];
 									$listServ = explode(',',$data['sp_uslug']);
 									$countServ = count($listServ);
 									$i = 0;
+									
 									while ($i < $countServ){
+										$listServ[$i];
+										if(!empty($listServ[$i])){
+											$listServ[$i];
 										$exListServ = explode('-', $listServ[$i]);
 										$idServ = $exListServ[0];
 										$serv = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
@@ -182,39 +176,46 @@
 										if ($stServ == 1)
 											$dateServ = $exListServ[4];
 										else
-											$dateServ = '---';
-										if($idDoc == $idDoctor)
-											if($stServ == 1){
-												$dateTime = explode(' ', $dateServ);
-												$dateService = explode('/', $dateTime[0]);
-												$monthServ = $dateService[1];
-												if($monthServ == $month){
-													echo '<td>'.$namePat.'</td>';
-													echo '<td>'.$servName.'</td>';
-													echo '<td>'.$dateServ.'</td>';
-													echo '<td>Выполнено</td>';
-													echo '</tr>';
-													}
-												}
-											elseif($stServ == 0){
-												echo '<td>'.$namePat.'</td>';
-												echo '<td>'.$servName.'</td>';
-												echo '<td>'.$dateServ.'</td>';
-												echo '<td>Не выполнено</td>';
-												echo '</tr>';
-												}
-										$i++;
+											$dateServ = "";
+										if(!empty($dateServ)){
+											$dateServEx = explode(' ', $dateServ);
+											$dateEx = explode('/', $dateServEx[0]);
+											$dateServPat = $dateEx[1];
+											$month;
+
+											if($dateServPat== $month){
+													$listServP[] = array('name' => $servName,'fio' => $namePat, 'date' => $dateServ);
+													$nameSrvArray[] = $servName;
+											}
 										}
-								echo '</tr>';
+									}
+
+									$i++;
+									}
 								}
-	 					echo '</tbody>
-					</table>';
+								$nameServ = array_unique($nameSrvArray);
+								$countArray = count($listServP);
+								$listNameServ = array();
+								echo '<div class="listServ">';
+								for ($j=0; $j < count($nameServ); $j++) { 
+									echo '<h3>'.$nameServ[$j].'</h3>';
+										echo '<ol>';
+									for ($i=0; $i < $countArray; $i++) { 
+										$servArrayNow = $listServP[$i];
+										if($servArrayNow['name'] == $nameServ[$j])
+											echo '<li><strong>Пациент: </strong>'.$servArrayNow['fio'].' <strong>Выполнено: </strong>'.$servArrayNow['date'].'</li>';
+										}
+									echo '</ol>';
+
+									}
+
 					if ($_GET['st'] == 1)
-						echo '<a class="button" href="input.php?flaginput=2&st=0">Предыдущий месяц</a>';
+						echo '<a class="button" href="input.php?flaginput=2&st=0">Предыдущий месяц</a></div>';
 					else
-						echo '<a class="button" href="input.php?flaginput=2&st=1">Текущий месяц</a>';
+						echo '<a class="button" href="input.php?flaginput=2&st=1">Текущий месяц</a></div>';
 				}
 			}
+
 
 		/* --- Индивидуальная таблица пациента --- */
 		function getPacientPersonalTable($connection, $id, $date, $typeuser){
@@ -231,21 +232,34 @@
 					//Разбиение даты заселения на дату и время
 					$dateIn = explode(' ', $data["dateIn"]);
 					$_SESSION['frameid'] = $id;
-					echo '	
+					echo '
+					<!--- Вывод сообщения о необходимости обновить страницу --->
 					<div id="reload" style="display: none; width: 100%; background: red; color: white;text-align:center;"><strong>Обновите страницу</strong> <a href=javascript:history.go(0)>Обновить</a></div>	
 						<div class="wrap-input">
+
+							<!--- Имя и номер карты пациента --->
 							<div class="name"><p>';
 							if($data['type'] == 'Стационар')
 							 	echo '<a class="numcard" href="edit.php?flagedit=10&id='.$data['id'].'">#'.$data['numCard'].'</a> ';
 							echo $data['fio'].'</p></div>
+
+							<!--- Вывод даты рождения --->
 							<div class="date"><p>Дата рождения: <br>'.$data['datebirthday'].'</p></div>';
+
+							//Если есть телефон, то вывести его
 							if (!empty($data['tel']))
 							 echo '<div class="tel"><p>Телефон: <br>'.$data['tel'].'</p></div>';
-							echo '<div class="datest"><p>Дата записи: <br>'.$data['dateIn'].'</p>
-							<br><a href="add.php?flagadd=11&id='.$id.'">Изменить</a>
+
+							//Вывод даты записи и возможность ее изменения 
+							echo '<div class="datest"><p>Дата записи: <br>'.$data['dateIn'].'</p>';
+							if($typeuser == 'su')
+							 echo '<br><a href="add.php?flagadd=11&id='.$id.'">Изменить</a>';
+							echo'
 							</div>      
+
+							<!--- Установка даты выписки и ее отмена или изменение --->
 							<div class="datefin"><p>Дата выписки: <br>';
-								 if((empty($data['dateOut']))&&($_SESSION['typeUser']!='view')&&($_SESSION['typeUser']!='admin'))
+								 if((empty($data['dateOut']))&&($_SESSION['typeUser']!='view')&&($_SESSION['typeUser']!='admin')&&($_SESSION['typeUser']!='ddoc'))
 								 	echo '<a href="add.php?flagadd=8&id='.$id.'">Установить</a>';
 								 else {
 								 	echo $data['dateOut'];
@@ -258,9 +272,17 @@
 							else
 								$countDayClinic = $date->getPeriod($data['dateIn'],$date->getDateTime());
 							echo '</p></div>
+
+							<!--- Фрейм операции --->
 							<div class="oper"><iframe id="oper"  width="100%" height="100%" src="oper.php?id='.$id.'" frameborder="1" seamless></iframe></div>
+
+							<!--- Кнопки маркетологии --->
 							<div class="butt"><iframe id="butt"  width="100%" height="100%" src="but.php?id='.$id.'" frameborder="1" seamless></iframe></div>
+
+							<!--- Контактные данные --->
 							<div class="inf"><iframe id="inf"  width="100%" height="100%" src="inf.php?id='.$id.'" frameborder="1" seamless></iframe></div>';
+
+							//Фейм койко -мест
 							if($data['type'] == 'Стационар')
 							 	echo '<div class="mest"><iframe id = "mest" seamless width="100%" height="100%" src="mest.php?id='.$id.'" frameborder="1"></iframe></div>';
 							else{
@@ -268,7 +290,11 @@
 							 	    echo '<script>menuSt.style.display = "none";
 							 	        menuAm.style.display = "flex";</script>';
 								}
+
+							//Фрейм услуг
 							echo '<div class="serv"><iframe id="serv" width="100%" height="100%" src="serv.php?id='.$id.'" frameborder="1"></iframe></div>';
+
+							//Подсчет дней в стационаре
 							if ($data['type'] == 'Стационар'){
 								$allsum = $allday = 0;
 								if(!empty($data['mest'])){
@@ -291,7 +317,26 @@
 								}
 
 								}
-							$sumNow = 0;
+							//Подсчет суммы 
+							$patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
+							$namePat = mysqli_fetch_assoc($patQuery);
+							$serv = $namePat['sp_uslug'];
+							$sumall = 0;
+							$listServ = explode(',', $serv);
+							$countServ = count($listServ);
+							$i = $allsum = $sumNow = 0;
+
+							while ($i < $countServ){
+								$exListServ = explode('-', $listServ[$i]);
+								$idServ = $exListServ[0];
+								$statusServ = $exListServ[3];
+								$queryderv = mysqli_query($connection, "SELECT * FROM items WHERE id= '".$idServ."'");
+								$dataserv = mysqli_fetch_assoc($queryderv);
+								$costServ = $dataserv['cost'];
+								if($statusServ == 1)
+									$sumNow += $costServ;
+								$i++;
+							}
 								
 							if(isset($_SESSION['cost_serv']))
 								$sumNow = $_SESSION['cost_serv'];
@@ -299,28 +344,49 @@
 							 	$sumF = $sumNow + $sum_mest;
 							else
 							 	$sumF = $sumNow;
+
+							// Кнопка закрытия карты
 							if($data['status'] == 0)
 							 	echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
 							else{ 
-								if($data['type'] == 'Стационар')
-									if(($sumF == $data['sum']) and (!empty($data['dateOut'])) &&($_SESSION['typeUser']!='view' || $_SESSION['typeUser']!='admin' ) && ($allday == $countDayClinic) && (!empty($data['ad'])) && (!empty($data['dispecher'])))
-											echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
+									if($sumF != $data['sum'])
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Проверьте<br>Сумму</p></div>';
+							 		elseif(empty($data['dateOut']))
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Дата<br>выписки</p></div>';
+							 		elseif($_SESSION['typeUser']=='view' || $_SESSION['typeUser']=='admin' || $_SESSION['typeUser']=='ddoc')
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Нет<br>Прав</p></div>';
+							 		elseif(empty($data['ad']))
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Нет<br>Рекламы</p></div>';
+							 		elseif(empty($data['dispecher']))
+							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Нет<br>Диспетчера</p></div>';
+							 		elseif($data['type'] == 'Стационар'){
+							 			if($allday == $countDayClinic)
+							 				echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Проверьте<br>койко - дни</p></div>';
+							 		}
 									else
-							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
-								else
-									if(($sumF == $data['sum']) and (!empty($data['dateOut'])) && ($_SESSION['typeUser']!='view' || $_SESSION['typeUser']!='admin') && (!empty($data['ad'])) && (!empty($data['dispecher'])))
-											echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
-									else
-							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Закрыть<br>карту</p></div>';
+							 			echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
 								}
+
+							//Фрейм комментария
+							 echo '<div class="comment"><iframe id="comment" width = "100%" height="90px" src="comment.php?id='.$id.'" frameborder="0"></iframe></div>';
+
+							//Кнопка стоимости
 							$sumDol = $sumF  - $data['sum'];
 							if ($sumF  == $data['sum'])
 							 	echo '<div class="btn-cost" style="border:10px green solid ;"><p>Оплата</p></div>';
 							else
 							 	echo '<div class="btn-cost" style="border:10px red solid ;"><p>'.$sumDol.'</p></div>';
-							echo '
-							<div class="doc">Лечащий доктор: '.$data['doctor'].'</div>
+
+							//Вывод лечащего врача
+							 if(($data['doctor']=='')&&($_SESSION['typeUser']!='ddoc')&&($_SESSION['typeUser']!='admin')&&($_SESSION['typeUser']!='view'))
+							 	echo '<div class="doc">Лечащий доктор: <a href="edit.php?flagedit=4&id='.$id.'">Стать</a></div>';
+							 else
+								echo '
+									<div class="doc">Лечащий доктор: '.$data['doctor'].'</div>';
+						echo'
 						</div>
+
+						<!--- Обновление фреймов --->
 						<script>
 							var lo = document.getElementById(\'oper\');
 							setInterval(function() {lo.src = \'oper.php?id='.$_SESSION['frameid'].'\';}, 5000);
@@ -332,6 +398,8 @@
 							setInterval(function() {inf.src = \'inf.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var but = document.getElementById(\'butt\');
 							setInterval(function() {but.src = \'but.php?id='.$_SESSION['frameid'].'\';}, 5000);
+							var comment = document.getElementById(\'comment\');
+							setInterval(function() {comment.src = \'comment.php?id='.$_SESSION['frameid'].'\';}, 5000);
 							var reload = document.getElementById(\'reload\');
 							setInterval(function() {reload.style.display = "block";}, 180000);
 						</script>

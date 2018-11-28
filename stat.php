@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/menu.css">
 	<meta http-equiv="Cache-Control" content="private">
+  <script src="js/jquery.min.js"></script>
 </head>
 <?php
 	include ('includes/LogIO.php');
@@ -89,11 +90,93 @@
               $str .= "[' ".$dataServ['fio']." ', ".$dataServ['uslugi']." ],";
               $str1 .= "[' ".$dataServ['fio']." ', ".$dataServ['money']." ],";
               }
-                      
+
+            //Подсчет рекламы и диспечеров
+            $paramQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Реклама'");
+            $pararmArray = mysqli_fetch_assoc($paramQuery);
+            $adsList = $pararmArray['value'];
+            $adsListEx = explode(',', $adsList);
+            $countList = count($adsListEx);
+            $arrayAds = array();
+            $adsStr = '';
+
+            for ($i=0; $i < $countList; $i++) { 
+              $adsType = $adsListEx[$i];
+
+              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE ad = '".$adsType."'");
+              $countPatient = mysqli_num_rows($searchPatient);
+              $arrayAds[$adsType]  =  $countPatient;
+            }
+
+            for ($i=0; $i < $countList; $i++) { 
+              $adsType = $adsListEx[$i];
+              $adsStr .= '[\''.$adsType.'\','.$arrayAds[$adsType].'],';
+            }
+
+            $paramQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'Диспетчеры'");
+            $pararmArray = mysqli_fetch_assoc($paramQuery);
+            $dispList = $pararmArray['value'];
+            $dispListEx = explode(',', $dispList);
+            $countList = count($dispListEx);
+            $arrayDisp = array();
+            $dispStr = '';
+
+            for ($i=0; $i < $countList; $i++) { 
+              $dispType = $dispListEx[$i];
+
+              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE dispecher = '".$dispType."'");
+              $countPatient = mysqli_num_rows($searchPatient);
+              $arrayDisp[$dispType]  =  $countPatient;
+            }
+
+            for ($i=0; $i < $countList; $i++) { 
+              $dispType = $dispListEx[$i];
+              $dispStr .= '[\''.$dispType.'\','.$arrayDisp[$dispType].'],';
+            }
 
         ?>
         <h1>Статистка</h1>
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript" src="js/loader.js"></script>
+        <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['тип рекламы', 'Количество пациентов'],
+                  <?php echo $adsStr; ?>
+                ]);
+
+                var options = {
+                  title: 'Реклама'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart4'));
+
+                chart.draw(data, options);
+              }
+            </script>
+             <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                  ['Фио диспетчера', 'Количество пациентов'],
+                  <?php echo $dispStr; ?>
+                ]);
+
+                var options = {
+                  title: 'Диспетчеры'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart5'));
+
+                chart.draw(data, options);
+              }
+            </script>
         <!-- Скрипт вывода графика количества пациентов в амбулатории и стационаре -->
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
@@ -117,7 +200,6 @@
               }
             </script>
             <!-- Скрипт графика прибыли по категориям -->
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
               google.charts.setOnLoadCallback(drawChart);
@@ -140,7 +222,6 @@
               }
             </script>
             <!-- Скрипт графика вывода количества услуг по врачам -->
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
               google.charts.setOnLoadCallback(drawChart);
@@ -162,7 +243,6 @@
               }
             </script>
             <!-- Скрипт гафика зарплат врачей -->
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
               google.charts.load('current', {'packages':['corechart']});
               google.charts.setOnLoadCallback(drawChart);
@@ -188,7 +268,7 @@
           <style type="text/css">
             .wrap-gr{
                 display: grid;
-                grid-template-columns: 50% 50%;
+                grid-template-columns: 33% 33% 33%;
                 /*grid-template-rows: 50% 50%;*/
             }
             .piechart{
@@ -201,6 +281,8 @@
               <div  id="piechart1"></div>
               <div id="piechart2"></div>
               <div  id="piechart3"></div>
+              <div  id="piechart4"></div>
+              <div  id="piechart5"></div>
             </div>
             <?php
             echo '
@@ -224,7 +306,6 @@
             ?>
   </div>
 </div>
-<script src="js/jquery.min.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

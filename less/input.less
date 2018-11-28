@@ -1,13 +1,11 @@
 /* --- Стиль персонального вывода пациентов --- */
 /* --- Общий грид макет --- */
 .wrap-input{
-  margin: 0 auto;
   display: grid !important;
   width: 100%;
   min-height: 800px;
   max-height: 900px;
   margin: 0 auto;
-  margin-top: 3%;
   background: white;
   grid-template-columns: repeat(8, 12.5%);
   grid-template-rows: repeat(20, 5%);
@@ -138,8 +136,8 @@
     }
   /* --- Кнопка закрытия --- */
   .btn-cl{
-    grid-column-start: 2;
-    grid-column-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
     grid-row-start: 17;
     grid-row-end: 20;
     display: grid;
@@ -157,11 +155,18 @@
       grid-row-end: 4;
       }
     }
+  /* --- Кнопка комментария --- */
+  .comment{
+    grid-column-start: 3;
+    grid-column-end: 7;
+    grid-row-start: 17;
+    grid-row-end: 20;
+  }
   /* --- Кнопка оплаты --- */
   .btn-cost{
     display: grid;
-    grid-column-start: 6;
-    grid-column-end: 8;
+    grid-column-start: 7;
+    grid-column-end: 9;
     grid-row-start: 17;
     grid-row-end: 20;
     grid-template-rows: repeat(4, 25%);
