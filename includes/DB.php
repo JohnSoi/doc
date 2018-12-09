@@ -22,7 +22,6 @@
 			if ($con->connect_error) {
 				echo "<div class=\"error\"><h1>Внимание! Ошибка установки соединения с сервером MySQL!</h1><h2>Ошибка
 				(".$mysqli->connect_errno ."): ".$mysqli->connect_error."</h2></div>";
-				break;
 				}
 			// Переход к выбору БД
 			$this->selectDataBase($con, $this->NameBase);

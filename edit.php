@@ -487,19 +487,16 @@
 								$dateNow = $date -> getDateTime();
 								$updatePatient = mysqli_query($connection, "UPDATE patient SET status = '0' WHERE id = '".$id."'");
 								if($updatePatient){
-									$idpatient = $_GET['id'];
-
+									//Запрос данных пациента
 									$PatientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$id."'");
 									$dataDB = mysqli_fetch_assoc($PatientQuery);
 
-									$PaQuery = mysqli_query($connection, "SELECT * FROM param WHERE name = 'ИД Тест'");
-									$dataPa = mysqli_fetch_assoc($PaQuery);
-									$idT = $dataPa['value'];
-
+									//Присваение переменным значений из данных
 									$services = $dataDB['sp_uslug'];
 									$mestD = $dataDB['mest'];
 									$nameLDoc = $dataDB['doctor'];
 
+									//Подсчет стоимости койко дней
 									$allsumMest = 0;
 									$listMest = explode(',', $mestD);
 									$countDay = count($listMest);
@@ -514,14 +511,19 @@
 											$mestArr = mysqli_fetch_assoc($mestQuery);
 											$costMest = $mestArr['value'];
 											$nameMest = $mestArr['status'];
-											$allsumMest += $costMest*$countD;
+											$allsumMest += $costMest*$countD*0.08;
 											$i++;
 											}
+									if(!isset($allsumMest))
+										$allsumMest = 0;
+									echo 'Стоимость за проживание: '.$allsumMest;
 
+									//РАзделение услуг
 									$listServ = explode(',', $services);
 									$countServ = count($listServ);
 									$i = 0;
 
+									//Поиск услуг Геля и ХимЗащиты
 									while ($i < $countServ){
 										$exListServ = explode('-', $listServ[$i]);
 										$idServ = $exListServ[0];
@@ -530,137 +532,204 @@
 										$nameServ = $dataServ['name'];
 										$exName = explode(' ', $nameServ);
 										if((strpos($nameServ,'Эспераль-гель') !== false)){
-											echo $cost_g = $dataServ['cost'];
-											echo 'good';
+											$cost_g = $dataServ['cost'];
 											}
 										if((strpos($nameServ,'Химзащита') !== false)){
-											echo $cost_h = $dataServ['cost'];
-											echo 'goodh';
-											}
-										
+											$cost_h = $dataServ['cost'];
+											}								
 										$i++;
 										}
 
-									$i = 0;
+									echo '<br>';
+									echo 'Стоимость Геля: '.$cost_g;
+									echo '<br>';
+									echo 'Стоимость ХЗ: '.$cost_h;
+									echo '<br>';
 
+									//Поиск тестов Геля и ХЗ
+									$i = 0;
 									while ($i < $countServ){
 										$exListServ = explode('-', $listServ[$i]);
 										$idServ = $exListServ[0];
 										$ServicesQuery = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
 										$dataServ = mysqli_fetch_assoc($ServicesQuery);
 										$nameServ = $dataServ['name'];
-										$exName = explode(' ', $nameServ);
 										if((strpos($nameServ,'эспераль-гель') !== false)){
-											echo $idT = $exListServ[0];
-											echo 'good id';
+											$idT = $exListServ[0];
 											}
 										if((strpos($nameServ,'химзащита') !== false)){
-											echo $idH = $exListServ[0];
-											echo 'goodh id';
+											$idH = $exListServ[0];
 											}
 										$i++;
 										}
 
-									$i=0;
+									//Если записей не обнаружено, то сделать переменные пустыми
+									if(!isset($idT))
+										$idT = '';
+									if(!isset($idH))
+										$idH = '';
 
+
+									echo '<br>';
+									echo 'ИД теста Геля: '.$idT;
+									echo '<br>';
+									echo 'ИД теста ХЗ: '.$idH;
+									echo '<br>';
+
+									$items = array();
+
+									$i=0;
 									while ($i < $countServ){
 											$exListServ = explode('-', $listServ[$i]);
-											$insSumDoc = 0;
 											$idServ = $exListServ[0];
 											$idDoctor = $exListServ[2];
 											$idDoctorN = $exListServ[1];
-											if(isset($exListServ[6]))
-												$cost = $exListServ[6];
-											else
-												unset($cost);
+											$status = $exListServ[3];
+
+											//Вариант, с указанием суммы
+											// if(isset($exListServ[6]))
+											// 	$cost = $exListServ[6];
+											// else
+											// 	unset($cost);
 
 											$ServicesQuery = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$idServ."'");
 											$dataServ = mysqli_fetch_assoc($ServicesQuery);
-											//Данные о докторах храняться в ассоциативном массиве
-											$DocQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE id = '".$idDoctor."'");
-											$dataDoc = mysqli_fetch_assoc($DocQuery);
-											$DocNQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE id = '".$idDoctorN."'");
-											$dataDocN = mysqli_fetch_assoc($DocNQuery);
-											echo '<h1>'.$dataServ['name'].'</h1>';
-											//Переменная стоимости услуги
-											if(!isset($exListServ[6]))
-												$cost = $dataServ['cost'];
-											//Переменная бонуса от услуги
 											$bonus = $dataServ['bonus'];
-											//Переменная бонуса за назначение от услуги
+											$cost = $dataServ['cost'];
 											$bonusN = $dataServ['bonusN'];
 
-											//Проверка наличия параметра бонуса
-											if ($bonus == 0){
-												//Если бонуса нет, назначается процент от стоимости 
-												$percentDoc = $dataDoc['value'];
-												//Сумма для пополнения кошелька доктора процентом от стоимости
-												$inSumDoc = $cost * $percentDoc / 100;
-												}
-											else
-												//Сумма пополнеиия кошелька бонусом от услуги
-												$inSumDoc = $bonus;
+											if($status == 1)
+												$items[] = array('id' => $idServ, 'docN' => $idDoctorN, 'docV' => $idDoctor, 'cost' => $cost, 'bonus' => $bonus, 'bonusN' => $bonusN);
 
-											echo 'Сумма надбавки: '.$inSumDoc.'<br>';
-
-											$addSum = 0;
-
-											if($idServ == $idT){
-												echo '%'.$dataDocN['value'];
-												echo 'I'.$addSum += $cost_g*$dataDoc['value']/100;
-												}
-											elseif ($idServ == $idH) {
-												echo 'H'.$addSum += $cost_h*$dataDoc['value']/100;
-											}
-												
-
-
-											if ($bonusN == 0){
-												//Если бонуса нет, назначается процент от стоимости 
-												$percentDocN = $dataDocN['value'];
-												//Сумма для пополнения кошелька доктора процентом от стоимости
-												$inSumDocN = $cost * $percentDocN / 100;
-												}
-											else
-												//Сумма пополнеиия кошелька бонусом от услуги
-												$inSumDocN = $bonusN;
-											
-											echo 'Сумма надюавки за назначение: '.$inSumDocN.'<br>';
-
-
-											//Увеличение текущей зарплаты врача на значение, описанное выше
-											$insSumDoc = $dataDoc['money'] + $inSumDoc+$addSum;
-											$insSumDocN = $dataDocN['money'] + $inSumDocN;
-											if($idDoctor == $idDoctorN)
-												$insSumDocN += $insSumDoc;
-
-											echo 'Сумма записи за выполнение: '.$insSumDoc.'<br>';
-											echo 'Сумма записи за назначение: '.$insSumDocN.'<br>';
-
-											//Запись новой зарплаты
-											if ($exListServ[3] == 1){
-												if($idDoctor == $idDoctorN)
-													$insertDocNQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDocN."' WHERE id = '".$idDoctorN."'");
-												else
-													$insertDocQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDoc."' WHERE id = '".$idDoctor."'");
-													$insertDocNQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$insSumDocN."' WHERE id = '".$idDoctorN."'");
-												}
-											echo '<hr>';	
 											$i++;
-											
+										}
+
+									//print_r($items);
+
+									//Создание массива докторов
+									$doctorArr = array();
+									$countItems = count($items);
+									for ($i=0; $i < $countItems; $i++) { 
+										$doctorArr[] = $items[$i]['docN'];
+										$doctorArr[] = $items[$i]['docV'];
+									}
+
+									//Удаление дубликатов и приведение к нормальному виду ключей массива
+									$doctorArr = array_unique($doctorArr);
+									$doctorArr = array_values($doctorArr);
+
+									//print_r($doctorArr);
+
+									//Создания массива докторов с их ставкой и текущим значением зп
+									$doctorArrInf = array();
+									$countDA = count($doctorArr);
+									for ($i=0; $i < $countDA; $i++) {
+										$doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE id = '".$doctorArr[$i]."'");
+										$doctorArray = mysqli_fetch_assoc($doctorQuery); 
+										$doctorArrInf[$doctorArr[$i]] = array('value' => $doctorArray['value'], 'money' => $doctorArray['money']);
+									}
+
+									//print_r($doctorArrInf);
+
+									//Создание массива с данными для обновления в БД
+									$doctorMoney = array();
+									$countItems = count($items);
+									for ($i=0; $i < $countItems; $i++) { 
+										$idItem = $items[$i]['id'];
+
+										if($items[$i]['id'] == $idT){
+											echo 'Обнаружен тест ЭГ с начислением ';
+											echo $costV = $cost_g*$doctorArrInf[$items[$i]['docV']]['value']/100;
+											echo '<br>';
+											echo '<br>';
+											$costN = 0;
+										}
+										elseif($items[$i]['id'] == $idH){
+											echo 'Обнаружен тест ХЗ с начислением ';
+											echo $costV = $cost_h*$doctorArrInf[$items[$i]['docV']]['value']/100;
+											echo '<br>';
+											echo '<br>';
+											$costN = 0;
+										}
+										else{
+											if($items[$i]['bonus'] == 0)
+											{
+												echo "Процентное начисление за выполнение ";
+												echo $costV = $items[$i]['cost']*$doctorArrInf[$items[$i]['docV']]['value']/100;
+												echo '<br>';
 											}
-									
-									
-									$queryDocL = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio = '".$nameLDoc."'");
-									$lDocArray = mysqli_fetch_assoc($queryDocL);
-									$lDocMoney = $lDocArray['money'] + ($allsumMest*0.08);
-									echo 'Сумма надбавки: '.$lDocMoney.'<br>';
-									echo 'Сумма текущая: '.$lDocArray['money'].'<br>';
-									$insertDocLQuery = mysqli_query($connection, "UPDATE usertbl SET money = '".$lDocMoney."' WHERE fio = '".$nameLDoc."'");
-									$_SESSION['link'] = 'input.php?flaginput=3&id='.$idpatient;
-									
-									$DataBase -> route();
-								}
+											else{
+												echo 'Начиcление бонуса за выполнение ';
+												echo $costV = $items[$i]['bonus'];
+												echo '<br>';
+											}
+											if($items[$i]['bonusN'] == 0)
+											{
+												echo "Процентное начисление за назначение ";
+												echo $costN = $items[$i]['cost']*$doctorArrInf[$items[$i]['docN']]['value']/100;
+												echo '<br>';
+												echo '<br>';
+											}
+											else
+											{
+												echo 'Начиcление бонуса за назначение ';
+												echo $costN = $items[$i]['bonusN'];
+												echo '<br>';
+												echo '<br>';
+											}
+										}
+
+										if(!isset($costV))
+											$costV = 0;
+										if(!isset($costN))
+											$costN = 0;
+
+
+										if(!isset($doctorMoney[$items[$i]['docV']]['money']))
+											$moneyNow = 0;
+										else
+											$moneyNow = $doctorMoney[$items[$i]['docV']]['money'];
+										if(!isset($doctorMoney[$items[$i]['docN']]['money']))
+											$moneyNowN = 0;
+										else
+											$moneyNowN = $doctorMoney[$items[$i]['docN']]['money'];
+										$doctorMoney[$items[$i]['docV']] = array('money' => $moneyNow + $costV);
+										$doctorMoney[$items[$i]['docN']] = array('money' => $moneyNowN + $costN);
+									}
+
+									//print_r($doctorMoney);
+
+									//Поиск клечащего врача
+									$sumNowDocDC = mysqli_query($connection, "SELECT * FROM usertbl WHERE fio = '".$nameLDoc."'");
+									$dcArr = mysqli_fetch_assoc($sumNowDocDC);
+									echo $idDocL = $dcArr['id'];
+
+									//Перебор массива и добавление данных
+									$keyArr = array_keys($doctorMoney);
+									$countMoneyDoc = count($keyArr);
+									for ($i=0; $i < $countMoneyDoc; $i++) {
+									if($keyArr[$i] != $idDocL){
+										echo 'Доктору ';
+										echo $idDocIn = $keyArr[$i];
+										echo ' будет записано '.$sumIn = $doctorArrInf[$keyArr[$i]]['money'] + $doctorMoney[$keyArr[$i]]['money'];
+										echo '<br>';
+									}
+									else{
+										echo 'ДокторуL ';
+										echo $idDocIn = $keyArr[$i];
+										echo ' будет записано '.$sumIn = $doctorArrInf[$keyArr[$i]]['money'] + $doctorMoney[$keyArr[$i]]['money']+$allsumMest;
+										echo '<br>';
+									}
+										$updateSum = mysqli_query($connection, "UPDATE usertbl SET money = '".$sumIn."' WHERE id = '".$keyArr[$i]."'");
+									}
+
+									// Переход к карте
+									if($updateSum){
+										$_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
+										$DataBase -> route();
+									}
+									}
+								
 								break;
 							// Отмена выполнения
 							case 9:
@@ -706,8 +775,6 @@
 								break;
 							//Отмена процедуры
 							case 11:
-								// id='.$idPacient.'&dataServ='.$dataServ.'&idServ='.$idServ.'
-								// 2-1-1-1-22/11/2018 9:54-22/11/2018
 								$listServIn = '';
 								$idPatient = $_GET['id'];
 								$dataServ = $_GET['date'];

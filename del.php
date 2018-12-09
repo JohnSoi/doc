@@ -60,5 +60,11 @@
 			if($updatePatient)
 				header("Location:mest.php?id=".$idPatient);
 			}
+			if($_GET['flagdel'] == 5){
+	    	$id = $_GET['id'];
+	    	$query ="DELETE FROM patient WHERE id = '$id'";
+	    	$result = mysqli_query($connection, $query) or die("Ошибка " . mysqli_error($connection)); 
+			echo "<script>setTimeout(function(){self.location=\"input.php?flaginput=1\";}, 100);</script>";
+			}
 		}
 ?>

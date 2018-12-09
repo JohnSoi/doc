@@ -2,7 +2,7 @@
 	// Подключение сторонних файлов и проверка на неавторизованность
 	session_start();
 	if(!$_SESSION['session_username'])
-	    break;
+	  header('LOcation:main.php');  
 	$id = $_GET['id'];
 
 	include 'includes/DB.php';
