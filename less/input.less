@@ -1,0 +1,191 @@
+/* --- Стиль персонального вывода пациентов --- */
+/* --- Общий грид макет --- */
+.wrap-input{
+  display: grid !important;
+  width: 100%;
+  min-height: 800px;
+  max-height: 900px;
+  margin: 0 auto;
+  background: white;
+  grid-template-columns: repeat(8, 12.5%);
+  grid-template-rows: repeat(20, 5%);
+  text-align: center;
+
+  p{
+    cursor: pointer;
+    }
+  /* --- Имя пациента --- */
+  .name{
+    margin: 1px;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding-top: 2px;
+    font-size: 32px;
+    display: grid;
+    grid-template-rows: repeat(4, 25%);
+
+    p{
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    .numcard{
+      text-decoration: none;
+      background: grey;
+      border-radius: 50%;
+      color: white;
+      text-shadow: 2px 2px 2px #000;
+      padding: 4px;
+      -webkit-transition: 0.7s;
+      -o-transition: 0.7s;
+      transition: 0.7s;
+    }
+    .numcard:hover{
+      background: rgba(0,200,0,0.7);
+    }
+    }
+  /* --- Дата рождения --- */
+  .date{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    display: grid;
+    font-size: 18px;
+    grid-template-rows: repeat(4, 25%);
+
+    p{
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    }
+  /* --- Номер телефона --- */
+  .tel{
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    display: grid;
+    grid-template-rows: repeat(4, 25%);
+
+    p{
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    }
+  /* --- Дата записи --- */
+  .datest{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    display: grid;
+    grid-template-rows: repeat(4, 25%);
+
+    p{
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    }
+  /* --- Датат выписки --- */
+  .datefin{
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
+  /* --- Список операций --- */
+  .oper{
+    margin: 2px;
+    grid-column-start: 6;
+    grid-column-end: 9;
+    grid-row-start: 1;
+    grid-row-end: 7;
+    }
+  /* --- Описание --- */
+  .inf{
+    grid-column-start: 6;
+    grid-column-end: 9;
+    grid-row-start: 7;
+    grid-row-end: 11;
+    }
+  /* --- Кнопки маркетологии --- */
+  .butt{
+    grid-column-start: 6;
+    grid-column-end: 9;
+    grid-row-start: 11;
+    grid-row-end: 17;
+    }
+  /* --- Список мест --- */
+  .mest{
+    margin: 1px;
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 9;
+    padding-top: 6px;
+    }
+  /* --- Список назначений --- */
+  .serv{
+    margin: 1px;
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 9;
+    grid-row-end: 17;
+    }
+  /* --- Кнопка закрытия --- */
+  .btn-cl{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 17;
+    grid-row-end: 20;
+    display: grid;
+    grid-template-rows: repeat(4, 25%);
+
+    a{
+      font-size: 20px;
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+
+    p{
+      font-size: 20px;
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    }
+  /* --- Кнопка комментария --- */
+  .comment{
+    grid-column-start: 3;
+    grid-column-end: 7;
+    grid-row-start: 17;
+    grid-row-end: 20;
+  }
+  /* --- Кнопка оплаты --- */
+  .btn-cost{
+    display: grid;
+    grid-column-start: 7;
+    grid-column-end: 9;
+    grid-row-start: 17;
+    grid-row-end: 20;
+    grid-template-rows: repeat(4, 25%);
+
+    p{
+      font-size: 16px;
+      grid-row-start: 2;
+      grid-row-end: 4;
+      }
+    }
+  /* --- Лечащий доктор --- */
+  .doc{
+    padding: 3px;
+    background: yellow;
+    grid-column-start: 1;
+    grid-column-end: 9;
+    grid-row-start: 20;
+    grid-row-end: 21;
+    font-size: 20px;
+    padding-bottom: 0px;
+    }
+  }

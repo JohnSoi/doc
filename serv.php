@@ -1,6 +1,4 @@
-
 <?php
-	// Подключение сторонних файлов и проверка на неавторизованность
 	session_start();
   if(!$_SESSION['session_username'])
     header("Location:login.php");
@@ -49,13 +47,12 @@
 	  if (empty($serv)){
 			echo "<div align = 'center'><h1>Нет данных в Базе данных для пациента ".$namePat."</h1></div>";
 			if($flag == 0)
-				if($ldoc == $nameDoct)
+				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))
 					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
 			}
 	  // Вывод назначений 
 	  else{
-			echo'<h1>Список назначений пациента '.$namePat.'</h1>
-			<table align="center">'; 
+			echo '<table align="center">'; 
 				$sumall = 0;
 				$listServ = explode(',', $serv);
 				$countServ = count($listServ);
@@ -68,7 +65,7 @@
 					echo "<td>Назначил</td>";
 					echo "<td>Выполнил</td>";
 					echo "<td>Статус</td>";
-					echo "<td>Время выполненияы</td>";
+					echo "<td>Время выполнения</td>";
 				echo '</tr>';
 
 				while ($i < $countServ){
@@ -76,6 +73,11 @@
 					$idServ = $exListServ[0];
 					$idNaDoc = $exListServ[1];
 					$idDoc = $exListServ[2];
+					$dataN = $exListServ[5];
+					if(isset($exListServ[6]))
+						$servCost = $exListServ[6];
+					else
+						unset($servCost);
 					$statusServ = $exListServ[3];
 					if ($statusServ == 1)
 						$dataServ = $exListServ[4];
@@ -85,11 +87,12 @@
 					$data = mysqli_fetch_assoc($query);
 					$nameServ = $data['name'];
 					$costServ = $data['cost'];
-					$allsum += $costServ;
-
+					if($costServ>1)
+						$allsum += $costServ;
+					if(isset($servCost))
+						$allsum += $servCost;
 					if ($idDoc == 0)
 						$nameDoc = 'Не выполнена';
-
 					else{
 						$query = mysqli_query($connection, "SELECT fio FROM usertbl WHERE id= '".$idDoc."'");
 						$data = mysqli_fetch_assoc($query);
@@ -102,18 +105,47 @@
 
 					echo '<tr>';
 						if($statusServ == 0)
-							if(($_SESSION['typeUser'] == 'doc') or ($_SESSION['typeUser'] == 'ddoc') or ($_SESSION['typeUser'] == 'su'))
-								$statServ = '<p><a href="link.html" class="rollover"></a></p>';
+							if(($_SESSION['typeUser'] == 'doc') or ($_SESSION['typeUser'] == 'ddoc') or ($_SESSION['typeUser'] == 'su') or ($_SESSION['typeUser'] == 'psi')  or ($_SESSION['typeUser'] == 'stpsi'))
+								$statServ = '<a class="rollover"  href="edit.php?flagedit=5&idPac='.$idPacient.'&idDoc='.$idDoctor.'&idArr='.$i.'">Выполнил</a>';
 							else
 								$statServ = 'Не выполнено';
-						elseif($statusServ == 1){	
-							$sumNow += $costServ;
+						elseif($statusServ == 1){
+							if($costServ>1)
+								$sumNow += $costServ;
+							if(isset($servCost))
+								$sumNow += $servCost;
 							$statServ = 'Выполнено';
 							}
-						if ($nameDoc == 'Не выполнена')
-							echo '<td></td><td>'.$nameServ.'</td><td>'.$costServ.'</td><td>'.$nameNDoc.'</td><td>'.$nameDoc.'</td><td>'.$statServ.'</td><td>'.$dataServ.'</td>';
-						else
-							echo '<td></td><td style="background: hsl(122, 79%, 50%);"></td><td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$costServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameNDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$nameDoc.'</td><td style="background: hsl(122, 79%, 50%);">'.$statServ.'</td><td style="background: hsl(122, 79%, 50%);">'.$dataServ.'</td>';
+						if ($nameDoc == 'Не выполнена'){
+							echo '<td>'.$dataN.'<br><a href="edit.php?flagedit=11&id='.$idPacient.'&date='.$dataN.'&idServ='.$idServ.'">Отменить</a></td>';
+							echo '<td>'.$nameServ.'</td>';
+							if(isset($servCost))
+								echo '<td>'.$servCost.'</td>';
+							else
+								echo '<td>'.$costServ.'</td>';
+							echo '<td>'.$nameNDoc.'</td>
+							<td>'.$nameDoc.'</td>
+							<td>'.$statServ.'</td>
+							<td>'.$dataServ.'</td>';
+							}
+						else{
+							if($typeuser == 'su')
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$dataN.'<br><a href="edit.php?flagedit=11&id='.$idPacient.'&date='.$dataN.'&idServ='.$idServ.'">Отменить</a></td>
+								<td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td>';
+							else
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$dataN.'</td>
+								<td style="background: hsl(122, 79%, 50%);">'.$nameServ.'</td>';
+							if(isset($servCost))
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$servCost.'</td>';
+							else
+								echo '<td style="background: hsl(122, 79%, 50%);">'.$costServ.'</td>';
+							echo '<td style="background: hsl(122, 79%, 50%);">'.$nameNDoc.'</td>
+							<td style="background: hsl(122, 79%, 50%);">'.$nameDoc;
+							if(($nameDoc == $nameDoct) || ($typeuser == 'su'))
+								echo '<br><a href="edit.php?flagedit=9&id='.$idPacient.'&dataServ='.$dataServ.'&idServ='.$idServ.'">Отменить</a>';
+							echo'</td><td style="background: hsl(122, 79%, 50%);">'.$statServ.'</td>
+							<td style="background: hsl(122, 79%, 50%);">'.$dataServ.'</td>';
+							}
 						$i++;	
 						}
 					echo '</tr>';
@@ -122,11 +154,10 @@
 						echo "<td style=\"background: hsl(59, 76%, 50%);\">".$allsum."</td>";
 						echo '<td style="background: hsl(59, 76%, 50%);">Выполнено на</td>';
 						echo '<td style="background: hsl(59, 76%, 50%);">'.$sumNow.'</td>';
+						$_SESSION['cost_serv'] = $sumNow;
 					echo '</tr>';
-			echo '</table>
-			<hr>
-			<p>Общая сумма услуг: '.$allsum.' (Выполнено: '.$sumNow.')</p>
-			';
+			echo '</table>';
+
 			$_SESSION['sum_serv'] = $allsum;
 			if($flag == 0)
 				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))

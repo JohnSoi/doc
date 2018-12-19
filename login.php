@@ -1,5 +1,8 @@
 <?php
+	/* --- Проверка на авторизацию --- */
 	session_start();
+	if(isset($_SESSION["session_username"]))
+		header("Location:main.php");
 ?>
 
 <!DOCTYPE html>
@@ -12,20 +15,21 @@
 </head>
 <body>
 	<?php
+		/* --- Подключение сторонних файлов --- */
 		include("includes/DB.php");
 		include("includes/LogIO.php");
 
-		$access -> checkAuth();
-
+		/* --- Проверка нажатия --- */
 		if(isset($_POST["login"]))
 		{
-	    		$username=$_POST['username'];
-	    		$password=$_POST['password'];
-
-	    		$access -> Authorization($username, $password, $connection);
+			/* --- Получение переменных --- */
+	    	$username=$_POST['username'];
+	   		$password=$_POST['password'];
+	   		/* --- Запуск процесса авторизации --- */
+	   		$access -> Authorization($username, $password, $connection);
 		}
 	?>
-	<div class="containermlogin">
+	<div class="container mregister">
 		<div id="login">
 	    	<h1>Вход</h1>
 			<form name="loginform" id="loginform" action="" method="POST">
@@ -44,6 +48,7 @@
 	    </div>
 	</div>
 	<?php
+		/* --- Вывод сообщения при наличии --- */
 		if (!empty($_SESSION['GOODMES']))
 			echo "<div class='good'>".$_SESSION['GOODMES']."</div>";
 		if (!empty($_SESSION['BADMES']))

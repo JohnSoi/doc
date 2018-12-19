@@ -1,0 +1,115 @@
+/* --- Стили меню --- */
+/* --- Общие параметры группировки в фигуре --- */
+figure{
+  padding: 3px;
+  border-radius:0 0 3px 3px;
+  width: 100%;
+  height: 10%;
+  margin: 2px;
+  background-color: rgb(53,152,219);
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+
+  h2{
+    transition: 0.3s;
+    transform: translateY(20px);
+    }
+
+  p{
+    transition: 0.3s;
+    transform: translateY(-20px);
+    opacity: 0;
+    }
+
+  span{
+    cursor: pointer;
+    }
+  }
+/* --- Эффект наведения --- */
+figure:hover{
+  margin: 0;
+  }
+
+/* --- Основной вертикальный блок меню --- */
+.menu {
+  position: fixed;
+  left: 0;top: 0;
+  z-index: 99;
+  width: 20%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-image: url('../img/menubg.jpg');
+  -webkit-background-size: cover;
+  background-size: cover;
+  transition: 0.5s;
+  }
+/* --- Список меню в стационаре --- */
+.menu-list-st {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+
+  a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 900;
+    }
+  }
+/* --- Список меню в амбулатории --- */
+.menu-list-am {
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+
+  a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 900;
+    }
+  }
+/* --- Содержимое списка меню --- */
+.menu-items{
+  text-align: center;
+  background: white;
+  width: 98%;
+  margin: 0 auto;
+  }
+/* --- Форма поиска --- */
+.form-search{
+  display: flex;
+
+  input[type="text"]{
+    background: white;
+    width: 70%;
+    position: absolute;
+    left: 0;
+    }
+  }
+/* --- Блок контента --- */
+.content {
+  width: 80%;
+  margin-left: 20%;
+  position: relative;
+  z-index: 0;
+  }
+/* --- Нижний блок меню --- */
+#bot-date{
+  position: absolute;
+  bottom: 0;
+  display: block;
+
+  a{
+    margin-left: 75%;
+    }
+  }
