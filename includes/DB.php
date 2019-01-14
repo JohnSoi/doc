@@ -50,14 +50,13 @@
 				$this->checkParam($connect);
 				}
 			}
-
-		/* --- Функция проверки наличия системных таблиц и создания их при необходимости --- */
+/* --- Функция проверки наличия системных таблиц и создания их при необходимости --- */
 		protected function checkTable($connect){
 		// Проверка наличия таблицы депозита
 			$tableDep = mysqli_query($connect, "SELECT * FROM deposit");
 			if(!$tableDep)
 				mysqli_query($connect,"
-					CREATE TABLE `items` (
+					CREATE TABLE `deposit` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `fio` varchar(60) COLLATE utf8_bin NOT NULL,
 					  `sum` int(11) NOT NULL,
@@ -100,9 +99,11 @@
 						  `dateOut` text NOT NULL,
 						  `ad` text NOT NULL,
 						  `agent` text NOT NULL,
+						  `credits` int(11) NOT NULL,
+						  `numCard` int(11) NOT NULL,
 						  `dispecher` text NOT NULL,
 						  `comment` text NOT NULL,
-						  `numCard` int(11) NOT NULL,
+						  
 						  PRIMARY KEY (`id`)
 						) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 					");

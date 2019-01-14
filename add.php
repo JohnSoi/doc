@@ -218,11 +218,14 @@
             $dist = $_GET['dist'];
             $message = 'a';
 
-            $searchMaxNumCard = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = (SELECT MAX(numCard) FROM patient)");
+            $searchMaxNumCard = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = (SELECT MAX(numCard) FROM patient WHERE status ='1')");
             echo mysqli_num_rows($searchMaxNumCard);
             $searchArr = mysqli_fetch_assoc($searchMaxNumCard);
+			echo "<br>";
+			echo "MAX:".$searchArr['numCard'];
+			echo "<br>";
             if($typeStat == 1)
-              $maxNum = $searchArr['numCard'] + 1;
+              echo $maxNum = $searchArr['numCard'] + 1;
             else
               $maxNum = 0;
             if($typeStat == 0)
@@ -255,7 +258,9 @@
                   $message = "Запись создана успешно";
                   $patientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE fio = '".$name."'");
                   $patientArray = mysqli_fetch_assoc($patientQuery);
-                  echo $id = $patientArray['id'];
+                  $idQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = (SELECT MAX(id) FROM patient)");
+				  $idArr = mysqli_fetch_assoc($idQuery);
+				  $id = $idArr['id'];
                   $_SESSION['link'] = 'input.php?flaginput=3&id='.$id;
                   $DataBase->route();
                   }
@@ -282,9 +287,15 @@
               $type = "Амбулатория";
             elseif($typeStat == 1)
               $type = 'Стационар';
+            
+            //Поиск занчения ИД для пациента
+            echo $name;
+            $patSerQuery = mysqli_query($connection, "SELECT * FROM patient WHERE fio = '".$name."'");
+            $patSerArr = mysqli_fetch_assoc($patSerQuery);
+            echo  $idSPat = (int)$patSerArr['id'];
               
             //Добавление записи в историю операций
-            $operation = mysqli_query($connection, "INSERT INTO operation(sum, client, date, type, typeSum) VALUES('".$zal."', '".$name."', '".$dateIn."', '".$type."', '".$typeZal."')");
+            $operation = mysqli_query($connection, "INSERT INTO operation(sum, client, idPat, date, type, typeSum) VALUES('".$zal."', '".$name."', '".$idPacient."', '".$dateIn."', '".$type."', '".$typeZal."')");
 
             //Получение текущей внесенной суммы пациентом
             $pacientQuery= mysqli_query($connection, "SELECT * FROM patient WHERE fio = '".$name."'");
@@ -507,7 +518,7 @@
             			break;
                 //Добавление пациента
                 case 5:
-                  //$DBO->checkDate($connection, $date->getDateTime());
+                  $DBO->checkDate($connection, $date->getDateTime());
                   $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
                   $doctorArray = mysqli_fetch_assoc($doctorQuery);
                   $doctorName = $doctorArray['fio'];
@@ -532,7 +543,7 @@
                   break;
                 //Добавление денежной операции
                 case 6:
-                //$DBO->checkDate($connection, $date->getDateTime());
+                $DBO->checkDate($connection, $date->getDateTime());
                   echo '
                     <div class="cont-client">';
                       $dateNowO = $date->getDate();

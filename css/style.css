@@ -7,7 +7,7 @@
   font-family: sans-serif;
 }
 body {
-  background-image: url('../img/backgr.jpg');
+  background: #04819E;
 }
 progress {
   width: 100%;
@@ -177,6 +177,14 @@ table tr:hover td {
   background: white;
   padding: 20px;
 }
+ .wrapp {
+  width: 90%;
+  overflow: scroll;
+  height: 100vh;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+}
 .add .wrap h2 {
   text-align: center;
   margin: 10px;
@@ -327,6 +335,7 @@ table tr:hover td {
   color: white;
   text-decoration: none;
   font-family: sans-serif;
+  box-shadow: 2px 2px 4px black;
   background: #4044bf;
   margin: 10px auto;
   text-align: center;

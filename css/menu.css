@@ -3,9 +3,10 @@
 figure {
   padding: 3px;
   border-radius: 0 0 3px 3px;
-  width: 100%;
+  width: 97%;
+  margin-bottom: 2px;
   height: 10%;
-  margin: 2px;
+  box-shadow: 2px 2px 4px black;
   background-color: #3598db;
   display: -webkit-flex;
   display: -moz-flex;
@@ -44,7 +45,7 @@ figure:hover {
   height: 100vh;
   display: flex;
   justify-content: center;
-  background-image: url('../img/menubg.jpg');
+  background: #33CCCC;
   -webkit-background-size: cover;
   background-size: cover;
   transition: 0.5s;
@@ -54,13 +55,12 @@ figure:hover {
   display: flex;
   align-items: center;
   flex-direction: column;
-  overflow: scroll;
   width: 100%;
 }
 .menu-list-st a {
   text-decoration: none;
   text-transform: uppercase;
-  font-weight: 900;
+  font-weight: 700;
 }
 /* --- Список меню в амбулатории --- */
 .menu-list-am {
@@ -79,6 +79,12 @@ figure:hover {
 .menu-items {
   text-align: center;
   background: white;
+  min-height: 50px;
+  padding-top:5px;
+  padding-bottom: 5px;
+  box-shadow: 2px 2px 4px black;
+  overflow: auto;
+  font-size: 14px;
   width: 98%;
   margin: 0 auto;
 }

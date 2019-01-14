@@ -10,13 +10,13 @@
 				echo '<div class="groupBtn">
 					<figure>';
 						if (($typeuser == 'doc') or ($typeuser == 'su') or ($typeuser == 'ddoc'))
-							echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" class="icon"></a>';
+							echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" style="width:20%;"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
-							echo '<a href="input.php?flaginput=2&st=1"><img src="img/report.png" class="icon"></a>';
+							echo '<a href="input.php?flaginput=2&st=1"><img src="img/report.png" style="width:20%;"></a>';
 						if (($typeuser == 'admin') or ($typeuser == 'su'))
-							echo '<a href="add.php?flagadd=6&stac=1"><img src="img/cost.png" alt="" class="icon"></a>';
+							echo '<a href="add.php?flagadd=6&stac=1"><img src="img/cost.png" alt="" style="width:20%;"></a>';
 						if($typeuser == 'su')
-							echo '<a href="input.php?flaginput=9"><img src="img/set.png" alt="" class="icon"></a>';
+							echo '<a href="input.php?flaginput=9"><img src="img/set.png" alt="" style="width:20%;"></a>';
 					echo '</figure>
 				</div>';}
 				echo '
@@ -49,14 +49,14 @@
 				echo '
 				<div class="groupBtn">
 					<figure>';
-						if (($typeuser == 'doc') or ($typeuser == 'su'))
-							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" class="icon"></a>';
+						if (($typeuser == 'doc') or ($typeuser == 'su') or ($typeuser == 'ddoc'))
+							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" style="width:20%;"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
-							echo '<a href="input.php?flaginput=2&st=0"><img src="img/report.png" class="icon style="width:10%;"></a>';
+							echo '<a href="input.php?flaginput=2&st=0"><img src="img/report.png" style="width:10%;"></a>';
 						if (($typeuser == 'admin') or ($typeuser == 'su'))
-							echo '<a href="add.php?flagadd=6&stac=0"><img src="img/cost.png" alt="" class="icon"></a>';
+							echo '<a href="add.php?flagadd=6&stac=0"><img src="img/cost.png" alt="" style="width:20%;"></a>';
 						if($typeuser == 'su')
-							echo '<a href="input.php?flaginput=9"><img src="img/set.png" alt="" class="icon"></a>';
+							echo '<a href="input.php?flaginput=9"><img src="img/set.png" alt="" style="width:20%;"></a>';
 					echo '</figure>
 				</div>';}
 				echo '

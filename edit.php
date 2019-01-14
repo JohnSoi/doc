@@ -10,10 +10,13 @@
 	/* --- Проверк аналичия параметров и установка их в сессии --- */
    	if(isset($_GET['id'])){
 		$id = $_GET['id'];
+		$idPati = $id;
 		$_SESSION['id'] = $id;
 	   	}
-   	elseif(isset($_SESSION['id'])) 
+   	elseif(isset($_SESSION['id'])){ 
    		$id = $_SESSION['id'];
+		$idPati = $id;
+	}
 
 	if (isset($_GET['flagedit'])){
       	$typePage = $_GET['flagedit'];
@@ -150,20 +153,21 @@
 	elseif ($typePage == 10) {
 		if(isset($_GET['submit'])){
 			$newCard = $_GET['idNew'];
-			$searchId = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = '".$newCard."'");
-			
-			if(mysqli_num_rows($searchId) != 0)
-				$message = "Такой номер карты уже существует";
-			else{
 		 		$updateId = mysqli_query($connection, "UPDATE patient SET numCard = '".$newCard."' WHERE id = '".$id."'");
-		 		if($updateId){
+		 		if($updateId)
 		 			header("Location:input.php?flaginput=3&id=".$id);
-		 		}
-				}
 			}
-	 	
-	 } 
-?>
+	 }
+	elseif ($typePage == 13) {
+		if(isset($_GET['submit'])){
+			$newMest = $_GET['mestN'];
+
+			$updateId = mysqli_query($connection, "UPDATE patient SET currnet_mest = '".$newMest."' WHERE id = '".$id."'");
+			if($updateId)
+		 		header("Location:input.php?flaginput=3&id=".$id);
+	 }
+	}
+	?>
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -675,20 +679,30 @@
 													echo $costV = $items[$i]['bonus'];
 												echo '<br>';
 											}
+											$queryType =mysqli_query($connection, "SELECT * FROM usertbl WHERE id = '".$items[$i]['docN']."'");
+											$typeArr = mysqli_fetch_assoc($queryType);
+											$doctorType = $typeArr['dol'];
 											if($items[$i]['bonusN'] == 0)
 											{
 												echo "Процентное начисление за назначение ".$items[$i]['docN'].' ';
-												echo $costN = $items[$i]['cost']*$doctorArrInf[$items[$i]['docN']]['value']/100;
+												if ($doctorType == 'ddoc')
+													echo $costN = 0;
+												else
+													echo $costN = $items[$i]['cost']*$doctorArrInf[$items[$i]['docN']]['value']/100;
 												echo '<br>';
 												echo '<br>';
 											}
 											else
 											{
 												echo 'Начиcление бонуса за назначение '.$items[$i]['docN'].' ';
-												if ($items[$i]['bonusN']<1)
-													echo $costN = $items[$i]['cost']*$items[$i]['bonusN'];
-												else
-													echo $costN = $items[$i]['bonusN'];
+												if ($doctorType == 'ddoc')
+													echo $costN = 0;
+												else{
+													if ($items[$i]['bonusN']<1)
+														echo $costN = $items[$i]['cost']*$items[$i]['bonusN'];
+													else
+														echo $costN = $items[$i]['bonusN'];
+													}
 												echo '<br>';
 												echo '<br>';
 											}
@@ -752,7 +766,13 @@
 										$updateDoctorLMoney = mysqli_query($connection, "UPDATE usertbl SET money = '".$newMoneyDoctor."' WHERE fio = '".$nameLDoc."'");
 										
 									}
-										
+									
+									$keyArr = array_keys($doctorMoney);
+									$countMoneyDoc = count($keyArr);
+									for ($i=0; $i < $countMoneyDoc; $i++) {
+										echo $keyArr[$i];
+										$incQuery = mysqli_query($connection, "INSERT INTO incdoc(iddoc, idpat, sum, date) VALUES ('".$keyArr[$i]."', '".$idPati."', '".$doctorMoney[$keyArr[$i]]['money']."','".$date->getDateTime()."')");
+									}
 
 									// Переход к карте
 									if($updateSum || $updateDoctorLMoney){
@@ -874,6 +894,16 @@
 									echo 'Ошибка в обнулении депозита';
 
 								break;
+								case 13:
+									$idPatient = $_GET['id'];
+									$patQuery = mysqli_query($connection,"SELECT * FROM patient WHERE id=".$idPatient);
+									$patArr = mysqli_fetch_assoc($patQuery);
+									$curM = $patArr['currnet_mest'];
+									
+									echo '<form action="edit.php">
+										<label for="id">Введите палату<br><input name="mestN" type="text" value="'.$curM.'"></label>
+										<input type="submit" name="submit" value="Изменить">
+									</form>';
 							}
 				 	?>
 	     		</section>

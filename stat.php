@@ -303,6 +303,8 @@
               $_SESSION['link'] = (isset($_SESSION['link'])) ? $_SESSION['link'] : 'main.php';
               if($typeuser != 'view') { echo '<a class="button" href="'.$_SESSION['link'].'">Вернуться</a>';} 
               else echo '<a class="button" href="logout.php">Выйти</a>';
+			  echo '<a class="button" href="temp.php">Поиск по операциям</a>';
+			  echo '<a class="button" href="inc.php">Начисления докторам</a>';
             ?>
   </div>
 </div>

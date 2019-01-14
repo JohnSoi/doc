@@ -72,7 +72,7 @@
                   while($data = mysqli_fetch_assoc($searchQuery)) {
                     echo '<tr>';
                     echo '<td>'.$data['id'].'</td>'; 
-                      echo '<td>'.$data['fio'].'</td>'; 
+                      echo '<td><a href="input.php?flaginput=3&id='.$data['id'].'">'.$data['fio'].'</a></td>'; 
                       echo '<td>'.$data['datebirthday'].'</td>'; 
                       echo '<td>'.$data['tel'].'</td>'; 
                       echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=3"><img class = "icon" src="img/list.png" alt="Посмотреть"></a></td>';
@@ -129,7 +129,7 @@
                 while($data = mysqli_fetch_assoc($searchQuery)) {
                   echo '<tr>';
                   echo '<td>'.$data['id'].'</td>'; 
-                    echo '<td>'.$data['fio'].'</td>'; 
+                    echo '<td><a href="input.php?flaginput=3&id='.$data['id'].'">'.$data['fio'].'</a></td>'; 
                     echo '<td>'.$data['datebirthday'].'</td>'; 
                     echo '<td>'.$data['tel'].'</td>'; 
                     echo '<td><a href="edit.php?id='.$data['id'].'&flagedit=3"><img class = "icon" src="img/list.png" alt="Посмотреть"></a></td>';

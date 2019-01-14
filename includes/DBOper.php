@@ -96,22 +96,16 @@
 				$this -> changeDB($con, $dateNow);
 			//Проверка последнего бэкапа
 			if ($monthBU != $monthNow){
-				$countHour = $hourNow - $hourBU;
-				if (abs($countHour) >= 6){
-						require_once 'constants.php';
-						$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
-						}
+					$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 				}
 			else
 				if ($dayBU != $dayNow){
-						require_once 'constants.php';
-						//$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
+						$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 						}
 				else{
 					$countHour = $hourNow - $hourBU;
 					if (abs($countHour) >= 6){
-						require_once 'constants.php';
-						//$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
+						$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 						}
 					}	
 			echo "<script>console.log('[DBOper.php] Проверка даты');</script>";
@@ -219,68 +213,65 @@
 			echo "<script>console.log('[DBOper.php] Удаление резервных копий');</script>";
 			}
 		
-		// Функция резервного копирования базы данных (Хостинг, Логин, Пароль, имя БД, список таблиц [* для всех], Преобразованая дата файла, Текущая дата, Переменная подключения к БД)
-		// protected function backup_database_tables($host,$user,$pass,$name,$tables,$dateFile, $dateNow, $con){
-		    // $link = mysql_connect($host,$user,$pass);
-		    // mysql_select_db($name,$link);
-		  
-		    // //Получаем все таблицы
-		    // if($tables == '*'){
-		        // $tables = array();
-		        // $result = mysqli_query('SHOW TABLES');
-		        // mysql_query("SET NAMES `UTF8`");
-				// mysql_query("set character_set_results='utf8'");
-		        // while($row = mysqli_fetch_row($result))
-		            // $tables[] = $row[0];
-		    	// }
-		    // else
-		        // $tables = is_array($tables) ? $tables : explode(',',$tables);
+			// Функция резервного копирования базы данных (Хостинг, Логин, Пароль, имя БД, список таблиц [* для всех], Преобразованая дата файла, Текущая дата, Переменная подключения к БД)
+		protected function backup_database_tables($tables,$dateFile, $dateNow, $con){
+		    //Получаем все таблицы
+		    if($tables == '*'){
+		        $tables = array();
+		        $result = mysqli_query($con, 'SHOW TABLES');
+		        mysqli_query($con, "SET NAMES `UTF8`");
+				mysqli_query($con, "set character_set_results='utf8'");
+		        while($row = mysqli_fetch_row($result))
+		            $tables[] = $row[0];
+		    	}
+		    else
+		        $tables = is_array($tables) ? $tables : explode(',',$tables);
 
-		    // $return = '#'.$dateFile."\n\n\n";
+		    $return = '#'.$dateFile."\n\n\n";
 		    //Цикл по всем таблицам и формирование данных
-		    // foreach($tables as $table){
-		        // $result = mysql_query('SELECT * FROM '.$table);
-		        // $num_fields = mysql_num_fields($result);
+		    foreach($tables as $table){
+		        $result = mysqli_query($con, 'SELECT * FROM '.$table);
+		        $num_fields = mysqli_num_fields($result);
 		  
-		        // $return .= 'DROP TABLE '.$table.';';
-		        // $row2 = mysql_fetch_row(mysqli_query('SHOW CREATE TABLE '.$table));
-		        // $return .= "\n\n".$row2[1].";\n\n";
+		        $return .= 'DROP TABLE '.$table.';';
+		        $row2 = mysqli_fetch_row(mysqli_query($con, 'SHOW CREATE TABLE '.$table));
+		        $return .= "\n\n".$row2[1].";\n\n";
 		  
-		        // for ($i = 0; $i < $num_fields; $i++){
-		            // while($row = mysql_fetch_row($result)){
-		                // $return.= 'INSERT INTO '.$table.' VALUES(';
-		                // for($j=0; $j<$num_fields; $j++){
-		                    // $row[$j] = addslashes($row[$j]);
-		                    // $row[$j] = ereg_replace("\n","\\n",$row[$j]);
-		                    // if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
-		                    // if ($j<($num_fields-1)) { $return.= ','; }
-		                	// }
-		                // $return.= ");\n";
-		            	// }
-		        	// }
-		        // $return.="\n\n\n";  
-		    	// }
+		        for ($i = 0; $i < $num_fields; $i++){
+		            while($row = mysqli_fetch_row($result)){
+		                $return.= 'INSERT INTO '.$table.' VALUES(';
+		                for($j=0; $j<$num_fields; $j++){
+		                    $row[$j] = addslashes($row[$j]);
+		                    //$row[$j] = preg_replace("\n","\\n",$row[$j]);
+		                    if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
+		                    if ($j<($num_fields-1)) { $return.= ','; }
+		                	}
+		                $return.= ");\n";
+		            	}
+		        	}
+		        $return.="\n\n\n";  
+		    	}
 		  	
-		  	// //Сохраняем файл
-		  	// $count = $this ->countFile() + 1;
-		  	// if (file_exists('backups/db-backup-'.$dateFile.'.sql'))
-		  		// if (file_exists('backups/db-backup-'.$dateFile.'.1.sql'))
-		  			// if (file_exists('backups/db-backup-'.$dateFile.'.2.sql'))
-		  				// $handle = fopen('backups/db-backup-'.$dateFile.'.3.sql','w+');
-		  			// else 
-		  				// $handle = fopen('backups/db-backup-'.$dateFile.'.2.sql','w+');
-		  		// else
-		  			// $handle = fopen('backups/db-backup-'.$dateFile.'.1.sql','w+');
-		  	// else
-		  		// $handle = fopen('backups/db-backup-'.$dateFile.'.sql','w+');
+		  	//Сохраняем файл
+		  	$count = $this ->countFile() + 1;
+		  	if (file_exists('backups/db-backup-'.$dateFile.'.sql'))
+		  		if (file_exists('backups/db-backup-'.$dateFile.'.1.sql'))
+		  			if (file_exists('backups/db-backup-'.$dateFile.'.2.sql'))
+		  				$handle = fopen('backups/db-backup-'.$dateFile.'.3.sql','w+');
+		  			else 
+		  				$handle = fopen('backups/db-backup-'.$dateFile.'.2.sql','w+');
+		  		else
+		  			$handle = fopen('backups/db-backup-'.$dateFile.'.1.sql','w+');
+		  	else
+		  		$handle = fopen('backups/db-backup-'.$dateFile.'.sql','w+');
 		    		
-		    // fwrite($handle,$return);
-		    // fclose($handle);
+		    fwrite($handle,$return);
+		    fclose($handle);
 
-		    // $changeDate = mysqli_query($con, "UPDATE param SET value = '".$dateNow."' WHERE name = 'Последняя копия'");
+		    $changeDate = mysqli_query($con, "UPDATE param SET value = '".$dateNow."' WHERE name = 'Последняя копия'");
 
-			// echo "<script>console.log('[DBOper.php] Резервное копирование БД');</script>";
-			// }
+			echo "<script>console.log('[DBOper.php] Резервное копирование БД');</script>";
+			}
 		/* ------ */
 		}
 

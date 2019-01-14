@@ -248,11 +248,19 @@
 							<!--- Имя и номер карты пациента --->
 							<div class="name"><p>';
 							if($data['type'] == 'Стационар')
-							 	echo '<a class="numcard" href="edit.php?flagedit=10&id='.$data['id'].'">#'.$data['numCard'].'</a> ';
+							     echo '<a class="numcard" href="edit.php?flagedit=10&id='.$data['id'].'">#'.$data['numCard'].'</a> ';
 							echo $data['fio'];
 							if($typeuser == 'su')
 								echo '<a href="del.php?id='.$data['id'].'&flagdel=5"><img width="5%" src="img/del.png" alt="Удалить"></a>';
-							echo'</p></div>
+							if($data['type'] == 'Стационар'){
+								if(!empty($data['currnet_mest']))
+									$curM = $data['currnet_mest'];
+								else
+									$curM = "Нет";
+								echo'</p>
+								<p>Палата: <a href="edit.php?flagedit=13&id='.$data['id'].'">'.$curM.'</a></p>';
+							}
+							echo '</div>
 
 							<!--- Вывод даты рождения --->
 							<div class="date"><p>Дата рождения: <br>'.$data['datebirthday'].'</p></div>';

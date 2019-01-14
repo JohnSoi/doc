@@ -40,9 +40,29 @@
 	  $typePat = $namePat['type'];
 	  $status = $namePat['status'];
 	  $namePat = $namePat['fio'];
+	 
+		
+		$month = date('m');
+		if(($month - 1)<1)
+			$monthPrev = 1;
+		else
+			$monthPrev = $month - 1;
+		
+	  $idQuery = mysqli_query($connection, "SELECT * FROM operation WHERE id = (SELECT MAX(id) FROM operation)");
+	  $idArr = mysqli_fetch_assoc($idQuery);
+	  $idMAX = $idArr['id'] - 50;	
 
 	  // Получение операций
-	  $result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$namePat."'");
+	  echo $idPatient;
+	  $result = mysqli_query($connection, "SELECT * FROM operation WHERE idPat = '".$idPatient."'");
+	  echo mysqli_num_rows($result);
+
+	  if (mysqli_num_rows($result) == 0)
+	  	$result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$namePat."'");
+
+
+	  
+	  
 
 	  //Проверка депозита
 	  $searchDeposit = mysqli_query($connection, "SELECT * FROM deposit WHERE fio = '".$namePat."'");
@@ -79,7 +99,11 @@
 							$type = 'Депозит';
 						else
 							$type = 'Безналичный расчет';
-						echo '<li>'.$dataDB['sum'].' / '.$type.'<a href="del.php?id='.$dataDB['id'].'&flagdel=7&idP='.$idPatient.'"><img width="3%" src="img/del.png" alt="Удалить"></a></li>';
+						echo '<li>'.$dataDB['sum'].' / '.$type;
+						if($typeuser == 'su')
+						echo
+							'<a href="del.php?id='.$dataDB['id'].'&flagdel=7&idP='.$idPatient.'"><img width="3%" src="img/del.png" alt="Удалить"></a>';
+						echo '</li>';
 						$sumall += $dataDB['sum'];
 					}
 			echo '</ol>

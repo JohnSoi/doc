@@ -29,6 +29,8 @@
 	  require_once 'includes/LogIO.php';
 	  $username = $access->getUserName();
 	  $typeuser = $_SESSION['typeUser'];
+	  //Отключения вывода ошибок
+			ini_set('display_errors','Off');
 
 	  // Запросы и параметры в переменные
 	  $patQuery = mysqli_query($connection, "SELECT * FROM patient WHERE id = '".$idPacient."'");
