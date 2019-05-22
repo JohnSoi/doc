@@ -35,7 +35,7 @@
   grid-row-start: 1;
   grid-row-end: 2;
   padding-top: 2px;
-  font-size: 32px;
+  font-size: 28px;
   display: grid;
   grid-template-rows: repeat(4, 25%);
 }
@@ -89,6 +89,7 @@
   grid-row-end: 2;
   display: grid;
   grid-template-rows: repeat(4, 25%);
+  font-size: 11px;
 }
 .wrap-input .datest p {
   grid-row-start: 2;

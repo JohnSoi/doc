@@ -77,7 +77,7 @@ table th {
 }
 table th:first-child {
   text-align: left;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 table tr:first-child th:first-child {
   -moz-border-radius-topleft: 3px;
@@ -91,17 +91,17 @@ table tr:first-child th:last-child {
 }
 table tr {
   text-align: center;
-  padding-left: 20px;
+  padding-left: 6px;
 }
 table tr td:first-child {
   text-align: left;
-  padding-left: 20px;
+  padding-left: 6px;
   border-left: 0;
 }
 table tr td {
   max-width: 16%;
   position: relative;
-  padding: 18px;
+  padding: 4px;
   border-top: 1px solid #ffffff;
   border-bottom: 1px solid #e0e0e0;
   border-left: 1px solid #e0e0e0;
@@ -170,11 +170,11 @@ table tr:hover td {
   color: black;
 }
 .add .wrap {
-  width: 70%;
-  height: 90%;
+  width: 80%;
   margin: 0 auto;
   background: white;
   padding: 20px;
+  overflow: scroll;
 }
 .add .wrap h2 {
   text-align: center;

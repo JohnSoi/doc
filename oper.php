@@ -100,7 +100,7 @@
 				$_SESSION['cost_serv'] = 0;
 			$transferSum = $sumall - $_SESSION['cost_serv'] - $_SESSION['cost_mest'];
 			if($sumall > ($_SESSION['cost_serv']+$_SESSION['cost_mest']))
-				echo '<a class="button" target="_blank" href="add.php?flagadd=12&id='.$idPatient.'&sum='.$transferSum.'">Перевсти '.$transferSum.'р. в депозит</a>';
+				echo '<a class="button" href="add.php?flagadd=12&id='.$idPatient.'&sum='.$transferSum.'">Перевсти '.$transferSum.'р. в депозит</a>';
 		}	
 	?>
 </body>

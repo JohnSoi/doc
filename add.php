@@ -127,6 +127,7 @@
       }
   //Обработка назначения услуг
   elseif($typePage == 3){
+      ini_set('display_errors','Off');
       if(isset($_GET['submit'])){
             $dataN = $date->normalizeDate($_GET['date']);
             $doctor = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");

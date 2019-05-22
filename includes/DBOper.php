@@ -96,22 +96,16 @@
 				$this -> changeDB($con, $dateNow);
 			//Проверка последнего бэкапа
 			if ($monthBU != $monthNow){
-				$countHour = $hourNow - $hourBU;
-				if (abs($countHour) >= 6){
-						require_once 'constants.php';
-						$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
-						}
+					$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 				}
 			else
 				if ($dayBU != $dayNow){
-						require_once 'constants.php';
-						$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
+						$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 						}
 				else{
 					$countHour = $hourNow - $hourBU;
 					if (abs($countHour) >= 6){
-						require_once 'constants.php';
-						$this -> backup_database_tables(DB_SERVER,DB_USER,DB_PASS,DB_NAME,"*",$dateFile, $dateTimeNow, $con);
+						$this -> backup_database_tables("*",$dateFile, $dateTimeNow, $con);
 						}
 					}	
 			echo "<script>console.log('[DBOper.php] Проверка даты');</script>";
@@ -220,17 +214,14 @@
 			}
 		
 		// Функция резервного копирования базы данных (Хостинг, Логин, Пароль, имя БД, список таблиц [* для всех], Преобразованая дата файла, Текущая дата, Переменная подключения к БД)
-		protected function backup_database_tables($host,$user,$pass,$name,$tables,$dateFile, $dateNow, $con){
-		    $link = mysql_connect($host,$user,$pass);
-		    mysql_select_db($name,$link);
-		  
+		protected function backup_database_tables($tables,$dateFile, $dateNow, $con){
 		    //Получаем все таблицы
 		    if($tables == '*'){
 		        $tables = array();
-		        $result = mysql_query('SHOW TABLES');
-		        mysql_query("SET NAMES `UTF8`");
-				mysql_query("set character_set_results='utf8'");
-		        while($row = mysql_fetch_row($result))
+		        $result = mysqli_query($con, 'SHOW TABLES');
+		        mysqli_query($con, "SET NAMES `UTF8`");
+				mysqli_query($con, "set character_set_results='utf8'");
+		        while($row = mysqli_fetch_row($result))
 		            $tables[] = $row[0];
 		    	}
 		    else
@@ -239,19 +230,19 @@
 		    $return = '#'.$dateFile."\n\n\n";
 		    //Цикл по всем таблицам и формирование данных
 		    foreach($tables as $table){
-		        $result = mysql_query('SELECT * FROM '.$table);
-		        $num_fields = mysql_num_fields($result);
+		        $result = mysqli_query($con, 'SELECT * FROM '.$table);
+		        $num_fields = mysqli_num_fields($result);
 		  
 		        $return .= 'DROP TABLE '.$table.';';
-		        $row2 = mysql_fetch_row(mysql_query('SHOW CREATE TABLE '.$table));
+		        $row2 = mysqli_fetch_row(mysqli_query($con, 'SHOW CREATE TABLE '.$table));
 		        $return .= "\n\n".$row2[1].";\n\n";
 		  
 		        for ($i = 0; $i < $num_fields; $i++){
-		            while($row = mysql_fetch_row($result)){
+		            while($row = mysqli_fetch_row($result)){
 		                $return.= 'INSERT INTO '.$table.' VALUES(';
 		                for($j=0; $j<$num_fields; $j++){
 		                    $row[$j] = addslashes($row[$j]);
-		                    $row[$j] = ereg_replace("\n","\\n",$row[$j]);
+		                    //$row[$j] = preg_replace("\n","\\n",$row[$j]);
 		                    if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
 		                    if ($j<($num_fields-1)) { $return.= ','; }
 		                	}

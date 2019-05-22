@@ -68,7 +68,7 @@
 									echo '<td>'.$data['password'].'</td>'; 
 								    echo '<td>'.$data['value'].'</td>';
 								    // Если врач вывести данные, если нет - пропуск
-								    if(($data['dol'] == 'doc') || ($data['dol'] == 'ddoc')){
+								    if(($data['dol'] == 'doc') || ($data['dol'] == 'ddoc')|| ($data['dol'] == 'su')){
 										echo '<td>'.$data['money_prevMonth'].'</td>';
 										echo '<td>'.$data['money'].'</td>';
 									    echo '<td>'.$data['uslugi_prevMonth'].'</td>';
@@ -196,13 +196,15 @@
 								$nameServ = array_unique($nameSrvArray);
 								$countArray = count($listServP);
 								$listNameServ = array();
+								$idServList = array_keys($nameServ);
+								$countAS = count($nameServ);	
 								echo '<div class="listServ">';
-								for ($j=0; $j < count($nameServ); $j++) { 
-									echo '<h3>'.$nameServ[$j].'</h3>';
+								for ($j=0; $j < $countAS; $j++) { 
+									echo '<h3>'.$nameServ[$idServList[$j]].'</h3>';
 										echo '<ol>';
 									for ($i=0; $i < $countArray; $i++) { 
 										$servArrayNow = $listServP[$i];
-										if($servArrayNow['name'] == $nameServ[$j])
+										if($servArrayNow['name'] == $nameServ[$idServList[$j]])
 											echo '<li><strong>Пациент: </strong>'.$servArrayNow['fio'].' <strong>Выполнено: </strong>'.$servArrayNow['date'].'</li>';
 										}
 									echo '</ol>';
@@ -241,7 +243,10 @@
 							<div class="name"><p>';
 							if($data['type'] == 'Стационар')
 							 	echo '<a class="numcard" href="edit.php?flagedit=10&id='.$data['id'].'">#'.$data['numCard'].'</a> ';
-							echo $data['fio'].'</p></div>
+							echo $data['fio'];
+							if($typeuser == 'su')
+								echo '<a href="del.php?id='.$data['id'].'&flagdel=5"><img width="5%" src="img/del.png" alt="Удалить"></a>';
+							echo'</p></div>
 
 							<!--- Вывод даты рождения --->
 							<div class="date"><p>Дата рождения: <br>'.$data['datebirthday'].'</p></div>';
@@ -329,7 +334,10 @@
 							while ($i < $countServ){
 								$exListServ = explode('-', $listServ[$i]);
 								$idServ = $exListServ[0];
-								$statusServ = $exListServ[3];
+								if(isset($exListServ[3]))
+									$statusServ = $exListServ[3];
+								else
+									$statusServ = 0;
 								$queryderv = mysqli_query($connection, "SELECT * FROM items WHERE id= '".$idServ."'");
 								$dataserv = mysqli_fetch_assoc($queryderv);
 								$costServ = $dataserv['cost'];
@@ -344,6 +352,8 @@
 							 	$sumF = $sumNow + $sum_mest;
 							else
 							 	$sumF = $sumNow;
+							 if(!isset($allday))
+							 	$allday = $countDayClinic;
 
 							// Кнопка закрытия карты
 							if($data['status'] == 0)
@@ -359,10 +369,10 @@
 							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Нет<br>Рекламы</p></div>';
 							 		elseif(empty($data['dispecher']))
 							 			echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Нет<br>Диспетчера</p></div>';
-							 		elseif($data['type'] == 'Стационар'){
-							 			if($allday == $countDayClinic)
+							 		elseif($allday != $countDayClinic){
+							 			if($data['type'] == 'Стационар')
 							 				echo '<div class="btn-cl"><p style="border-top:3px red solid ;">Проверьте<br>койко - дни</p></div>';
-							 		}
+							 			}
 									else
 							 			echo '<div class="btn-cl"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
 								}
@@ -611,7 +621,7 @@
 				$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC LIMIT 20");
 				// Переход к готовому методу
 				$this-> getOperationTable($connection, $result);
-				echo '<a class="button" href="http://localhost/doc/input.php?flaginput=12&set=1">Вывести все операции</a>';
+				echo '<a class="button" href="http://localhost/doc/input.php?flaginput=11&set=1">Вывести все операции</a>';
 				}
 			else{
 				$result = mysqli_query($connection, "SELECT * FROM operation ORDER BY id DESC");

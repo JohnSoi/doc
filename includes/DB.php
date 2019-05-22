@@ -22,7 +22,6 @@
 			if ($con->connect_error) {
 				echo "<div class=\"error\"><h1>Внимание! Ошибка установки соединения с сервером MySQL!</h1><h2>Ошибка
 				(".$mysqli->connect_errno ."): ".$mysqli->connect_error."</h2></div>";
-				break;
 				}
 			// Переход к выбору БД
 			$this->selectDataBase($con, $this->NameBase);
@@ -58,7 +57,7 @@
 			$tableDep = mysqli_query($connect, "SELECT * FROM deposit");
 			if(!$tableDep)
 				mysqli_query($connect,"
-					CREATE TABLE `items` (
+					CREATE TABLE `deposit` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `fio` varchar(60) COLLATE utf8_bin NOT NULL,
 					  `sum` int(11) NOT NULL,
@@ -101,9 +100,11 @@
 						  `dateOut` text NOT NULL,
 						  `ad` text NOT NULL,
 						  `agent` text NOT NULL,
+						  `credits` int(11) NOT NULL,
+						  `numCard` int(11) NOT NULL,
 						  `dispecher` text NOT NULL,
 						  `comment` text NOT NULL,
-						  `numCard` int(11) NOT NULL,
+						  
 						  PRIMARY KEY (`id`)
 						) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 					");

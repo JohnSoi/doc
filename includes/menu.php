@@ -5,10 +5,15 @@
 	$typeuser = $_SESSION['typeUser'];
 	echo '
 	  	<div class="menu">
+	  	<style>
+			.alW{
+				height: 100%;
+			}
+	  	</style>
 			<nav id="menu-list-st" class="menu-list-st">';
 			if ($typeuser != 'view'){
 				echo '<div class="groupBtn">
-					<figure>';
+					<figure class="alW">';
 						if (($typeuser == 'doc') or ($typeuser == 'su') or ($typeuser == 'ddoc'))
 							echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" class="icon"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
@@ -48,7 +53,7 @@
 			{
 				echo '
 				<div class="groupBtn">
-					<figure>';
+					<figure class="alW">';
 						if (($typeuser == 'doc') or ($typeuser == 'su'))
 							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" class="icon"></a>';
 						if(($typeuser == 'doc')or ($typeuser == 'su'))
