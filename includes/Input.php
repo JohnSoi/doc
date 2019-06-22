@@ -372,7 +372,9 @@
 							 	$sumF = $sumNow;
 							
 							$sumallPat = 0;
-							$result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$data['fio']."'");
+							$result = mysqli_query($connection, "SELECT * FROM operation WHERE idPat = '".$data['id']."'");
+							if(mysqli_num_rows($result) == 0)
+								$result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$data['fio']."'");
 							while($dataSum = mysqli_fetch_assoc($result))
 							{
 								$sumallPat += $dataSum['sum'];

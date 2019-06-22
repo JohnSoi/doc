@@ -56,7 +56,7 @@
 	    //Проверка на нажатие кнопки
 	    if(isset($_GET["register"])){	
 	    	//Проверка непустот полей
-	    	if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])&& !empty($_GET['value'])) {
+	    	if(!empty($_GET['full_name']) && !empty($_GET['dol']) && !empty($_GET['username']) && !empty($_GET['password'])) {
 	    		//Получение значений из полей
 	    		$full_name= htmlspecialchars($_GET['full_name']);
 	    		$dol=htmlspecialchars($_GET['dol']);

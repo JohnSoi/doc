@@ -554,7 +554,7 @@
                       else
                         while($dataDB = mysqli_fetch_assoc($operationQuery)) {
                             $allsum += $dataDB['sum'];
-                            if ($dataDB['typeSum'] == 'nal')
+                            if ($dataDB['typeSum'] == 'beznal')
                               $sumB += $dataDB['sum'];
                             else
                               $sumN += $dataDB['sum'];

@@ -99,11 +99,22 @@
             $countList = count($adsListEx);
             $arrayAds = array();
             $adsStr = '';
+			if(!isset($_GET['prevM']))
+				$month = date('m');
+			else{
+				$month = date('m') -  1;
+				if(strlen(date('m') -  1) == 1){
+					$tempDate = date('m') -  1;
+					$month = '0'.$tempDate;
+				}
+			}
+			
+			
 
             for ($i=0; $i < $countList; $i++) { 
               $adsType = $adsListEx[$i];
 
-              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE ad = '".$adsType."'");
+              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE ad = '".$adsType."' AND dateIn LIKE '%/".$month."/%'");
               $countPatient = mysqli_num_rows($searchPatient);
               $arrayAds[$adsType]  =  $countPatient;
             }
@@ -124,7 +135,7 @@
             for ($i=0; $i < $countList; $i++) { 
               $dispType = $dispListEx[$i];
 
-              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE dispecher = '".$dispType."'");
+              $searchPatient = mysqli_query($connection, "SELECT * FROM patient WHERE dispecher = '".$dispType."' AND dateIn LIKE '%/".$month."/%'");
               $countPatient = mysqli_num_rows($searchPatient);
               $arrayDisp[$dispType]  =  $countPatient;
             }
@@ -298,6 +309,10 @@
                     <p style="float: left; color: black;" >Поступления из амбулатории: '.$sumAm.'рублей</p>
                     <p style="float: right; color: black;" >Поступления из стационара: '.$sumSt.'рублей</p>';
             echo '</div>';
+			if(!isset($_GET['prevM']))
+				echo '<a class="button" href="stat.php?prevM=1">Прошлый месяц</a>';
+			else
+				echo '<a class="button" href="stat.php">Текущий месяц</a>';
             // Вывод кнопки по типу записи
               $typeuser = $_SESSION['typeUser']; 
               $_SESSION['link'] = (isset($_SESSION['link'])) ? $_SESSION['link'] : 'main.php';

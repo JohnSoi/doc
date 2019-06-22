@@ -53,12 +53,12 @@
 	  $idMAX = $idArr['id'] - 50;	
 
 	  // Получение операций
-	  echo $idPatient;
+	  $idPatient;
 	  $result = mysqli_query($connection, "SELECT * FROM operation WHERE idPat = '".$idPatient."'");
-	  echo mysqli_num_rows($result);
+	  mysqli_num_rows($result);
 
-	  if (mysqli_num_rows($result) == 0)
-	  	$result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$namePat."'");
+	  //if (mysqli_num_rows($result) == 0)
+	  	//$result = mysqli_query($connection, "SELECT * FROM operation WHERE client = '".$namePat."'");
 
 
 	  
