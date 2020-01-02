@@ -28,7 +28,6 @@
 	   		/* --- Запуск процесса авторизации --- */
 	   		$access -> Authorization($username, $password, $connection);
 		}
-		echo mysqli_error($connection);
 	?>
 	<div class="container mregister">
 		<div id="login">
