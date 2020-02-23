@@ -162,7 +162,7 @@
 
 			$_SESSION['sum_serv'] = $allsum;
 			if($flag == 0)
-				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su'))
+				if(($typeuser == 'doc') or ($typeuser == 'ddoc') or ($typeuser == 'su') || $typeuser == 'psi')
 					echo '<a target="_blank" class = "button" href="add.php?id='.$idPacient.'&flagadd=3">Назначить процедуру</a>';
 		}	
 	?>

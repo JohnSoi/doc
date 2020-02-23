@@ -242,6 +242,41 @@
               </form>
             ';
             break;
+          case 17:
+              $sumInDay = mysqli_query($connection, 'SELECT * FROM sumInDay');
+              if(mysqli_num_rows($sumInDay)) {
+                      echo '
+                    <style>
+                        .wrap{
+                        width: 100%;
+                        height: 90vh;
+                        background: white;
+                        overflow-y: auto;
+                        }
+                        .wrap table{
+                        width: 100%;
+                        }
+                    </style>
+                    <div class="wrap">
+                        <table>
+                            <tr>
+                            <th>Дата</th>
+                            <th>Значение</th>
+                            </tr>';
+                      $months = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+                      while ($day = mysqli_fetch_assoc($sumInDay)) {
+                          $partDate = explode('.', $day['month']);
+                          $month = $months[(int)$partDate[0] - 1];
+                          $month .= ' ' . $partDate[1];
+                          echo '<tr>';
+                          echo '<td>' . $month . '</td>';
+                          echo '<td>' . $day['value'] . '</td>';
+                          echo '</tr>';
+                      }
+                      echo '</table>			  
+                    </div>';
+              }
+          break;
           //Если случайный переход
           default:
       			echo "<h2>Перенаправление на странцу авторизации</h2>";

@@ -505,19 +505,32 @@
 									$listMest = explode(',', $mestD);
 									$countDay = count($listMest);
 									$i = 0;
+									$countAllDay = 0;
 									/* --- Цикл вывода данных --- */
 									if(!empty($dataDB['mest']))
 										while ($i<$countDay){
 											$expMest= explode('-', $listMest[$i]);
 											$id = $expMest[0];
 											$countD = $expMest[1];
+											$countAllDay += $countD;
 											$mestQuery =mysqli_query($connection, "SELECT * FROM mest WHERE id = '".$id."'");
 											$mestArr = mysqli_fetch_assoc($mestQuery);
 											$costMest = $mestArr['value'];
 											$nameMest = $mestArr['status'];
-											$allsumMest += $costMest*$countD*0.08;
+											//$allsumMest += $costMest*$countD*0.08;
 											$i++;
 											}
+									$sumDay = $countAllDay * 50;
+									$dateDAy = date('m').'.'.date('Y');
+									$sumInDay = mysqli_query($connection, 'SELECT * FROM sumInDay WHERE month = "'.$dateDAy.'"');
+									if(mysqli_num_rows($sumInDay)){
+									    $dataDay = mysqli_fetch_assoc($sumInDay);
+									    $dataDay['value'] += $sumDay;
+                                        mysqli_query($connection, 'INSERT INTO sumInDay(value) VALUES("'.$sumDay.'") WHERE month = "'.$dateDAy.'"');
+                                    }
+									else{
+									    mysqli_query($connection, 'INSERT INTO sumInDay(month, value) VALUES("'.$dateDAy.'","'.$sumDay.'")');
+                                    }
 									if(!isset($allsumMest))
 										$allsumMest = 0;
 									echo 'Стоимость за проживание: '.$allsumMest;
@@ -617,7 +630,7 @@
 											$i++;
 										}
 
-									print_r($items);
+									//print_r($items);
 
 									//Создание массива докторов
 									$doctorArr = array();

@@ -415,8 +415,9 @@
 
 							//Кнопка стоимости
 							$sumDol = $sumF  - $sumallPat;
-							if($data['status'] == 0)
-							 	echo '<div class="btn-cost"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
+							if($data['status'] == 0) {
+                                echo '<div class="btn-cost"><p style="border-top:3px red solid ;">Карта <br> закрыта</p></div>';
+                            }
 							elseif ($sumF  != $sumallPat)
 							 	// echo '<div class="btn-cost" style="border:10px green solid ;"><p>Оплата</p></div>';
 								echo "
@@ -451,12 +452,12 @@
 								";
 							 elseif(empty($data['dispecher']))
 							 	// echo '<div class="btn-cost"><p style="border-top:3px red solid ;">Нет<br>Диспетчера</p></div>';
-								echo "
+								echo '
 								<style>
 									.wrap-input .butt {
 										border: red 2px solid;
 								</style>
-								";
+								';
 							elseif($allday != $countDayClinic){
 							 	if($data['type'] == 'Стационар')
 							 		// echo '<div class="btn-cost"><p style="border-top:3px red solid ;">Проверьте<br>койко - дни</p></div>';
@@ -467,10 +468,9 @@
 								</style>
 								";
 							}
-							else
-							 	echo '<div class="btn-cost"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id='.$id.'">Закрыть<br>карту</a></div>';
-							// else
-							 	// echo '<div class="btn-cost" style="border:10px red solid ;"><p>'.$sumDol.'</p></div>';
+							else if($_SESSION['typeUser'] !== 'su') {
+                                echo '<div class="btn-cost"><a style="border-top:3px green solid ;" href="edit.php?flagedit=8&id=' . $id . '">Закрыть<br>карту</a></div>';
+                            }
 
 							//Вывод лечащего врача
 							 if(($data['doctor']=='')&&($_SESSION['typeUser']!='ddoc')&&($_SESSION['typeUser']!='admin')&&($_SESSION['typeUser']!='view'))

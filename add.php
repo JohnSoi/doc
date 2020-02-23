@@ -2,11 +2,11 @@
   /* --- Проверка на авторизованность --- */
 	session_start();
   if(!$_SESSION['session_username'])
-    header("Location:login.php");
+    header('Location:login.php');
 
   /* --- Подключение сторонних файлов --- */
-	include("includes/DB.php");
-  include("includes/Date.php");
+	include('includes/DB.php');
+  include('includes/Date.php');
   include('includes/DBOper.php');
 
   /* --- Получение парметров из ссылки и внесение в сессии --- */
@@ -19,36 +19,39 @@
       $typePage = $_SESSION['flagadd'];
       ini_set('display_errors','On');
       }
-    else
-      ini_set('display_errors','Off');
+    else {
+        ini_set('display_errors', 'Off');
+    }
 
   if (isset($_GET['stac'])){
     $typeStat = $_GET['stac'];
     $_SESSION['stac'] = $typeStat;
     }
   else
-    if(isset($_SESSION['stac']))
-      $typeStat = $_SESSION['stac'];
+    if(isset($_SESSION['stac'])) {
+        $typeStat = $_SESSION['stac'];
+    }
   
   if (isset($_GET['sum'])){
       $sumOper = $_GET['sum'];
       $_SESSION['sum'] = $sumOper;
       }
-  else{
-      if(isset($_SESSION['sum']))
-          $sumOper = $_SESSION['sum'];
-      else
-          $sumOper = 0;
-      }
+  else if(isset($_SESSION['sum'])) {
+      $sumOper = $_SESSION['sum'];
+  }
+  else {
+      $sumOper = 0;
+  }
   
   if (isset($_GET['id'])){
       $idPacient = $_GET['id'];
       $_SESSION['id'] = $idPacient;
       }
   else
-      if(isset($_SESSION['id']))
+      if(isset($_SESSION['id'])) {
           $idPacient = $_SESSION['id'];
-  
+      }
+
   if (isset($_GET['flagop'])) {
       $operPacient = $_GET['flagop'];
       $_SESSION['flagop'] = $operPacient;
@@ -87,17 +90,17 @@
     					$result=mysqli_query($connection, $sql);
      					//Проверка успешности
     					if($result){
-    						$message = "Пользователь успешно создан!"; 
+    						$message = 'Пользователь успешно создан!';
     						$DataBase->route();
     					 }
     					else 
-    					 	$message = "Ошибка запроса, обратитесь к администратору!";
+    					 	$message = 'Ошибка запроса, обратитесь к администратору!';
     				  } 
     				else 
-    					$message = "Пользователь существует, попробуйте другие данные";
+    					$message = 'Пользователь существует, попробуйте другие данные';
     			  } 
     			else 
-    				$message = "Все поля обязательны для заполнения!";
+    				$message = 'Все поля обязательны для заполнения!';
     		  }
       }
   //назначение койко - места
@@ -122,7 +125,7 @@
 
         $queryUpd = mysqli_query($connection, "UPDATE patient SET mest = '".$listMestIn."' WHERE id = '".$idPacient."'");
         if($queryUpd)
-          echo "<script>setTimeout(function(){window.close();}, 500);</script>";
+          echo '<script>setTimeout(function(){window.close();}, 500);</script>';
         }
       }
   //Обработка назначения услуг
@@ -146,14 +149,16 @@
             $countServCost = count($listCostSrv);
 
             if(isset($_GET['serv'])){
-              for($i=0; $i<count($arrayServ);$i++){
+              for($i=0, $iMax = count($arrayServ); $i< $iMax; $i++){
                 $sumServQuery = mysqli_query($connection, "SELECT * FROM items WHERE id = '".$arrayServ[$i]."'");
                 $sumServArr = mysqli_fetch_assoc($sumServQuery);
                 $sumServ += $sumServArr['cost'];
-                if(($i == 0) && ($coutnServPatient == 0))
-                  $listServ = $arrayServ[$i].'-'.$idDoctor.'-0-0-0-'.$dataN;
-                else
-                  $listServ .= ','.$arrayServ[$i].'-'.$idDoctor.'-0-0-0-'.$dataN;
+                if(($i == 0) && ($coutnServPatient == 0)) {
+                    $listServ = $arrayServ[$i] . '-' . $idDoctor . '-0-0-0-' . $dataN;
+                }
+                else {
+                    $listServ .= ',' . $arrayServ[$i] . '-' . $idDoctor . '-0-0-0-' . $dataN;
+                }
                 }
             }
              $arrayIdServ = $_SESSION['listSrvCost'];
@@ -172,8 +177,8 @@
             $updateServPat = mysqli_query($connection, "UPDATE patient SET `sp_uslug` = '".$servNow."' WHERE id = '".$idPacient."'");
             $updateSumServPat = mysqli_query($connection, "UPDATE patient SET all_sum = '".$sumIn."' WHERE id = '".$idPacient."'");
             if($updateServPat && $updateSumServPat){
-              $message = "Процедура добавлена";
-              echo "<script>setTimeout(function(){window.close();}, 100);</script>";
+              $message = 'Процедура добавлена';
+              echo '<script>setTimeout(function(){window.close();}, 100);</script>';
               }
         }
       }
@@ -194,17 +199,17 @@
               $sql = "INSERT INTO items(name,cost,dist,bonus,bonusN) VALUES('".$name."','".$cost."','".$dist."','".$bonus."','".$bonusN."')";
               $query = mysqli_query($connection, $sql);
               if($query){
-                  $message = "Добавление успешно";
+                  $message = 'Добавление успешно';
                   $DataBase->route();                
                   }
               else
-                $message = "Данные не обработаны";
+                $message = 'Данные не обработаны';
               }
             else
-              $message = "Такая услуга уже существует!";
+              $message = 'Такая услуга уже существует!';
             }
         else
-            $message = "Все поля обязательны для заполнения!";        
+            $message = 'Все поля обязательны для заполнения!';
         }
    }
   //Обработка пациентов
@@ -221,17 +226,21 @@
             $searchMaxNumCard = mysqli_query($connection, "SELECT * FROM patient WHERE numCard = (SELECT MAX(numCard) FROM patient WHERE status ='1')");
             echo mysqli_num_rows($searchMaxNumCard);
             $searchArr = mysqli_fetch_assoc($searchMaxNumCard);
-			echo "<br>";
-			echo "MAX:".$searchArr['numCard'];
-			echo "<br>";
-            if($typeStat == 1)
-              echo $maxNum = $searchArr['numCard'] + 1;
-            else
-              $maxNum = 0;
-            if($typeStat == 0)
-              $type = "Амбулатория";
-            elseif($typeStat == 1)
-              $type = 'Стационар';
+			echo '<br>';
+			echo 'MAX:' .$searchArr['numCard'];
+			echo '<br>';
+            if($typeStat == 1) {
+                echo $maxNum = $searchArr['numCard'] + 1;
+            }
+            else {
+                $maxNum = 0;
+            }
+            if($typeStat == 0) {
+                $type = 'Амбулатория';
+            }
+            elseif($typeStat == 1) {
+                $type = 'Стационар';
+            }
 
             $doctorQuery = mysqli_query($connection, "SELECT * FROM usertbl WHERE username = '".$_SESSION['session_username']."'");
             $doctorArray = mysqli_fetch_assoc($doctorQuery);
@@ -243,17 +252,17 @@
             $pacient = mysqli_query($connection, "INSERT INTO patient(fio,datebirthday, dateIn, tel, mest, sum, type, doctor, status, dist, numCard) VALUES('".$name."','".$dateBr."','".$dateIn."', '".$tel."','0','0','".$type."','".$doctorName."', '1', '".$dist."', '".$maxNum."')");
 
             if ($pacient){
-                $cost = 'SELECT * FROM param WHERE name = "Прием"';
-                $setting = mysqli_query($connection, $cost);
-                while ($data = mysqli_fetch_assoc($setting)){
-                    $value = $data['value'];
-                    $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE username ='".$doctorInsert."'");
-                    while ($data = mysqli_fetch_assoc($query)){
-                        $money = $data['money'] + $value;
-                        if($typeStat == 1)
-                          $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE username ='".$doctorInsert."'");
-                        }
-                    }
+//                $cost = 'SELECT * FROM param WHERE name = "Прием"';
+//                $setting = mysqli_query($connection, $cost);
+//                while ($data = mysqli_fetch_assoc($setting)){
+//                    $value = $data['value'];
+//                    $query = mysqli_query($connection, "SELECT * FROM usertbl WHERE username ='".$doctorInsert."'");
+//                    while ($data = mysqli_fetch_assoc($query)){
+//                        $money = $data['money'] + $value;
+//                        if($typeStat == 1)
+//                          $insert = mysqli_query($connection, "UPDATE usertbl SET money = '".$money."' WHERE username ='".$doctorInsert."'");
+//                        }
+//                    }
                 if ($message != "Ошибка заполнения"){
                   $message = "Запись создана успешно";
                   $patientQuery = mysqli_query($connection, "SELECT * FROM patient WHERE fio = '".$name."'");

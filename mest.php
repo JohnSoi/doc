@@ -1,8 +1,11 @@
 <?php
 	/* --- Провекра на авторизованность --- */
 	session_start();
-  if(!$_SESSION['session_username'])
-    header("Location:login.php");
+  if(!$_SESSION['session_username']) {
+      header("Location:login.php");
+  }
+
+  const ALLOWS_DOL = ['su', 'doc', 'psi'];
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +40,7 @@
 	  $dataDOC = mysqli_fetch_assoc($doctor);
 	  $idDoctor = $dataDOC['id'];
 	  $nameDoct = $dataDOC['fio'];
+	  $dolDoctor = $dataDOC['dol'];
 	  $typePat = $namePat['type'];
 	  $serv = $namePat['sp_uslug'];
 	  $ldoc = $namePat['doctor'];
@@ -84,9 +88,11 @@
 				echo '</table>';
 			$_SESSION['sum_mest']=$allsum;
 			/* --- Вывод кнопки --- */
-			if($flag == 0)
-				if($ldoc == $nameDoct)
-					echo '<a target="_blank" class = "button" href="add.php?id='.$idPatient.'&flagadd=2">Добавить койко - место</a>';
+			if($flag == 0) {
+                if ($ldoc == $nameDoct || in_array($dolDoctor, ALLOWS_DOL, true)) {
+                    echo '<a target="_blank" class = "button" href="add.php?id=' . $idPatient . '&flagadd=2">Добавить койко - место</a>';
+                }
+            }
 			}	
 	?>
 </body>
