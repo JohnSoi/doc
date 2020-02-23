@@ -4,10 +4,10 @@
 
 	class DataBase{
 		/* --- Свойства для создания подключения --- */
-		protected $Server, $User, $Pass, $NameBase;	
+		protected $Server, $User, $Pass, $NameBase;
 
 		/* --- Функция перевода в классовые переменные --- */
-		function __construct($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME){
+		public function __construct($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME){
 			$this->Server = $DB_SERVER;
 	        $this->User = $DB_USER;
 	        $this->Pass = $DB_PASS;
@@ -15,13 +15,13 @@
 			}
 
 		/* --- Функция создания подключения к БД --- */
-		function createConnect(){
+		public function createConnect(){
 			// Создание подключения
 			$con = mysqli_connect($this->Server, $this->User, $this->Pass);
 			// Вывод сообщения об оштбке при наличии
 			if ($con->connect_error) {
-				echo "<div class=\"error\"><h1>Внимание! Ошибка установки соединения с сервером MySQL!</h1><h2>Ошибка
-				(".$mysqli->connect_errno ."): ".$mysqli->connect_error."</h2></div>";
+//				echo '<div class="error"><h1>Внимание! Ошибка установки соединения с сервером MySQL!</h1><h2>Ошибка
+//				(' .$mysqli->connect_errno ."): ".$mysqli->connect_error."</h2></div>";
 				}
 			// Переход к выбору БД
 			$this->selectDataBase($con, $this->NameBase);
@@ -53,20 +53,20 @@
 /* --- Функция проверки наличия системных таблиц и создания их при необходимости --- */
 		protected function checkTable($connect){
 		// Проверка наличия таблицы депозита
-			$tableDep = mysqli_query($connect, "SELECT * FROM deposit");
+			$tableDep = mysqli_query($connect, 'SELECT * FROM deposit');
 			if(!$tableDep)
-				mysqli_query($connect,"
+				mysqli_query($connect, '
 					CREATE TABLE `deposit` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `fio` varchar(60) COLLATE utf8_bin NOT NULL,
 					  `sum` int(11) NOT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-					");	
+					');
 			// Проверка наличия таблицы Услуг
-			$tableIt = mysqli_query($connect, "SELECT * FROM items");
+			$tableIt = mysqli_query($connect, 'SELECT * FROM items');
 			if(!$tableIt)
-				mysqli_query($connect,"
+				mysqli_query($connect, '
 					CREATE TABLE `items` (
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `name` varchar(60) COLLATE utf8_bin NOT NULL,
@@ -76,9 +76,9 @@
 					  `bonusN` text COLLATE utf8_bin NOT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-					");
+					');
 			// Провекра наличия таблицы Пациентов
-			$tableCl = mysqli_query($connect, "SELECT * FROM patient");
+			$tableCl = mysqli_query($connect, 'SELECT * FROM patient');
 			if(!$tableCl)
 				mysqli_query($connect,"
 						CREATE TABLE `patient` (
@@ -103,7 +103,7 @@
 						  `numCard` int(11) NOT NULL,
 						  `dispecher` text NOT NULL,
 						  `comment` text NOT NULL,
-						  
+
 						  PRIMARY KEY (`id`)
 						) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 					");
