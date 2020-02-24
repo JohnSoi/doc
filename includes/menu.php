@@ -8,7 +8,7 @@
 			<nav id="menu-list-st" class="menu-list-st">';
 			if ($typeuser != 'view') {
                 echo '<div class="groupBtn">
-					<figure>';
+					<figure style="height: 100%">';
                 if (($typeuser == 'doc') || ($typeuser == 'su') || ($typeuser == 'ddoc') || $typeuser == 'psi')
                     echo '<a href="add.php?flagadd=5&stac=1"><img src="img/addCl.png" alt="Add" style="width:20%;"></a>';
                 if (($typeuser == 'doc') || ($typeuser == 'su'))
@@ -51,7 +51,7 @@
 			{
 				echo '
 				<div class="groupBtn">
-					<figure>';
+					<figure style="height: 100%">';
 						if (($typeuser == 'doc') || ($typeuser == 'su') || ($typeuser == 'ddoc') || $typeuser == 'psi')
 							echo '<a href="add.php?flagadd=5&stac=0"><img src="img/addCl.png" alt="Add" style="width:20%;"></a>';
 						if(($typeuser == 'doc')|| ($typeuser == 'su'))
